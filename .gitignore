@@ -1,0 +1,31 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Database & generated data
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Vendor repositories (Kronos pinned clone)
+vendor/
+
+# Python cache & build
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Testing cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# User archive files preserved on disk
+*.zip
+RayCodes_Kronos-main/
+img/
