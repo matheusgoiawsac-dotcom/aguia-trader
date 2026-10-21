@@ -6,10 +6,10 @@ import mimetypes
 from pathlib import Path
 import sys
 from typing import Optional, Set
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from aguia.config import ROOT_DIR, load_config
-from aguia.server.routes import handle_api_status
+from aguia.server.routes import handle_api_status, handle_api_assets, handle_api_asset
 
 STATIC_DIR = (ROOT_DIR / "static").resolve()
 
@@ -77,6 +77,15 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
             if path == "/api/status":
                 data = handle_api_status()
                 return self._send_json(data, status_code=200)
+            elif path in ("/api/assets", "/api/universe"):
+                data = handle_api_assets()
+                return self._send_json(data, status_code=200)
+            elif path in ("/api/asset", "/api/analysis"):
+                query_params = parse_qs(parsed.query)
+                ticker = query_params.get("ticker", ["ASAI3"])[0].upper()
+                data = handle_api_asset(ticker)
+                status_code = 200 if data.get("success", True) else 404
+                return self._send_json(data, status_code=status_code)
             else:
                 return self._send_error(f"Endpoint não encontrado: {path}", status_code=404)
 
