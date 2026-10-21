@@ -1,0 +1,70 @@
+# Águia Trader — Master Configuration File
+
+[server]
+host = "127.0.0.1"
+port = 8000
+cors_origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
+]
+static_dir = "static"
+
+[market]
+default_ticker = "PETR4"
+daily_history_years = 3
+chart_candles = 120
+kronos_lookback = 400
+rate_limit_rps = 2.0
+
+[timeframes]
+default = "1d"
+available = ["1d", "15m", "5m"]
+
+[timeframes.1d]
+name = "Diário (Swing Trade)"
+interval = "1d"
+horizon = 14
+yfinance_period = "3y"
+
+[timeframes.15m]
+name = "15 Minutos (Day Trade)"
+interval = "15m"
+horizon = 16
+yfinance_period = "60d"
+
+[timeframes.5m]
+name = "5 Minutos (Day Trade)"
+interval = "5m"
+horizon = 12
+yfinance_period = "60d"
+
+[indicators]
+sma_period = 200
+wma_period = 30
+atr_period = 14
+atr_wilder = true
+
+[forecast]
+model_id = "NeoQuasar/Kronos-small"
+tokenizer_id = "NeoQuasar/Kronos-Tokenizer-base"
+n_samples = 10
+temperature = 1.0
+top_p = 0.9
+device = "auto" # "auto", "cpu", or "cuda"
+
+[signals]
+# Heurística inicial não validada por backtest
+p_up_alta = 0.60
+p_up_baixa = 0.40
+ret_atr_multiplier = 0.5
+stop_atr_multiplier = 1.5
+min_payoff = 1.0
+
+[ollama]
+url = "http://localhost:11434"
+model = "auto"
+temperature = 0.2
+timeout_seconds = 90
+
+[compliance]
+disclaimer = "Análise experimental gerada por modelo estatístico. Não constitui recomendação de investimento. Sem backtest validado."

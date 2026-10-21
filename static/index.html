@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Águia Trader</title>
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <!-- Estilos CSS3 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Componente de Marca: Águia (Estilo Emoji 🦅) Sobrevoando Candles da Esquerda para a Direita -->
+    <aside class="eagle-soar-badge" id="eagleSoarBrand" aria-label="Águia Trader - Voo Bullish">
+        <!-- Pista de Sobrevoo Horizontal da Águia (Orientada para a Direita) -->
+        <div class="eagle-flight-track">
+            <div class="eagle-flyer">
+                <!-- SVG no Estilo do Emoji 🦅 (Plumagem Marrom, Cabeça Bege/Branca, Bico Dourado Virado para a Direita) -->
+                <svg class="eagle-emoji-svg" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Penas da cauda traseira -->
+                    <path d="M5 16L1 21L7 22L9 18Z" fill="#F8FAFC"/>
+                    <path d="M3 18L1 21L5 21.5L6 19Z" fill="#E2E8F0"/>
+                    
+                    <!-- Asa Esquerda (Traseira) em marrom escuro -->
+                    <path d="M10 13L16 2L20 4L16 14Z" fill="#5D4037"/>
+                    <path d="M12 10L17 3L19 4.5L14 12Z" fill="#6D4C41"/>
+                    
+                    <!-- Garras / Patas amarelas dobradas -->
+                    <path d="M14 19L13 22L16 22L16 19Z" fill="#F59E0B"/>
+                    
+                    <!-- Corpo e Ventre em Marrom -->
+                    <path d="M9 15C9 13 11 12 14 12L23 13C24 15 23 18 20 19C16 20 11 19 9 15Z" fill="#795548"/>
+                    
+                    <!-- Asa Direita (Frontal / Principal) com penas abertas -->
+                    <path d="M14 13L24 1L28 4L20 16L15 15Z" fill="#8D6E63"/>
+                    <path d="M16 11L25 2L27 4L19 14L16 12Z" fill="#6D4C41"/>
+                    <path d="M18 9L26 3L27.5 4.5L20 13Z" fill="#5D4037"/>
+                    <path d="M13 13C16 13 20 14 22 15C19 17 15 17 13 15Z" fill="#4E342E"/>
+                    
+                    <!-- Pescoço e Cabeça Branca / Bege característica da Águia (Emoji) -->
+                    <path d="M22 13C21 11 22 9 24 8C26 7 29 8 31 10C31 12 30 14 28 15C25 15 23 14 22 13Z" fill="#F8FAFC"/>
+                    <path d="M22 13C23 13.5 25 14.5 28 14.5C26 15 23.5 14.5 22 13Z" fill="#E2E8F0"/>
+                    
+                    <!-- Olho penetrante olhando para a direita -->
+                    <circle cx="28" cy="10" r="1.1" fill="#0F172A"/>
+                    <circle cx="28.3" cy="9.8" r="0.4" fill="#FFFFFF"/>
+                    
+                    <!-- Bico adunco dourado/amarelo curvado para a direita -->
+                    <path d="M30 10.5C32 10.5 35 11 35.5 12.5C35 13.5 32.5 14 30.5 13.5L30 10.5Z" fill="#F59E0B"/>
+                    <path d="M33 12C34.5 12.2 35.5 12.5 35 13.5C33.5 13.5 32 13 31 12.5L33 12Z" fill="#D97706"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 3 Mini Candles Verdes de Alta na Base ('Chão' do Gráfico) -->
+        <div class="eagle-base-candles" title="Tendência de Alta Bullish">
+            <div class="bull-candle candle-step-1">
+                <span class="bull-wick"></span>
+                <span class="bull-body"></span>
+            </div>
+            <div class="bull-candle candle-step-2">
+                <span class="bull-wick"></span>
+                <span class="bull-body"></span>
+            </div>
+            <div class="bull-candle candle-step-3">
+                <span class="bull-wick"></span>
+                <span class="bull-body"></span>
+            </div>
+        </div>
+    </aside>
+
+    <div class="dashboard-wrapper">
+        <!-- Topo da Aplicação -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <div class="brand-logo-container">
+                    <img src="logo.png" alt="Logo Águia Trader" class="brand-logo-img">
+                </div>
+                <div class="brand-text-container">
+                    <div class="brand-group">
+                        <h1 class="brand-title">Águia <span class="brand-highlight">Trader</span></h1>
+                        <span class="badge-phase">Fase 3 &bull; Normalizado</span>
+                    </div>
+                    <p class="brand-subtitle">Motor estatístico SMA 200 + WMA 30 + ATR 14 + IA Local (Águia Trader)</p>
+                </div>
+            </div>
+
+            <div class="navbar-right">
+                <div class="snapshot-card">
+                    <span class="snapshot-label">Snapshot B3:</span>
+                    <span class="snapshot-date" id="snapshotTimestamp">13/10/2026, 14:47</span>
+                </div>
+                <div id="connectionStatus" class="connection-indicator online" title="Status do Backend Python 3.11">
+                    <span class="conn-dot"></span>
+                    <span class="conn-text" id="connText">Python 3.11</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo Principal em Duas Colunas -->
+        <div class="main-layout">
+            <!-- Coluna Esquerda: Universo de Ações & Filtros -->
+            <aside class="sidebar-stocks">
+                <div class="sidebar-header">
+                    <span class="universe-title">UNIVERSO DE AÇÕES</span>
+                    <span class="universe-count" id="universeCount">148 ATIVOS</span>
+                </div>
+
+                <!-- Campo de Busca -->
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Buscar ação (ex: PETR4)..." autocomplete="off">
+                </div>
+
+                <!-- Botões de Filtro -->
+                <div class="filter-pills">
+                    <button class="filter-pill active" data-filter="TODOS">Todos</button>
+                    <button class="filter-pill" data-filter="ALTA">Alta</button>
+                    <button class="filter-pill" data-filter="BAIXA">Baixa</button>
+                    <button class="filter-pill" data-filter="NEUTRO">Neutro</button>
+                </div>
+
+                <!-- Lista Rolável de Cards de Ações -->
+                <div class="stock-list-container" id="stockListContainer">
+                    <!-- Gerado dinamicamente via JavaScript -->
+                </div>
+            </aside>
+
+            <!-- Coluna Direita: Gráfico & Painel de Análise Quantitativa -->
+            <main class="chart-content-area">
+                <!-- Barra de Legendas do Gráfico -->
+                <div class="chart-legend-bar">
+                    <div class="legend-item">
+                        <span class="legend-dot dot-green"></span>
+                        <span class="legend-label">Preço (Fechamento)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot dot-yellow"></span>
+                        <span class="legend-label">WMA 30</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot dot-blue"></span>
+                        <span class="legend-label">SMA 200</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot dot-white"></span>
+                        <span class="legend-label">Projeção 14D (Alvo + Banda ATR)</span>
+                    </div>
+                </div>
+
+                <!-- Card Principal do Gráfico -->
+                <section class="chart-main-card">
+                    <!-- Título do Ativo Selecionado -->
+                    <div class="chart-header">
+                        <h2 class="asset-headline" id="chartHeadline">
+                            <span id="headlineTicker">ASAI3</span> | Águia Trader 
+                            <span id="headlineReturn" class="text-green">(+5.17%)</span>: 
+                            <span id="headlineTrend">ALTA (BULLISH)</span>
+                        </h2>
+                    </div>
+
+                    <!-- Área de Visualização do Gráfico Canvas -->
+                    <div class="chart-stage-container">
+                        <!-- Banner Flutuante de Alvo e Projeção -->
+                        <div class="target-floating-badge badge-bullish" id="floatingTargetBadge">
+                            <span id="badgeTrendAction">ALTA (BULLISH)</span> | 
+                            Alvo: <span id="badgeTargetPrice">R$ 13.96</span> 
+                            (<span id="badgeTargetReturn">+5.17%</span>)
+                        </div>
+
+                        <!-- Canvas do Gráfico (Preço + Médias + Projeção + Volume) -->
+                        <canvas id="tradingChartCanvas"></canvas>
+
+                        <!-- Marca d'Água Oficial Águia Trader -->
+                        <div class="chart-watermark">
+                            <div class="watermark-logo-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M3 3v18h18"></path>
+                                    <path d="M19 9l-5 5-4-4-3 3"></path>
+                                </svg>
+                            </div>
+                            <div class="watermark-text-group">
+                                <span class="watermark-title">Águia</span>
+                                <span class="watermark-sub">TRADER</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Métricas Quantitativas e Racional do Ativo -->
+                <section class="quant-details-grid">
+                    <div class="quant-card">
+                        <span class="quant-card-label">Preço Atual</span>
+                        <span class="quant-card-val" id="metricCurrentPrice">R$ 13.27</span>
+                        <span class="quant-card-sub" id="metricPriceDiff">+0.85% hoje</span>
+                    </div>
+
+                    <div class="quant-card">
+                        <span class="quant-card-label">Alvo Projetado (14D)</span>
+                        <span class="quant-card-val text-green" id="metricTargetPrice">R$ 13.96</span>
+                        <span class="quant-card-sub text-green" id="metricTargetReturn">+5.17% de projeção</span>
+                    </div>
+
+                    <div class="quant-card">
+                        <span class="quant-card-label">Stop Loss Sugerido</span>
+                        <span class="quant-card-val text-red" id="metricStopLoss">R$ 12.65</span>
+                        <span class="quant-card-sub text-red">-4.67% de risco</span>
+                    </div>
+
+                    <div class="quant-card">
+                        <span class="quant-card-label">Relação Risco x Retorno</span>
+                        <span class="quant-card-val text-cyan" id="metricPayoff">1.11 : 1</span>
+                        <span class="quant-card-sub">Setup Estatístico</span>
+                    </div>
+                </section>
+
+                <!-- Racional da IA & Indicadores Técnicos -->
+                <section class="reasoning-card">
+                    <div class="reasoning-header">
+                        <span class="reasoning-tag">🧠 Racional do Modelo Quantitativo & IA</span>
+                        <span class="model-tag">Kronos Base + Águia Trader</span>
+                    </div>
+                    <p class="reasoning-content" id="aiReasoningText">
+                        O ativo <strong>ASAI3</strong> demonstrou rompimento sustentado acima da WMA 30 com confirmação de volume comprador superior à média de 20 períodos. O alinhamento com a SMA 200 sinaliza continuidade de tendência altista. Projeção estatística baseada em 14 períodos com expansão de volatilidade delimitada pelo ATR 14.
+                    </p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Script JavaScript com Motor Gráfico Canvas -->
+    <script src="script.js"></script>
+</body>
+</html>

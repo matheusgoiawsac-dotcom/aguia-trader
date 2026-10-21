@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "ticker": "PETR4",
+    "timeframe": "1d",
+    "asof": "2026-10-21T18:00:00-03:00",
+    "source": "SIMULADO",
+    "is_simulated": true,
+    "ribbon": "SIMULADO",
+    "disclaimer": "Análise experimental gerada por modelo estatístico. Não constitui recomendação de investimento. Sem backtest validado."
+  },
+  "candles": [
+    {"ts": "2026-10-20T10:00:00-03:00", "open": 37.80, "high": 38.60, "low": 37.50, "close": 38.45, "volume": 25000000}
+  ],
+  "indicators": {
+    "wma30": 36.80,
+    "sma200": 34.20,
+    "atr14": 0.85
+  },
+  "forecast": {
+    "horizon": 14,
+    "n_samples": 10,
+    "timestamps": ["2026-10-22T17:00:00-03:00"],
+    "median": [39.91],
+    "p10": [38.20],
+    "p90": [41.10],
+    "p_up": 0.70
+  },
+  "setup": {
+    "signal": "ALTA",
+    "entry": 38.45,
+    "target": 39.91,
+    "stop": 37.18,
+    "payoff": 1.15,
+    "ret": 0.038,
+    "atr_pct": 0.0221,
+    "p_up": 0.70
+  },
+  "rationale": {
+    "text": "Ativo PETR4 com rompimento acima de WMA30 e SMA200. Alvo estatístico em R$ 39,91 com stop loss sugerido em R$ 37,18 e payoff de 1,15 : 1.",
+    "source": "template",
+    "model": "deterministic_v1"
+  },
+  "disclaimer": "Análise experimental gerada por modelo estatístico. Não constitui recomendação de investimento. Sem backtest validado."
+}
