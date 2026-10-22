@@ -215,20 +215,20 @@ body {
    Integrado Estaticamente no Cabeçalho (Sem sobreposição fixed)
    ============================================================ */
 .eagle-soar-badge {
-    position: relative;
+    position: static !important; /* Estritamente no fluxo estático do header */
     width: 88px;
     height: 48px;
     background: rgba(12, 18, 32, 0.9);
     border: 1px solid rgba(34, 197, 94, 0.35);
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 0 8px rgba(34, 197, 94, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 3px 5px 4px 5px;
-    overflow: hidden; /* Corta rigorosamente animações dentro do card */
+    overflow: hidden !important; /* Corta rigorosamente animações dentro do card */
     user-select: none;
     flex-shrink: 0;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -245,7 +245,7 @@ body {
     position: relative;
     width: 100%;
     height: 24px;
-    overflow: hidden; /* Contenção absoluta sem vazamento */
+    overflow: hidden !important; /* Contenção absoluta sem vazamento */
 }
 
 /* Elemento da Águia com Orientação para a Direita */
@@ -366,12 +366,12 @@ body {
     display: grid;
     grid-template-columns: 310px 1fr;
     gap: 1.25rem;
-    align-items: stretch; /* Ambos os lados terminam exatamente no mesmo nível inferior */
+    align-items: start; /* Impede que a sidebar estique o layout além do painel */
     flex: 1;
 }
 
 /* ============================================================
-   Coluna Esquerda: Sidebar de Ações
+   Coluna Esquerda: Sidebar de Ações com Altura Travada & Scroll
    ============================================================ */
 .sidebar-stocks {
     background: var(--bg-surface);
@@ -381,10 +381,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    height: 100%;
     box-sizing: border-box;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    min-height: 0; /* Permite scroll vertical correto em flex child */
+    height: 924px; /* Altura exata nivelada ao final do card de Resumo */
+    max-height: 924px; /* Trava absoluta de altura */
+    overflow: hidden; /* Não permite estouro */
 }
 
 .sidebar-header {
@@ -481,18 +482,20 @@ body {
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.35);
 }
 
-/* Lista Rolável de Ações */
+/* Lista Rolável de Ações com Rolagem Interna Obrigatória */
 .stock-list-container {
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
-    overflow-y: auto;
-    padding-right: 0.25rem;
-    flex: 1 1 0; /* Preenche exatamente a altura até a borda inferior */
+    overflow-y: auto !important; /* Barra de rolagem interna vertical */
+    overflow-x: hidden;
+    padding-right: 0.35rem;
+    flex: 1 1 auto;
     min-height: 0;
+    max-height: 750px; /* Garante que ações adicionais rolem internamente */
 }
 
-/* Scrollbar estilizada */
+/* Scrollbar estilizada de alta classe */
 .stock-list-container::-webkit-scrollbar {
     width: 5px;
 }
@@ -836,7 +839,7 @@ body {
 .text-cyan { color: var(--color-cyan) !important; }
 
 /* ============================================================
-   Racional da IA (Card Inferior Alinhado)
+   Resumo da IA (Card Inferior Perfeitamente Alinhado)
    ============================================================ */
 .reasoning-card {
     background: linear-gradient(135deg, rgba(13, 19, 33, 0.85) 0%, rgba(9, 14, 25, 0.95) 100%);

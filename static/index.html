@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
-    <!-- Estilos CSS3 -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Estilos CSS3 com cache buster -->
+    <link rel="stylesheet" href="style.css?v=2.0">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -40,7 +40,7 @@
                     <span class="conn-text" id="connText">Python 3.11</span>
                 </div>
 
-                <!-- Componente de Marca: Águia (Estilo Emoji 🦅) Sobrevoando Candles Integrado no Topo -->
+                <!-- Card de Animação da Águia (Inserido Diretamente no Header, Estático no Fluxo Normal) -->
                 <div class="eagle-soar-badge" id="eagleSoarBrand" aria-label="Águia Trader - Voo Bullish" title="Águia Trader - Momentum Bullish">
                     <div class="eagle-flight-track">
                         <div class="eagle-flyer">
@@ -111,7 +111,7 @@
                     <button class="filter-pill" data-filter="NEUTRO">Neutro</button>
                 </div>
 
-                <!-- Lista Rolável de Cards de Ações -->
+                <!-- Lista Rolável de Cards de Ações com Scroll Interno -->
                 <div class="stock-list-container" id="stockListContainer">
                     <!-- Gerado dinamicamente via JavaScript -->
                 </div>
@@ -205,10 +205,10 @@
                     </div>
                 </section>
 
-                <!-- Racional da IA & Indicadores Técnicos -->
+                <!-- Resumo da IA & Indicadores Técnicos -->
                 <section class="reasoning-card">
                     <div class="reasoning-header">
-                        <span class="reasoning-tag">🧠 Racional do Modelo Quantitativo & IA</span>
+                        <span class="reasoning-tag">🧠 Resumo</span>
                         <span class="model-tag">Kronos Base + Águia Trader</span>
                     </div>
                     <p class="reasoning-content" id="aiReasoningText">
@@ -220,6 +220,6 @@
     </div>
 
     <!-- Script JavaScript com Motor Gráfico Canvas -->
-    <script src="script.js"></script>
+    <script src="script.js?v=2.0"></script>
 </body>
 </html>

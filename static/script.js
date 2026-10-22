@@ -408,6 +408,41 @@ function renderStockList() {
 
         stockListContainer.appendChild(card);
     });
+
+    requestAnimationFrame(syncSidebarHeight);
+}
+
+/**
+ * Sincroniza a altura da barra lateral para terminar exatamente alinhada ao card de Resumo
+ */
+function syncSidebarHeight() {
+    const rightCol = document.querySelector(".chart-content-area");
+    const sidebar = document.querySelector(".sidebar-stocks");
+    const stockList = document.getElementById("stockListContainer");
+
+    if (rightCol && sidebar && stockList && window.innerWidth > 1100) {
+        const targetHeight = rightCol.offsetHeight;
+        if (targetHeight > 400) {
+            sidebar.style.height = `${targetHeight}px`;
+            sidebar.style.maxHeight = `${targetHeight}px`;
+
+            const headerEl = sidebar.querySelector(".sidebar-header");
+            const searchEl = sidebar.querySelector(".search-box");
+            const filterEl = sidebar.querySelector(".filter-pills");
+
+            const headerH = headerEl ? headerEl.offsetHeight : 26;
+            const searchH = searchEl ? searchEl.offsetHeight : 38;
+            const filterH = filterEl ? filterEl.offsetHeight : 32;
+
+            const overhead = headerH + searchH + filterH + 80;
+            const availableH = Math.max(200, targetHeight - overhead);
+            stockList.style.maxHeight = `${availableH}px`;
+        }
+    } else if (sidebar && stockList) {
+        sidebar.style.height = "";
+        sidebar.style.maxHeight = "";
+        stockList.style.maxHeight = "";
+    }
 }
 
 /**
@@ -541,6 +576,7 @@ filterPills.forEach(pill => {
 
 window.addEventListener("resize", () => {
     renderTradingChart();
+    syncSidebarHeight();
 });
 
 // Clique manual no indicador de status para reconectar
@@ -555,6 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderStockList();
     selectStock("ASAI3");
     testPythonBackend();
+    setTimeout(syncSidebarHeight, 50);
 
     // Verificação periódica automática a cada 3 segundos
     setInterval(testPythonBackend, 3000);
