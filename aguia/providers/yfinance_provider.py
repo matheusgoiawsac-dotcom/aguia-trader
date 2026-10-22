@@ -43,7 +43,9 @@ def obter_dados_mercado(
             return cached_df.copy()
 
     symbol = f"{clean_ticker}.SA"
-    
+    period_map = {"6m": "6mo", "1m": "1mo", "3m": "3mo"}
+    yf_period = period_map.get(periodo.lower(), periodo)
+
     # Retry with exponential backoff on network errors
     max_retries = 3
     delay = 1.0
@@ -52,7 +54,7 @@ def obter_dados_mercado(
     for attempt in range(max_retries):
         try:
             yf_ticker = yf.Ticker(symbol)
-            df = yf_ticker.history(period=periodo, interval=intervalo, auto_adjust=True)
+            df = yf_ticker.history(period=yf_period, interval=intervalo, auto_adjust=True)
             if df is not None and not df.empty:
                 break
         except Exception as e:

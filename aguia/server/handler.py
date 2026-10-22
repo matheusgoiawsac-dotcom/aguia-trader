@@ -15,6 +15,7 @@ from aguia.server.routes import (
     handle_api_acoes,
     handle_api_analise
 )
+from aguia.charts.png_export import export_chart_png
 
 STATIC_DIR = (ROOT_DIR / "static").resolve()
 
@@ -102,9 +103,23 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
                     data = handle_api_analise(ticker)
                     status_code = 200 if data.get("sucesso", True) else 400
                     return self._send_json(data, status_code=status_code)
+                elif path == "/api/chart.png":
+                    query_params = parse_qs(parsed.query)
+                    ticker = query_params.get("ticker", ["PETR4"])[0].upper()
+                    tf = query_params.get("tf", ["1d"])[0].lower()
+                    png_bytes = export_chart_png(ticker, timeframe=tf)
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(png_bytes)))
+                    self._apply_cors_headers()
+                    self.end_headers()
+                    self.wfile.write(png_bytes)
+                    return
                 else:
                     return self._send_error(f"Endpoint não encontrado: {path}", status_code=404)
             except Exception as e:
+                import traceback
+                traceback.print_exc()
                 return self._send_json({
                     "sucesso": False,
                     "dados": None,

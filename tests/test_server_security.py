@@ -103,3 +103,13 @@ def test_api_analise_endpoint_http(running_server: str):
         assert "stop" in data["dados"]
         assert "resumo" in data["dados"]
         assert len(data["dados"]["candles"]) > 0
+
+
+def test_api_chart_png_endpoint_http(running_server: str):
+    url = f"{running_server}/api/chart.png?ticker=PETR4"
+    with urllib.request.urlopen(url) as resp:
+        assert resp.status == 200
+        assert resp.headers.get("Content-Type") == "image/png"
+        raw_bytes = resp.read()
+        assert len(raw_bytes) > 1000
+        assert raw_bytes[:4] == b"\x89PNG"
