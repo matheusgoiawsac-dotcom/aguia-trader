@@ -145,7 +145,9 @@ def gerar_racional_ia(setup: Dict[str, Any]) -> Tuple[str, str]:
                 result = json.loads(response.read().decode("utf-8"))
                 content = result.get("message", {}).get("content", "").strip()
                 if content and len(content) > 30:
-                    return content, "ollama"
+                    from aguia.explain.validator import validate_numbers
+                    if validate_numbers(content, setup):
+                        return content, "ollama"
     except Exception:
         pass
 
