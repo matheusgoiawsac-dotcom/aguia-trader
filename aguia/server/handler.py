@@ -9,7 +9,12 @@ from typing import Optional, Set
 from urllib.parse import parse_qs, urlparse
 
 from aguia.config import ROOT_DIR, load_config
-from aguia.server.routes import handle_api_status, handle_api_assets, handle_api_asset
+from aguia.server.routes import (
+    handle_api_status,
+    handle_api_status_ollama,
+    handle_api_acoes,
+    handle_api_analise
+)
 
 STATIC_DIR = (ROOT_DIR / "static").resolve()
 
@@ -61,7 +66,14 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _send_error(self, message: str, status_code: int = 404) -> None:
-        self._send_json({"success": False, "error": message, "code": status_code}, status_code=status_code)
+        self._send_json({
+            "sucesso": False,
+            "success": False,
+            "dados": None,
+            "erro": message,
+            "error": message,
+            "code": status_code
+        }, status_code=status_code)
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
@@ -74,20 +86,30 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
 
         # Handle API routes
         if path.startswith("/api/"):
-            if path == "/api/status":
-                data = handle_api_status()
-                return self._send_json(data, status_code=200)
-            elif path in ("/api/assets", "/api/universe"):
-                data = handle_api_assets()
-                return self._send_json(data, status_code=200)
-            elif path in ("/api/asset", "/api/analysis"):
-                query_params = parse_qs(parsed.query)
-                ticker = query_params.get("ticker", ["ASAI3"])[0].upper()
-                data = handle_api_asset(ticker)
-                status_code = 200 if data.get("success", True) else 404
-                return self._send_json(data, status_code=status_code)
-            else:
-                return self._send_error(f"Endpoint não encontrado: {path}", status_code=404)
+            try:
+                if path == "/api/status":
+                    data = handle_api_status()
+                    return self._send_json(data, status_code=200)
+                elif path == "/api/status_ollama":
+                    data = handle_api_status_ollama()
+                    return self._send_json(data, status_code=200)
+                elif path in ("/api/acoes", "/api/assets", "/api/universe"):
+                    data = handle_api_acoes()
+                    return self._send_json(data, status_code=200)
+                elif path in ("/api/analise", "/api/analysis", "/api/asset"):
+                    query_params = parse_qs(parsed.query)
+                    ticker = query_params.get("ticker", ["PETR4"])[0].upper()
+                    data = handle_api_analise(ticker)
+                    status_code = 200 if data.get("sucesso", True) else 400
+                    return self._send_json(data, status_code=status_code)
+                else:
+                    return self._send_error(f"Endpoint não encontrado: {path}", status_code=404)
+            except Exception as e:
+                return self._send_json({
+                    "sucesso": False,
+                    "dados": None,
+                    "erro": f"Erro interno ao processar requisição: {str(e)}"
+                }, status_code=500)
 
         # Handle Static files strictly from static/
         if path in ("", "/"):
@@ -101,7 +123,6 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
         try:
             target_file.relative_to(STATIC_DIR)
         except ValueError:
-            # Traversal attempt outside static directory
             return self._send_error("Acesso negado: fora do diretório estático", status_code=404)
 
         if not target_file.is_file():
@@ -135,7 +156,6 @@ def create_server(host: str = "127.0.0.1", port: int = 8000) -> http.server.Thre
 
 def run_server() -> None:
     """Entrypoint to run the server until interrupted."""
-    # Ensure Windows console uses UTF-8
     if sys.platform == "win32":
         try:
             sys.stdout.reconfigure(encoding="utf-8")

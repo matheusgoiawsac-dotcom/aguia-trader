@@ -67,3 +67,39 @@ def test_serves_static_index(running_server: str):
         content = resp.read().decode("utf-8")
         assert "<!DOCTYPE html>" in content
         assert "Águia Trader" in content
+
+
+def test_api_status_ollama_endpoint_http(running_server: str):
+    url = f"{running_server}/api/status_ollama"
+    with urllib.request.urlopen(url) as resp:
+        assert resp.status == 200
+        data = json.loads(resp.read().decode("utf-8"))
+        assert data["sucesso"] is True
+        assert "dados" in data
+        assert "online" in data["dados"]
+
+
+def test_api_acoes_endpoint_http(running_server: str):
+    url = f"{running_server}/api/acoes"
+    with urllib.request.urlopen(url) as resp:
+        assert resp.status == 200
+        data = json.loads(resp.read().decode("utf-8"))
+        assert data["sucesso"] is True
+        assert "assets" in data or "dados" in data
+        tickers = [a["ticker"] for a in data.get("assets", [])]
+        assert "PETR4" in tickers
+        assert "VALE3" in tickers
+
+
+def test_api_analise_endpoint_http(running_server: str):
+    url = f"{running_server}/api/analise?ticker=PETR4"
+    with urllib.request.urlopen(url) as resp:
+        assert resp.status == 200
+        data = json.loads(resp.read().decode("utf-8"))
+        assert data["sucesso"] is True
+        assert data["dados"]["ticker"] == "PETR4"
+        assert "preco" in data["dados"]
+        assert "alvo" in data["dados"]
+        assert "stop" in data["dados"]
+        assert "resumo" in data["dados"]
+        assert len(data["dados"]["candles"]) > 0

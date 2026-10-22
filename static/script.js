@@ -1,32 +1,32 @@
 /**
- * Águia Trader - Dashboard & Motor Gráfico Quantitativo
- * Renderização em HTML5 Canvas de Candlesticks, Médias WMA/SMA, Projeção 14D e Volume.
+ * Águia Trader - Dashboard Quantitativo & Motor Gráfico B3
+ * Integração com API Python 3.11, Yahoo Finance, Indicadores e IA Local.
  */
 
-// Universo de Ações B3 com dados quantitativos
+// Universo inicial de ações B3 monitoradas
 let ASSETS_UNIVERSE = [
-    { ticker: "ASAI3", price: 13.27, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.17, target: 13.96, stop: 12.65, payoff: "1.11 : 1", dayVar: "+0.85%", basePrice: 8.5 },
-    { ticker: "ANIM3", price: 5.29, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.46, target: 5.53, stop: 5.08, payoff: "1.14 : 1", dayVar: "+1.15%", basePrice: 4.1 },
-    { ticker: "ARML3", price: 6.48, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.45, target: 6.83, stop: 6.18, payoff: "1.17 : 1", dayVar: "+0.62%", basePrice: 5.2 },
-    { ticker: "AURE3", price: 15.59, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.53, target: 16.30, stop: 14.95, payoff: "1.11 : 1", dayVar: "+0.32%", basePrice: 12.8 },
-    { ticker: "PETR4", price: 38.45, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.80, target: 39.91, stop: 37.10, payoff: "1.08 : 1", dayVar: "+1.42%", basePrice: 32.0 },
-    { ticker: "VALE3", price: 61.20, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -2.75, target: 59.52, stop: 62.60, payoff: "1.20 : 1", dayVar: "-0.95%", basePrice: 65.0 },
-    { ticker: "ITUB4", price: 34.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.10, target: 36.23, stop: 33.60, payoff: "1.19 : 1", dayVar: "+0.78%", basePrice: 29.5 },
-    { ticker: "BBAS3", price: 27.60, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.95, target: 28.69, stop: 26.70, payoff: "1.21 : 1", dayVar: "+0.55%", basePrice: 24.2 },
-    { ticker: "BBDC4", price: 14.90, trend: "NEUTRO", trendText: "LATERAL (NEUTRAL)", returnPct: 0.67, target: 15.00, stop: 14.60, payoff: "0.33 : 1", dayVar: "+0.10%", basePrice: 14.5 },
-    { ticker: "WEGE3", price: 52.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 6.25, target: 56.10, stop: 50.40, payoff: "1.38 : 1", dayVar: "+1.85%", basePrice: 42.0 },
-    { ticker: "MGLU3", price: 8.90, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -5.40, target: 8.42, stop: 9.35, payoff: "1.07 : 1", dayVar: "-2.10%", basePrice: 11.2 },
-    { ticker: "PRIO3", price: 44.50, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.85, target: 46.66, stop: 42.80, payoff: 1.27, dayVar: "+0.90%", basePrice: 38.0 },
-    { ticker: "RENT3", price: 54.30, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.20, target: 56.58, stop: 52.40, payoff: 1.20, dayVar: "+0.60%", basePrice: 47.0 },
-    { ticker: "EMBR3", price: 49.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.60, target: 52.59, stop: 47.90, payoff: 1.47, dayVar: "+1.95%", basePrice: 36.0 },
-    { ticker: "GGBR4", price: 21.15, trend: "NEUTRO", trendText: "LATERAL (NEUTRAL)", returnPct: 0.45, target: 21.25, stop: 20.80, payoff: 0.28, dayVar: "+0.05%", basePrice: 20.8 },
-    { ticker: "CSNA3", price: 12.40, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -3.80, target: 11.93, stop: 12.85, payoff: 1.04, dayVar: "-1.30%", basePrice: 14.2 },
-    { ticker: "SUZB3", price: 58.70, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.30, target: 61.22, stop: 56.90, payoff: 1.40, dayVar: "+0.70%", basePrice: 51.0 },
-    { ticker: "JBSS3", price: 35.10, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.70, target: 36.40, stop: 34.10, payoff: 1.30, dayVar: "+0.45%", basePrice: 30.0 }
+    { ticker: "ASAI3", price: 13.27, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.17, target: 13.96, stop: 12.65, payoff: "1.11 : 1", dayVar: "+0.85%" },
+    { ticker: "ANIM3", price: 5.29, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.46, target: 5.53, stop: 5.08, payoff: "1.14 : 1", dayVar: "+1.15%" },
+    { ticker: "ARML3", price: 6.48, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.45, target: 6.83, stop: 6.18, payoff: "1.17 : 1", dayVar: "+0.62%" },
+    { ticker: "AURE3", price: 15.59, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.53, target: 16.30, stop: 14.95, payoff: "1.11 : 1", dayVar: "+0.32%" },
+    { ticker: "PETR4", price: 38.45, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.80, target: 39.91, stop: 37.10, payoff: "1.08 : 1", dayVar: "+1.42%" },
+    { ticker: "VALE3", price: 61.20, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -2.75, target: 59.52, stop: 62.60, payoff: "1.20 : 1", dayVar: "-0.95%" },
+    { ticker: "ITUB4", price: 34.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.10, target: 36.23, stop: 33.60, payoff: "1.19 : 1", dayVar: "+0.78%" },
+    { ticker: "BBAS3", price: 27.60, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.95, target: 28.69, stop: 26.70, payoff: "1.21 : 1", dayVar: "+0.55%" },
+    { ticker: "BBDC4", price: 14.90, trend: "NEUTRO", trendText: "LATERAL (NEUTRAL)", returnPct: 0.67, target: 15.00, stop: 14.60, payoff: "0.33 : 1", dayVar: "+0.10%" },
+    { ticker: "WEGE3", price: 52.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 6.25, target: 56.10, stop: 50.40, payoff: "1.38 : 1", dayVar: "+1.85%" },
+    { ticker: "MGLU3", price: 8.90, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -5.40, target: 8.42, stop: 9.35, payoff: "1.07 : 1", dayVar: "-2.10%" },
+    { ticker: "PRIO3", price: 44.50, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.85, target: 46.66, stop: 42.80, payoff: "1.27 : 1", dayVar: "+0.90%" },
+    { ticker: "RENT3", price: 54.30, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.20, target: 56.58, stop: 52.40, payoff: "1.20 : 1", dayVar: "+0.60%" },
+    { ticker: "EMBR3", price: 49.80, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 5.60, target: 52.59, stop: 47.90, payoff: "1.47 : 1", dayVar: "+1.95%" },
+    { ticker: "GGBR4", price: 21.15, trend: "NEUTRO", trendText: "LATERAL (NEUTRAL)", returnPct: 0.45, target: 21.25, stop: 20.80, payoff: "0.28 : 1", dayVar: "+0.05%" },
+    { ticker: "CSNA3", price: 12.40, trend: "BAIXA", trendText: "BAIXA (BEARISH)", returnPct: -3.80, target: 11.93, stop: 12.85, payoff: "1.04 : 1", dayVar: "-1.30%" },
+    { ticker: "SUZB3", price: 58.70, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 4.30, target: 61.22, stop: 56.90, payoff: "1.40 : 1", dayVar: "+0.70%" },
+    { ticker: "JBSS3", price: 35.10, trend: "ALTA", trendText: "ALTA (BULLISH)", returnPct: 3.70, target: 36.40, stop: 34.10, payoff: "1.30 : 1", dayVar: "+0.45%" }
 ];
 
 // Estado da Aplicação
-let currentSelectedTicker = "ASAI3";
+let currentSelectedTicker = "PETR4";
 let currentFilter = "TODOS";
 let searchQuery = "";
 let chartDataCache = {};
@@ -52,6 +52,7 @@ const metricPriceDiff = document.getElementById("metricPriceDiff");
 const metricTargetPrice = document.getElementById("metricTargetPrice");
 const metricTargetReturn = document.getElementById("metricTargetReturn");
 const metricStopLoss = document.getElementById("metricStopLoss");
+const metricStopDiff = document.getElementById("metricStopDiff");
 const metricPayoff = document.getElementById("metricPayoff");
 const aiReasoningText = document.getElementById("aiReasoningText");
 const snapshotTimestamp = document.getElementById("snapshotTimestamp");
@@ -60,319 +61,37 @@ const canvas = document.getElementById("tradingChartCanvas");
 const ctx = canvas.getContext("2d");
 
 /**
- * Retorna o endpoint base da API com fallback robusto
+ * Retorna o endpoint base da API com suporte para navegador e Electron
  */
 function getApiBaseUrl() {
     if (window.location.protocol === "file:" || !window.location.origin.includes(":8000")) {
-        return "http://localhost:8000";
+        return "http://127.0.0.1:8000";
     }
     return "";
 }
 
 /**
- * Gera dados sintéticos realistas de velas para o ativo selecionado
+ * Formatação de moeda no padrão brasileiro (R$ 13,27)
  */
-function generateCandleData(asset) {
-    if (chartDataCache[asset.ticker]) {
-        return chartDataCache[asset.ticker];
-    }
-
-    const candlesCount = 65;
-    const candles = [];
-    const base = asset.basePrice || (asset.price * 0.75);
-    let currentPrice = base;
-    const finalPrice = asset.price;
-    const priceStep = (finalPrice - base) / candlesCount;
-
-    let seed = 0;
-    for (let i = 0; i < asset.ticker.length; i++) {
-        seed += asset.ticker.charCodeAt(i);
-    }
-
-    function pseudoRandom() {
-        const x = Math.sin(seed++) * 10000;
-        return x - Math.floor(x);
-    }
-
-    for (let i = 0; i < candlesCount; i++) {
-        const noise = (pseudoRandom() - 0.48) * (finalPrice * 0.04);
-        const open = currentPrice;
-        let close = open + priceStep + noise;
-
-        if (i === candlesCount - 1) {
-            close = finalPrice;
-        }
-
-        const high = Math.max(open, close) + pseudoRandom() * (finalPrice * 0.02);
-        const low = Math.min(open, close) - pseudoRandom() * (finalPrice * 0.02);
-        const volume = (pseudoRandom() * 40 + 10) * 1000000;
-
-        candles.push({ open, high, low, close, volume });
-        currentPrice = close;
-    }
-
-    // Calcula WMA 30 e SMA 200
-    const wma30 = [];
-    const sma200 = [];
-
-    for (let i = 0; i < candles.length; i++) {
-        // WMA 30
-        const periodWma = Math.min(30, i + 1);
-        let weightSum = 0;
-        let priceWeightedSum = 0;
-        for (let j = 0; j < periodWma; j++) {
-            const weight = periodWma - j;
-            priceWeightedSum += candles[i - j].close * weight;
-            weightSum += weight;
-        }
-        wma30.push(priceWeightedSum / weightSum);
-
-        // SMA 200
-        const periodSma = Math.min(200, i + 1);
-        let sumSma = 0;
-        for (let j = 0; j < periodSma; j++) {
-            sumSma += candles[i - j].close;
-        }
-        const smaVal = (sumSma / periodSma) * 0.96;
-        sma200.push(smaVal);
-    }
-
-    chartDataCache[asset.ticker] = { candles, wma30, sma200 };
-    return chartDataCache[asset.ticker];
+function formatarMoeda(valor) {
+    if (valor === null || valor === undefined || isNaN(valor)) return "R$ —";
+    return `R$ ${valor.toFixed(2).replace(".", ",")}`;
 }
 
 /**
- * Desenha o gráfico de Candlestick, WMA, SMA e Projeção no Canvas HTML5
+ * Formatação de porcentagem no padrão brasileiro (+5,17%)
  */
-function renderTradingChart() {
-    const asset = ASSETS_UNIVERSE.find(a => a.ticker === currentSelectedTicker) || ASSETS_UNIVERSE[0];
-    const { candles, wma30, sma200 } = generateCandleData(asset);
-
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-
-    ctx.save();
-    ctx.scale(dpr, dpr);
-
-    const width = rect.width;
-    const height = rect.height;
-
-    // Fundo limpo
-    ctx.fillStyle = "#070b13";
-    ctx.fillRect(0, 0, width, height);
-
-    // Margens
-    const marginLeft = 60;
-    const marginRight = 30;
-    const marginTop = 45;
-    const volumeHeight = 85;
-    const chartBottom = height - volumeHeight - 30;
-    const chartHeight = chartBottom - marginTop;
-    const plotWidth = width - marginLeft - marginRight;
-
-    const futureSteps = 14;
-    const totalSlots = candles.length + futureSteps;
-    const slotWidth = plotWidth / totalSlots;
-    const candleBarWidth = Math.max(3, slotWidth * 0.65);
-
-    let minPrice = Infinity;
-    let maxPrice = -Infinity;
-
-    candles.forEach(c => {
-        if (c.low < minPrice) minPrice = c.low;
-        if (c.high > maxPrice) maxPrice = c.high;
-    });
-
-    wma30.forEach(w => {
-        if (w < minPrice) minPrice = w;
-        if (w > maxPrice) maxPrice = w;
-    });
-
-    sma200.forEach(s => {
-        if (s < minPrice) minPrice = s;
-        if (s > maxPrice) maxPrice = s;
-    });
-
-    if (asset.target > maxPrice) maxPrice = asset.target;
-    if (asset.target < minPrice) minPrice = asset.target;
-
-    const priceMargin = (maxPrice - minPrice) * 0.12;
-    minPrice -= priceMargin;
-    maxPrice += priceMargin;
-
-    function priceToY(price) {
-        return chartBottom - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
-    }
-
-    // 1. Grade horizontal e eixos de preço (Y-Axis)
-    ctx.strokeStyle = "#141c2c";
-    ctx.lineWidth = 1;
-    ctx.fillStyle = "#64748b";
-    ctx.font = "11px 'JetBrains Mono', monospace";
-    ctx.textAlign = "right";
-
-    const priceTicksCount = 7;
-    for (let i = 0; i <= priceTicksCount; i++) {
-        const p = minPrice + ((maxPrice - minPrice) / priceTicksCount) * i;
-        const y = priceToY(p);
-
-        ctx.beginPath();
-        ctx.moveTo(marginLeft, y);
-        ctx.lineTo(width - marginRight, y);
-        ctx.stroke();
-
-        ctx.fillText(p.toFixed(0), marginLeft - 12, y + 4);
-    }
-
-    // Rótulo vertical "Price" no eixo Y
-    ctx.save();
-    ctx.translate(18, chartBottom - chartHeight / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "12px 'Inter', sans-serif";
-    ctx.fillText("Price", 0, 0);
-    ctx.restore();
-
-    // 2. Faixa sombreada de Projeção 14D
-    const projStartX = marginLeft + candles.length * slotWidth;
-    const projWidth = futureSteps * slotWidth;
-
-    const isBull = asset.trend === "ALTA";
-    const projGradient = ctx.createLinearGradient(projStartX, 0, projStartX + projWidth, 0);
-    if (isBull) {
-        projGradient.addColorStop(0, "rgba(16, 185, 129, 0.05)");
-        projGradient.addColorStop(1, "rgba(16, 185, 129, 0.22)");
-    } else {
-        projGradient.addColorStop(0, "rgba(239, 68, 68, 0.05)");
-        projGradient.addColorStop(1, "rgba(239, 68, 68, 0.22)");
-    }
-
-    ctx.fillStyle = projGradient;
-    ctx.fillRect(projStartX, marginTop, projWidth, chartHeight);
-
-    // Linha vertical divisória da projeção
-    ctx.strokeStyle = isBull ? "rgba(16, 185, 129, 0.4)" : "rgba(239, 68, 68, 0.4)";
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(projStartX, marginTop);
-    ctx.lineTo(projStartX, chartBottom);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // 3. Desenho dos Candlesticks
-    candles.forEach((c, idx) => {
-        const x = marginLeft + idx * slotWidth + slotWidth / 2;
-        const openY = priceToY(c.open);
-        const closeY = priceToY(c.close);
-        const highY = priceToY(c.high);
-        const lowY = priceToY(c.low);
-
-        const isUp = c.close >= c.open;
-        const candleColor = isUp ? "#10b981" : "#ef4444";
-
-        ctx.strokeStyle = candleColor;
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(x, highY);
-        ctx.lineTo(x, lowY);
-        ctx.stroke();
-
-        ctx.fillStyle = candleColor;
-        const bodyTop = Math.min(openY, closeY);
-        const bodyHeight = Math.max(2, Math.abs(closeY - openY));
-        ctx.fillRect(x - candleBarWidth / 2, bodyTop, candleBarWidth, bodyHeight);
-    });
-
-    // 4. Curva SMA 200 (Azul)
-    ctx.strokeStyle = "#3b82f6";
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    sma200.forEach((val, idx) => {
-        const x = marginLeft + idx * slotWidth + slotWidth / 2;
-        const y = priceToY(val);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    // 5. Curva WMA 30 (Amarela)
-    ctx.strokeStyle = "#facc15";
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    wma30.forEach((val, idx) => {
-        const x = marginLeft + idx * slotWidth + slotWidth / 2;
-        const y = priceToY(val);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    // 6. Projeção Tracejada até o Alvo (14D)
-    const lastX = marginLeft + (candles.length - 1) * slotWidth + slotWidth / 2;
-    const lastPriceY = priceToY(candles[candles.length - 1].close);
-    const targetX = marginLeft + (totalSlots - 1) * slotWidth;
-    const targetY = priceToY(asset.target);
-
-    ctx.strokeStyle = isBull ? "#34d399" : "#f87171";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 4]);
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastPriceY);
-    ctx.quadraticCurveTo((lastX + targetX) / 2, (lastPriceY + targetY) / 2 + (isBull ? -8 : 8), targetX, targetY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.fillStyle = isBull ? "#34d399" : "#f87171";
-    ctx.beginPath();
-    ctx.arc(targetX, targetY, 4.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = isBull ? "#34d399" : "#f87171";
-    ctx.font = "bold 12px 'JetBrains Mono', monospace";
-    ctx.textAlign = "left";
-    ctx.fillText(`Alvo 14D: R$ ${asset.target.toFixed(2)}`, targetX - 105, targetY - 10);
-
-    // 7. Painel de Volume (Inferior)
-    const volumeTop = chartBottom + 12;
-    ctx.strokeStyle = "#1a2436";
-    ctx.beginPath();
-    ctx.moveTo(marginLeft, volumeTop - 6);
-    ctx.lineTo(width - marginRight, volumeTop - 6);
-    ctx.stroke();
-
-    ctx.fillStyle = "#64748b";
-    ctx.font = "10px 'JetBrains Mono', monospace";
-    ctx.textAlign = "right";
-    ctx.fillText("40", marginLeft - 12, volumeTop + 24);
-
-    ctx.save();
-    ctx.translate(18, volumeTop + volumeHeight / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.textAlign = "center";
-    ctx.fillText("x 10⁶", 0, 0);
-    ctx.restore();
-
-    let maxVol = 0;
-    candles.forEach(c => { if (c.volume > maxVol) maxVol = c.volume; });
-
-    candles.forEach((c, idx) => {
-        const x = marginLeft + idx * slotWidth + slotWidth / 2;
-        const isUp = c.close >= c.open;
-        const vHeight = (c.volume / maxVol) * (volumeHeight - 15);
-        ctx.fillStyle = isUp ? "rgba(16, 185, 129, 0.75)" : "rgba(239, 68, 68, 0.75)";
-        ctx.fillRect(x - candleBarWidth / 2, volumeTop + volumeHeight - vHeight, candleBarWidth, vHeight);
-    });
-
-    ctx.restore();
+function formatarPorcentagem(valor) {
+    if (valor === null || valor === undefined || isNaN(valor)) return "—%";
+    const sinal = valor >= 0 ? "+" : "";
+    return `${sinal}${valor.toFixed(2).replace(".", ",")}%`;
 }
 
 /**
- * Renderiza a lista de ações no painel lateral esquerdo
+ * Renderiza a lista de ações na barra lateral esquerda ('Ações')
  */
 function renderStockList() {
+    const prevScroll = stockListContainer ? stockListContainer.scrollTop : 0;
     stockListContainer.innerHTML = "";
 
     const filtered = ASSETS_UNIVERSE.filter(item => {
@@ -388,17 +107,19 @@ function renderStockList() {
         card.className = `stock-card-item ${asset.ticker === currentSelectedTicker ? "selected" : ""}`;
         card.dataset.ticker = asset.ticker;
 
-        const returnSign = asset.returnPct >= 0 ? "+" : "";
-        const returnClass = asset.returnPct > 0 ? "positive" : (asset.returnPct < 0 ? "negative" : "neutral");
+        const returnVal = asset.returnPct || 0;
+        const returnSign = returnVal >= 0 ? "+" : "";
+        const returnClass = returnVal > 0 ? "positive" : (returnVal < 0 ? "negative" : "neutral");
+        const priceFormatted = typeof asset.price === "number" ? formatarMoeda(asset.price) : `R$ ${asset.price}`;
 
         card.innerHTML = `
             <div class="stock-card-left">
                 <span class="stock-ticker">${asset.ticker}</span>
-                <span class="stock-price">R$ ${asset.price.toFixed(2)}</span>
+                <span class="stock-price">${priceFormatted}</span>
             </div>
             <div class="stock-card-right">
                 <span class="trend-badge ${asset.trend}">${asset.trend}</span>
-                <span class="stock-return ${returnClass}">${returnSign}${asset.returnPct.toFixed(2)}%</span>
+                <span class="stock-return ${returnClass}">${returnSign}${returnVal.toFixed(2).replace(".", ",")}%</span>
             </div>
         `;
 
@@ -408,6 +129,10 @@ function renderStockList() {
 
         stockListContainer.appendChild(card);
     });
+
+    if (stockListContainer) {
+        stockListContainer.scrollTop = prevScroll;
+    }
 
     requestAnimationFrame(syncSidebarHeight);
 }
@@ -446,17 +171,123 @@ function syncSidebarHeight() {
 }
 
 /**
- * Seleciona uma ação e atualiza todo o dashboard
+ * Define o estado visual de carregamento nos cards
  */
-function selectStock(ticker) {
-    currentSelectedTicker = ticker;
-    const asset = ASSETS_UNIVERSE.find(a => a.ticker === ticker) || ASSETS_UNIVERSE[0];
+function setLoadingState(isLoading) {
+    const cards = document.querySelectorAll(".quant-card, .reasoning-card");
+    cards.forEach(card => {
+        card.classList.toggle("loading", isLoading);
+    });
+}
 
+/**
+ * Seleciona uma ação, aciona a API em background e atualiza dinamicamente todo o painel
+ */
+async function selectStock(ticker) {
+    currentSelectedTicker = ticker;
+
+    // Atualiza destaque imediato na lista lateral
     document.querySelectorAll(".stock-card-item").forEach(el => {
         el.classList.toggle("selected", el.dataset.ticker === ticker);
     });
 
-    headlineTicker.textContent = asset.ticker;
+    headlineTicker.textContent = ticker;
+
+    // Se já temos os dados em cache de memória recente, renderiza imediatamente
+    if (chartDataCache[ticker]) {
+        aplicarDadosAnalise(chartDataCache[ticker]);
+        return;
+    }
+
+    // Exibe estado de carregamento suave
+    setLoadingState(true);
+    metricPriceDiff.textContent = "Carregando B3...";
+    metricTargetReturn.textContent = "Calculando...";
+    if (metricStopDiff) metricStopDiff.textContent = "Calculando...";
+    aiReasoningText.textContent = "Consultando cotações e calculando projeção estatística...";
+
+    const baseUrl = getApiBaseUrl();
+
+    try {
+        const res = await fetch(`${baseUrl}/api/analise?ticker=${ticker}`);
+        if (res.ok) {
+            const json = await res.json();
+            if (json.sucesso && json.dados) {
+                chartDataCache[ticker] = json.dados;
+                aplicarDadosAnalise(json.dados);
+
+                // Atualiza o ativo na lista local para refletir a nova cotação
+                const localAsset = ASSETS_UNIVERSE.find(a => a.ticker === ticker);
+                if (localAsset) {
+                    localAsset.price = json.dados.preco;
+                    localAsset.target = json.dados.alvo;
+                    localAsset.stop = json.dados.stop;
+                    localAsset.payoff = json.dados.payoff;
+                    localAsset.returnPct = json.dados.projecao_pct;
+                    localAsset.trend = json.dados.tendencia;
+                    localAsset.trendText = json.dados.tendencia_texto;
+                    localAsset.dayVar = json.dados.variacao_dia;
+                    renderStockList();
+                }
+                return;
+            }
+        }
+        throw new Error(`Falha na resposta: HTTP ${res.status}`);
+    } catch (err) {
+        // Fallback em caso de falha de conexão: utiliza dados estáticos locais
+        const fallback = ASSETS_UNIVERSE.find(a => a.ticker === ticker) || ASSETS_UNIVERSE[0];
+        aplicarDadosFallback(fallback);
+    } finally {
+        setLoadingState(false);
+    }
+}
+
+/**
+ * Aplica os dados reais recebidos da API ao painel e ao gráfico
+ */
+function aplicarDadosAnalise(dados) {
+    setLoadingState(false);
+
+    const sign = dados.projecao_pct >= 0 ? "+" : "";
+    headlineReturn.textContent = `(${formatarPorcentagem(dados.projecao_pct)})`;
+    headlineReturn.className = dados.projecao_pct >= 0 ? "text-green" : "text-red";
+    headlineTrend.textContent = dados.tendencia_texto;
+
+    badgeTrendAction.textContent = dados.tendencia_texto;
+    badgeTargetPrice.textContent = formatarMoeda(dados.alvo);
+    badgeTargetReturn.textContent = formatarPorcentagem(dados.projecao_pct);
+
+    floatingTargetBadge.className = `target-floating-badge ${
+        dados.tendencia === "ALTA" ? "badge-bullish" : (dados.tendencia === "BAIXA" ? "badge-bearish" : "badge-neutral")
+    }`;
+
+    metricCurrentPrice.textContent = formatarMoeda(dados.preco);
+    metricPriceDiff.textContent = `${dados.variacao_dia} hoje`;
+
+    metricTargetPrice.textContent = formatarMoeda(dados.alvo);
+    metricTargetReturn.textContent = `${formatarPorcentagem(dados.projecao_pct)} de projeção`;
+    metricTargetPrice.className = `quant-card-val ${dados.projecao_pct >= 0 ? "text-green" : "text-red"}`;
+
+    metricStopLoss.textContent = formatarMoeda(dados.stop);
+    if (metricStopDiff) {
+        metricStopDiff.textContent = `${dados.risco_pct?.toFixed(2).replace(".", ",")}% de risco`;
+    }
+
+    metricPayoff.textContent = dados.payoff;
+    aiReasoningText.textContent = dados.resumo;
+
+    // Renderiza o gráfico Canvas com candles reais
+    if (dados.candles && dados.candles.length > 0) {
+        renderTradingChartReal(dados.candles, dados);
+    }
+}
+
+/**
+ * Fallback determinístico caso o backend esteja offline
+ */
+function aplicarDadosFallback(asset) {
+    setLoadingState(false);
+
     const sign = asset.returnPct >= 0 ? "+" : "";
     headlineReturn.textContent = `(${sign}${asset.returnPct.toFixed(2)}%)`;
     headlineReturn.className = asset.returnPct >= 0 ? "text-green" : "text-red";
@@ -478,27 +309,250 @@ function selectStock(ticker) {
     metricTargetPrice.className = `quant-card-val ${asset.returnPct >= 0 ? "text-green" : "text-red"}`;
 
     metricStopLoss.textContent = `R$ ${asset.stop.toFixed(2)}`;
+    if (metricStopDiff) {
+        metricStopDiff.textContent = `-4.67% de risco`;
+    }
     metricPayoff.textContent = asset.payoff;
 
-    if (asset.trend === "ALTA") {
-        aiReasoningText.innerHTML = `
-            O ativo <strong>${asset.ticker}</strong> demonstrou rompimento sustentado acima da WMA 30 com confirmação de volume comprador superior à média de 20 períodos. O alinhamento com a SMA 200 sinaliza continuidade de tendência altista. Projeção estatística baseada em 14 períodos com expansão de volatilidade delimitada pelo ATR 14.
-        `;
-    } else if (asset.trend === "BAIXA") {
-        aiReasoningText.innerHTML = `
-            O ativo <strong>${asset.ticker}</strong> perdeu a sustentação da WMA 30 com pressão vendedora institucional. A divergência em relação à SMA 200 sugere realização de lucros e recuo tático até as bandas inferiores de suporte estatístico calculadas pelo algoritmo Águia Trader.
-        `;
-    } else {
-        aiReasoningText.innerHTML = `
-            O ativo <strong>${asset.ticker}</strong> encontra-se em fase de consolidação e compressão de volatilidade entre as médias SMA 200 e WMA 30. Relação risco/retorno simétrica. O motor estatístico recomenda aguardar gatilho de rompimento com volume.
-        `;
-    }
-
-    renderTradingChart();
+    aiReasoningText.innerHTML = `
+        O ativo <strong>${asset.ticker}</strong> apresenta configuração técnica acompanhada pelo modelo quantitativo. Projeção estatística baseada em 14 períodos com bandas de controle delimitadas pelo ATR 14.
+    `;
 }
 
 /**
- * Conexão e sincronização com backend Python 3.11
+ * Renderização de Candlesticks Reais no HTML5 Canvas
+ */
+function renderTradingChartReal(candles, asset) {
+    if (!canvas) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    // Fundo escuro profissional
+    ctx.fillStyle = "#060911";
+    ctx.fillRect(0, 0, width, height);
+
+    // Margens
+    const marginLeft = 68;
+    const marginRight = 30;
+    const marginTop = 45;
+    const volumeHeight = 75;
+    const chartBottom = height - volumeHeight - 35;
+    const chartHeight = chartBottom - marginTop;
+    const plotWidth = width - marginLeft - marginRight;
+
+    const futureSteps = 14;
+    const totalSlots = candles.length + futureSteps;
+    const slotWidth = plotWidth / totalSlots;
+    const candleBarWidth = Math.max(3, slotWidth * 0.65);
+
+    let minPrice = Infinity;
+    let maxPrice = -Infinity;
+
+    candles.forEach(c => {
+        if (c.low < minPrice) minPrice = c.low;
+        if (c.high > maxPrice) maxPrice = c.high;
+        if (c.wma30 && c.wma30 < minPrice) minPrice = c.wma30;
+        if (c.wma30 && c.wma30 > maxPrice) maxPrice = c.wma30;
+        if (c.sma200 && c.sma200 < minPrice) minPrice = c.sma200;
+        if (c.sma200 && c.sma200 > maxPrice) maxPrice = c.sma200;
+    });
+
+    const targetPrice = asset.alvo || asset.target || candles[candles.length - 1].close;
+    if (targetPrice > maxPrice) maxPrice = targetPrice;
+    if (targetPrice < minPrice) minPrice = targetPrice;
+
+    const priceMargin = (maxPrice - minPrice) * 0.10;
+    minPrice -= priceMargin;
+    maxPrice += priceMargin;
+
+    function priceToY(price) {
+        return chartBottom - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+    }
+
+    // 1. Grade horizontal e eixos de preço (Y-Axis) formatados com 2 decimais
+    ctx.strokeStyle = "#121927";
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "#64748b";
+    ctx.font = "11px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+
+    const priceTicksCount = 6;
+    for (let i = 0; i <= priceTicksCount; i++) {
+        const p = minPrice + ((maxPrice - minPrice) / priceTicksCount) * i;
+        const y = priceToY(p);
+
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, y);
+        ctx.lineTo(width - marginRight, y);
+        ctx.stroke();
+
+        ctx.fillText(`R$ ${p.toFixed(2).replace(".", ",")}`, marginLeft - 10, y + 4);
+    }
+
+    // 2. Faixa sombreada de Projeção 14D
+    const projStartX = marginLeft + candles.length * slotWidth;
+    const projWidth = futureSteps * slotWidth;
+    const isBull = (asset.tendencia || asset.trend) === "ALTA";
+
+    const projGradient = ctx.createLinearGradient(projStartX, 0, projStartX + projWidth, 0);
+    if (isBull) {
+        projGradient.addColorStop(0, "rgba(34, 197, 94, 0.03)");
+        projGradient.addColorStop(1, "rgba(34, 197, 94, 0.18)");
+    } else {
+        projGradient.addColorStop(0, "rgba(239, 68, 68, 0.03)");
+        projGradient.addColorStop(1, "rgba(239, 68, 68, 0.18)");
+    }
+
+    ctx.fillStyle = projGradient;
+    ctx.fillRect(projStartX, marginTop, projWidth, chartHeight);
+
+    // Linha vertical divisória da projeção
+    ctx.strokeStyle = isBull ? "rgba(34, 197, 94, 0.35)" : "rgba(239, 68, 68, 0.35)";
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(projStartX, marginTop);
+    ctx.lineTo(projStartX, chartBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 3. Desenho dos Candlesticks
+    candles.forEach((c, idx) => {
+        const x = marginLeft + idx * slotWidth + slotWidth / 2;
+        const openY = priceToY(c.open);
+        const closeY = priceToY(c.close);
+        const highY = priceToY(c.high);
+        const lowY = priceToY(c.low);
+
+        const isUp = c.close >= c.open;
+        const candleColor = isUp ? "#22c55e" : "#ef4444";
+
+        // Pavio
+        ctx.strokeStyle = candleColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(x, highY);
+        ctx.lineTo(x, lowY);
+        ctx.stroke();
+
+        // Corpo
+        ctx.fillStyle = candleColor;
+        const bodyTop = Math.min(openY, closeY);
+        const bodyHeight = Math.max(2, Math.abs(closeY - openY));
+        ctx.fillRect(x - candleBarWidth / 2, bodyTop, candleBarWidth, bodyHeight);
+
+        // Rótulos de datas no eixo X (a cada 12 candles)
+        if (idx % 12 === 0 && c.date) {
+            ctx.fillStyle = "#64748b";
+            ctx.font = "10px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            const dateShort = c.date.slice(5).replace("-", "/"); // MM/DD
+            ctx.fillText(dateShort, x, chartBottom + 16);
+        }
+    });
+
+    // 4. Curva SMA 200 (Azul)
+    ctx.strokeStyle = "#3b82f6";
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    let smaStarted = false;
+    candles.forEach((c, idx) => {
+        if (c.sma200) {
+            const x = marginLeft + idx * slotWidth + slotWidth / 2;
+            const y = priceToY(c.sma200);
+            if (!smaStarted) {
+                ctx.moveTo(x, y);
+                smaStarted = true;
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+    });
+    if (smaStarted) ctx.stroke();
+
+    // 5. Curva WMA 30 (Amarela)
+    ctx.strokeStyle = "#facc15";
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    let wmaStarted = false;
+    candles.forEach((c, idx) => {
+        if (c.wma30) {
+            const x = marginLeft + idx * slotWidth + slotWidth / 2;
+            const y = priceToY(c.wma30);
+            if (!wmaStarted) {
+                ctx.moveTo(x, y);
+                wmaStarted = true;
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+    });
+    if (wmaStarted) ctx.stroke();
+
+    // 6. Projeção Tracejada até o Alvo (14D)
+    const lastX = marginLeft + (candles.length - 1) * slotWidth + slotWidth / 2;
+    const lastPriceY = priceToY(candles[candles.length - 1].close);
+    const targetX = marginLeft + (totalSlots - 1) * slotWidth;
+    const targetY = priceToY(targetPrice);
+
+    ctx.strokeStyle = isBull ? "#4ade80" : "#f87171";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastPriceY);
+    ctx.quadraticCurveTo((lastX + targetX) / 2, (lastPriceY + targetY) / 2 + (isBull ? -8 : 8), targetX, targetY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = isBull ? "#22c55e" : "#ef4444";
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = isBull ? "#4ade80" : "#f87171";
+    ctx.font = "bold 11px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left";
+    ctx.fillText(`Alvo: R$ ${targetPrice.toFixed(2).replace(".", ",")}`, targetX - 95, targetY - 10);
+
+    // 7. Painel de Volume
+    const volumeTop = chartBottom + 26;
+    ctx.strokeStyle = "#161f30";
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, volumeTop - 4);
+    ctx.lineTo(width - marginRight, volumeTop - 4);
+    ctx.stroke();
+
+    let maxVol = 0;
+    candles.forEach(c => { if (c.volume > maxVol) maxVol = c.volume; });
+    if (maxVol === 0) maxVol = 1;
+
+    ctx.fillStyle = "#64748b";
+    ctx.font = "10px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+    const maxVolStr = (maxVol / 1000000).toFixed(0);
+    ctx.fillText(`${maxVolStr}M`, marginLeft - 10, volumeTop + 20);
+
+    candles.forEach((c, idx) => {
+        const x = marginLeft + idx * slotWidth + slotWidth / 2;
+        const isUp = c.close >= c.open;
+        const vHeight = (c.volume / maxVol) * (volumeHeight - 16);
+        ctx.fillStyle = isUp ? "rgba(34, 197, 94, 0.65)" : "rgba(239, 68, 68, 0.65)";
+        ctx.fillRect(x - candleBarWidth / 2, volumeTop + volumeHeight - vHeight, candleBarWidth, vHeight);
+    });
+
+    ctx.restore();
+}
+
+/**
+ * Conexão e sincronização inicial com backend Python 3.11
  */
 async function testPythonBackend() {
     const connIndicator = document.getElementById("connectionStatus");
@@ -507,7 +561,7 @@ async function testPythonBackend() {
 
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
 
         const res = await fetch(`${baseUrl}/api/status`, {
             signal: controller.signal,
@@ -520,42 +574,45 @@ async function testPythonBackend() {
             isServerOnline = true;
             connIndicator.className = "connection-indicator online";
             connText.textContent = `Python ${data.python_version || "3.11"}`;
-            connIndicator.title = `Conectado ao Águia Trader (Python ${data.python_version}) - Clique para testar`;
+            connIndicator.title = `Conectado ao Águia Trader (Python ${data.python_version}) - Ollama: ${data.ollama?.online ? "Ativo (" + data.ollama.modelo + ")" : "Offline (Modo Determinístico)"}`;
 
             if (data.server_time && snapshotTimestamp) {
-                snapshotTimestamp.textContent = data.server_time;
+                const dt = new Date(data.server_time);
+                snapshotTimestamp.textContent = dt.toLocaleDateString("pt-BR", {
+                    day: "2-digit", month: "2-digit", year: "numeric",
+                    hour: "2-digit", minute: "2-digit"
+                });
             }
 
-            // Carrega ativos diretamente do backend se disponíveis
             fetchBackendAssets(baseUrl);
             return true;
-        } else {
-            throw new Error(`HTTP ${res.status}`);
         }
+        throw new Error(`HTTP ${res.status}`);
     } catch {
         isServerOnline = false;
         connIndicator.className = "connection-indicator offline";
         connText.textContent = "Offline (Local)";
-        connIndicator.title = "Servidor Python 3.11 não detectado. Clique para tentar reconectar.";
+        connIndicator.title = "Servidor Python 3.11 não detectado. Clique para reconectar.";
         return false;
     }
 }
 
 /**
- * Busca os dados dos ativos do backend Python
+ * Busca a lista de ações do backend Python (/api/acoes)
  */
 async function fetchBackendAssets(baseUrl) {
     try {
-        const res = await fetch(`${baseUrl}/api/assets`);
+        const res = await fetch(`${baseUrl}/api/acoes`);
         if (res.ok) {
-            const data = await res.json();
-            if (data.assets && data.assets.length > 0) {
-                ASSETS_UNIVERSE = data.assets;
+            const json = await res.json();
+            const list = json.dados || json.assets;
+            if (list && list.length > 0) {
+                ASSETS_UNIVERSE = list;
                 renderStockList();
             }
         }
     } catch {
-        // Fallback silencioso mantendo os dados locais
+        // Mantém lista local em fallback silencioso
     }
 }
 
@@ -574,9 +631,15 @@ filterPills.forEach(pill => {
     });
 });
 
+let resizeDebounceTimer = null;
 window.addEventListener("resize", () => {
-    renderTradingChart();
-    syncSidebarHeight();
+    clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+        syncSidebarHeight();
+        if (chartDataCache[currentSelectedTicker]) {
+            renderTradingChartReal(chartDataCache[currentSelectedTicker].candles, chartDataCache[currentSelectedTicker]);
+        }
+    }, 80);
 });
 
 // Clique manual no indicador de status para reconectar
@@ -589,10 +652,9 @@ document.getElementById("connectionStatus")?.addEventListener("click", () => {
 // Inicialização
 document.addEventListener("DOMContentLoaded", () => {
     renderStockList();
-    selectStock("ASAI3");
     testPythonBackend();
-    setTimeout(syncSidebarHeight, 50);
+    selectStock("PETR4");
 
-    // Verificação periódica automática a cada 3 segundos
-    setInterval(testPythonBackend, 3000);
+    // Sincronização periódica suave de status
+    setInterval(testPythonBackend, 15000);
 });
