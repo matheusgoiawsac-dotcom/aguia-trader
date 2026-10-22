@@ -1,54 +1,88 @@
-# Águia Trader - Dashboard & Trade Ideas B3
+# Águia Trader — Dashboard & Trade Ideas B3
 
-Plataforma quantitativa de análise técnica e ideias de trade baseada no modelo estatístico **SMA 200 + WMA 30 + ATR 14 + IA Local**, com design de alta fidelidade visual, tela escura (*dark mode*), gráfico de candlesticks com projeção futura de 14 períodos e seleção interativa do universo de ações da B3.
+Plataforma quantitativa de análise de dados e projeções estatísticas para ações da B3 (Brasil), baseada no modelo **SMA 200 + WMA 30 + ATR 14 + Kronos + Ollama Local**. Construída sobre Python 3.11 nativo e front-end responsivo em HTML5 Canvas vanilla no padrão *Dark Mode* de plataformas financeiras de elite.
 
----
-
-## 🎨 Características Visuais e Funcionais
-
-1. **Cabeçalho Principal**:
-   - Identidade visual **Águia Trader**.
-   - Badge de versão `Fase 3 • Normalizado`.
-   - Subtítulo técnico: `Motor estatístico SMA 200 + WMA 30 + ATR 14 + IA Local (Águia Trader)`.
-   - Snapshot com data/hora em tempo real e indicador de status da API Python 3.11.
-
-2. **Coluna Lateral Esquerda (Universo de Ações)**:
-   - Contagem e catálogo do universo da B3 (`ASAI3`, `ANIM3`, `ARML3`, `AURE3`, `PETR4`, `VALE3`, `WEGE3`, etc.).
-   - Campo de busca em tempo real (`Buscar ação (ex: PETR4)...`).
-   - Filtros de tendência: `Todos`, `Alta`, `Baixa`, `Neutro`.
-   - Cards estilizados com destaque de borda azul e brilho para o ativo ativo no gráfico.
-
-3. **Coluna Principal (Gráfico Quantitativo & Projeção 14D)**:
-   - Barra de legendas: *Preço (Fechamento)*, *WMA 30*, *SMA 200*, *Projeção 14D (Alvo + Banda ATR)*.
-   - Headline dinâmico: `ASAI3 | Águia Trader (+5.17%): ALTA (BULLISH)`.
-   - Banner flutuante com alvo e recomendação.
-   - **Motor Gráfico em HTML5 Canvas**:
-     - Candlesticks japoneses (altas em verde, baixas em vermelho).
-     - Curva amarela para **WMA 30** (Média Ponderada).
-     - Curva azul para **SMA 200** (Média Simples de Longo Prazo).
-     - Faixa translúcida sombreada para a **Projeção de 14 períodos à frente**.
-     - Rótulo de alvo na linha de projeção (`Alvo 14D: R$ 13.96`).
-     - Subpainel de volume com escala vertical `x 10⁶`.
-     - Marca d'água no canto inferior direito com o selo **Águia Trader**.
-
-4. **Painel de Métricas & Racional de IA**:
-   - Cards com Preço Atual, Variação diária, Alvo Projetado 14D, Stop Loss e Relação Risco x Retorno (*Payoff*).
-   - Racional do modelo algorítmico contextualizado para cada papel.
+> **Aviso de Isenção (Compliance)**:
+> Análise experimental gerada por modelo estatístico. Não constitui recomendação de investimento. Sem backtest validado. As projeções refletem exclusivamente probabilidades numéricas e não garantem retornos futuros.
 
 ---
 
-## 🚀 Como Executar
+## 🦅 Arquitetura do Sistema
 
-### Opção 1: Via Servidor Python 3.11 (Recomendado)
+```text
+Águia Trader/
+├── app.py                      # Ponto de entrada fino (< 40 linhas, servidor ThreadingHTTPServer)
+├── config/                     # Configurações TOML, universo de 18 ativos B3 e feriados B3
+├── aguia/
+│   ├── config.py               # Leitor stdlib tomllib
+│   ├── db.py                   # Banco de dados SQLite WAL e upserts idempotentes
+│   ├── calendar_b3.py          # Calendário e horários oficiais da bolsa B3
+│   ├── indicators.py           # Cálculos numéricos de SMA 200, WMA 30 e ATR 14 (Wilder)
+│   ├── providers/
+│   │   └── yfinance_provider.py# Provedor B3 via Yahoo Finance (rate-limit, multi-index, filtros)
+│   ├── forecast/
+│   │   ├── kronos_engine.py    # Motor Kronos Time-Series Foundation Model e FakePredictor
+│   │   └── signals.py          # Classificador estatístico de setups (ALTA, BAIXA, NEUTRO)
+│   ├── explain/
+│   │   └── validator.py        # Validador numérico estrito anti-alucinação para IA (tolerância 0.5%)
+│   ├── charts/
+│   │   └── png_export.py       # Exportação headless de gráficos via mplfinance (lock global)
+│   ├── server/
+│   │   ├── handler.py          # Handler HTTP seguro (sandbox 127.0.0.1, static-only, CORS)
+│   │   └── routes.py           # Rotas REST (/api/acoes, /api/analise, /api/status_ollama, etc.)
+│   └── jobs/
+│       └── refresh.py          # CLI de atualização e sincronização de dados B3
+├── integracao_ollama.py        # Integração HTTP com Ollama local e fallback determinístico
+├── static/                     # Interface Web Vanilla (HTML5, CSS3, Canvas, JS)
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── tests/                      # Suite com 42 testes automatizados (pytest)
+```
 
-No PowerShell / Terminal:
+---
+
+## ⚡ Comandos Rápidos (Windows / PowerShell)
+
+### 1. Iniciar o Servidor
 ```powershell
-python app.py
+.\iniciar_servidor.bat
+# Ou diretamente:
+.\.venv\Scripts\python.exe app.py
 ```
-Acesse no seu navegador:
-```
-http://localhost:8000
+Acesse no navegador: **`http://127.0.0.1:8000`**
+
+### 2. Atualizar Dados de Mercado B3
+```powershell
+.\atualizar_dados.bat
+# Ou via CLI com parâmetros:
+.\.venv\Scripts\python.exe -m aguia.jobs.refresh --tf 1d --tickers PETR4,VALE3,ITUB4
 ```
 
-### Opção 2: Abertura Direta do Front-end
-Você também pode abrir o arquivo `index.html` diretamente no seu navegador favorito dando um duplo clique. O script possui suporte completo a execução local autônoma.
+### 3. Executar Testes Automatizados
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
+*(Todos os 42 testes cobrem indicadores, segurança de servidor, banco SQLite WAL, integração de dados e IA).*
+
+---
+
+## 📊 Endpoints REST Disponíveis
+
+| Endpoint | Método | Descrição | Envelope de Resposta |
+| :--- | :---: | :--- | :--- |
+| `/api/status` | `GET` | Status operacional do servidor, versão Python e IA | JSON padrão |
+| `/api/status_ollama` | `GET` | Probe de conectividade do Ollama local (`11434`) | `{"sucesso": bool, "dados": ...}` |
+| `/api/acoes` | `GET` | Universo completo de 18 ativos monitorados da B3 | `{"sucesso": true, "assets": [...]}` |
+| `/api/analise?ticker=PETR4` | `GET` | Dados em tempo real, 65 candles OHLCV, projeção e resumo | `{"sucesso": true, "dados": {...}}` |
+| `/api/chart.png?ticker=PETR4`| `GET` | Renderização headless PNG do gráfico de candlesticks | `image/png` binário |
+
+---
+
+## 🛡️ Invariantes de Segurança e Confiabilidade
+
+1. **Stack 100% Gratuita**: Nenhuma chave de API paga, contas de terceiros ou credenciais requeridas.
+2. **Isolamento de Rede Local**: O servidor escuta estritamente em `127.0.0.1:8000` e rejeita qualquer tentativa de travessia de diretório (`Path Traversal`).
+3. **Resiliência a Falhas (Fallback Determinístico)**: Caso o Ollama esteja offline, o sistema gera instantaneamente uma análise técnica baseada na convergência entre as médias e volatilidade ATR 14.
+4. **Validação Anti-Alucinação**: Qualquer número emitido pela IA que divirja em mais de 0,5% dos fatos estatísticos calculados é descartado e substituído pelo racional determinístico.
+5. **Compatibilidade com Electron**: Código JavaScript desacoplado, sem frameworks externos ou bundlers, pronto para empacotamento via Electron ou uso em navegador.
