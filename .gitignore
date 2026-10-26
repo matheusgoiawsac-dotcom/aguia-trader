@@ -32,3 +32,6 @@ img/
 
 # Local archive of superseded artifacts
 _archive/
+
+.kilo/
+

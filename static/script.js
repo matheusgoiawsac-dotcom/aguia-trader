@@ -123,6 +123,7 @@ const BRAND_TOKEN_MAP = {
     textPrimary: "--text-primary",
     textMuted: "--text-muted",
     textDim: "--text-dim",
+    chartBg: "--chart-bg",
     up: "--color-green",
     upLight: "--color-green-light",
     down: "--color-red",
@@ -1038,6 +1039,9 @@ function drawCrosshair(g) {
         layer.innerHTML = "";
         return;
     }
+    // brand() é lazy: se a paleta ainda não foi lida, lê agora para
+    // garantir que o crosshair use a cor correta no tema ativo.
+    loadBrandPalette();
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const marginLeft = 68;
@@ -1060,11 +1064,14 @@ function drawCrosshair(g) {
 
     // Linha vertical do crosshair acompanha o cursor X (mesmo comportamento do commit 75f7b61)
     const cx = Math.max(marginLeft, Math.min(rect.width - marginRight, g.cursorX));
+    // brand() resolve os tokens CSS via getComputedStyle. Atributos SVG
+    // (stroke/fill) NÃO resolvem var(), então interpolamos o valor real.
+    const crosshairColor = brand().cyan;
     layer.innerHTML = `
         <svg width="${rect.width}" height="${rect.height}" style="display:block;position:absolute;top:0;left:0;pointer-events:none">
-            <line x1="${cx}" y1="${marginTop}" x2="${cx}" y2="${chartBottom}" stroke="var(--brand-cyan)" stroke-width="1" stroke-dasharray="4,4"/>
-            <line x1="${marginLeft}" y1="${g.priceY}" x2="${rect.width - marginRight}" y2="${g.priceY}" stroke="var(--brand-cyan)" stroke-width="1" stroke-dasharray="4,4"/>
-            <circle cx="${cx}" cy="${g.priceY}" r="3.5" fill="var(--brand-cyan)"/>
+            <line x1="${cx}" y1="${marginTop}" x2="${cx}" y2="${chartBottom}" stroke="${crosshairColor}" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="${marginLeft}" y1="${g.priceY}" x2="${rect.width - marginRight}" y2="${g.priceY}" stroke="${crosshairColor}" stroke-width="1" stroke-dasharray="4,4"/>
+            <circle cx="${cx}" cy="${g.priceY}" r="3.5" fill="${crosshairColor}"/>
         </svg>
     `;
 
@@ -1634,6 +1641,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 
+
+
 // Auth integration
 (function(){
   const btn = document.getElementById('btnEntrarCadastro');
@@ -1642,46 +1651,51 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.querySelector('#userDropdown .user-email');
   const avatarLg = document.querySelector('#userDropdown .user-avatar-lg');
   const pills = Array.from(document.querySelectorAll('#userDropdown .user-pill'));
-  const manageBtn = pills.find(x=>/Gerenciar/i.test(x.textContent||''));
-  const relBtn = pills.find(x=>/Relat/i.test(x.textContent||''));
-  const secBtn = pills.find(x=>/Segur/i.test(x.textContent||''));
-  const sairBtn = pills.find(x=>/Sair/i.test(x.textContent||''));
+  const manageBtn = pills.find(function(x){ return /Gerenciar/i.test(x.textContent||''); });
+  const relBtn = pills.find(function(x){ return /Relat/i.test(x.textContent||''); });
+  const secBtn = pills.find(function(x){ return /Segur/i.test(x.textContent||''); });
+  const sairBtn = pills.find(function(x){ return /Sair/i.test(x.textContent||''); });
+
+  function openMenu(){ if(menu){ menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); } }
+  function closeMenu(){ if(menu){ menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); } }
+  function toggleMenu(e){ if(e){ try{ e.preventDefault(); e.stopPropagation(); }catch(ex){} } if(menu){ if(menu.classList.contains('open')) closeMenu(); else openMenu(); } }
 
   function setGuest(){
     if(nameEl) nameEl.textContent = 'Visitante';
     if(emailEl) emailEl.textContent = 'sem conta';
     if(avatarLg){ avatarLg.innerHTML=''; avatarLg.classList.remove('has-img'); }
-    if(manageBtn){ manageBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
-    if(secBtn){ secBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
-    if(relBtn){ relBtn.onclick = ()=>{ alert('Relatórios em desenvolvimento'); }; }
-    if(sairBtn){ sairBtn.textContent='Entrar / Criar conta'; sairBtn.classList.remove('danger'); sairBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
-    if(btn){ btn.setAttribute('aria-label','Entrar / Cadastrar'); }
+    if(manageBtn){ manageBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(secBtn){ secBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(relBtn){ relBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); alert('Relatórios em desenvolvimento'); }; }
+    if(sairBtn){ sairBtn.textContent='Entrar / Criar conta'; sairBtn.classList.remove('danger'); sairBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(btn){ btn.setAttribute('aria-label','Entrar / Cadastrar'); btn.onclick = toggleMenu; }
   }
 
   async function loadAuth(){
     try {
-      const res = await fetch('/api/auth/me');
-      const data = await res.json();
-      if(data.sucesso && data.dados && data.dados.autenticado && data.dados.user){
-        const u = data.dados.user;
+      var res = await fetch('/api/auth/me');
+      var data = await res.json();
+      if(data && data.sucesso && data.dados && data.dados.autenticado && data.dados.user){
+        var u = data.dados.user;
         if(nameEl) nameEl.textContent = u.display_name || u.email_original || 'Usuário';
         if(emailEl) emailEl.textContent = u.email_original || u.email_normalized || '';
         if(avatarLg){
           avatarLg.innerHTML='';
-          const img = document.createElement('img');
+          var img = document.createElement('img');
           img.src = '/api/auth/avatar/' + u.id + '?t=' + Date.now();
           img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
           avatarLg.appendChild(img);
           avatarLg.classList.add('has-img');
         }
-        if(manageBtn){ manageBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
-        if(relBtn){ relBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
-        if(secBtn){ secBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
-        if(sairBtn){ sairBtn.textContent='Sair'; sairBtn.classList.add('danger'); sairBtn.onclick = async ()=>{
-          try { await fetch('/api/auth/logout',{method:'POST'}); } catch(e){}
+        if(manageBtn){ manageBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); window.location.href = 'conta.html'; }; }
+        if(relBtn){ relBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); window.location.href = 'conta.html'; }; }
+        if(secBtn){ secBtn.onclick = function(e){ try{e.preventDefault();}catch(ex){} closeMenu(); window.location.href = 'conta.html'; }; }
+        if(sairBtn){ sairBtn.textContent='Sair'; sairBtn.classList.add('danger'); sairBtn.onclick = async function(e){
+          try{e.preventDefault();}catch(ex){} closeMenu();
+          try { await fetch('/api/auth/logout',{method:'POST'}); } catch(ex){}
           location.reload();
         }; }
-        if(btn){ btn.title = u.display_name || ''; btn.onclick = ()=>{ /* keep menu behavior */ }; }
+        if(btn){ btn.title = u.display_name || ''; btn.onclick = toggleMenu; }
         return;
       }
     } catch(e){}
@@ -1691,17 +1705,41 @@ document.addEventListener("DOMContentLoaded", () => {
   window.aguiaAuthSuccess = function(u){ loadAuth(); };
   window.aguiaAuthGuest = function(){ setGuest(); };
 
-  if(btn){ btn.onclick = (e)=>{ e.stopPropagation(); const m=document.getElementById('userDropdown'); if(m) m.classList.toggle('open'); }; }
+  if(btn){ btn.onclick = toggleMenu; }
+  document.addEventListener('click', function(e){
+    if(!menu) return;
+    if(menu.contains(e.target)) return;
+    if(btn && btn.contains(e.target)) return;
+    closeMenu();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+
   loadAuth();
-  setTimeout(async ()=>{
+  setTimeout(async function(){
     try {
-      const res = await fetch('/api/auth/me');
-      const data = await res.json();
-      const authed = data.sucesso && data.dados && data.dados.autenticado;
-      const guest = sessionStorage.getItem('aguia_guest') === '1';
+      var res = await fetch('/api/auth/me');
+      var data = await res.json();
+      var authed = data && data.sucesso && data.dados && data.dados.autenticado;
+      var guest = sessionStorage.getItem('aguia_guest') === '1';
       if(!authed && !guest){
         if(typeof window.openAuthModal==='function') window.openAuthModal();
       }
     } catch(e){}
   }, 6200);
 })();
+
+
+// Forçar abertura do modal de autenticação após splash (garantia)
+setTimeout(function(){
+  try {
+    if(sessionStorage.getItem('aguia_guest') === '1') return;
+    fetch('/api/auth/me').then(function(r){return r.json();}).then(function(data){
+      var authed = data && data.sucesso && data.dados && data.dados.autenticado;
+      if(!authed && typeof window.openAuthModal === 'function'){
+        window.openAuthModal();
+      }
+    }).catch(function(){
+      if(typeof window.openAuthModal === 'function') window.openAuthModal();
+    });
+  } catch(e){}
+}, 6600);

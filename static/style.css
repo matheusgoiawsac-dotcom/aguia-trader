@@ -303,6 +303,7 @@ body {
     align-items: center;
     gap: 0.85rem;
     margin-right: 0;
+    position: relative;
 }
 
 .snapshot-card {
