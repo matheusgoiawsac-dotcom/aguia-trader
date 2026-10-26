@@ -1099,8 +1099,8 @@ function updateChartTooltip(index, g, cursorX, cursorY) {
 
     // Posiciona o tooltip perto do cursor, dentro da area visivel
     const rect = canvas.getBoundingClientRect();
-    const tx = Math.min(cursorX, rect.width - 200);
-    const ty = Math.max(0, cursorY - 140);
+    const tx = Math.min(Math.max(0, cursorX + 12), rect.width - 200);
+    const ty = Math.min(Math.max(0, cursorY + 12), rect.height - 160);
     tooltip.style.left = `${tx}px`;
     tooltip.style.top = `${ty}px`;
     tooltip.style.display = "block";
