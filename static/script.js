@@ -1051,7 +1051,7 @@ function drawCrosshair(g) {
     const c = candles[clamped];
 
     // Linha vertical do crosshair
-    const cx = marginLeft + clamped * g.slotWidth + g.slotWidth / 2;
+    const cx = Math.max(marginLeft, Math.min(rect.width - marginRight, g.cursorX));
     layer.innerHTML = `
         <svg width="${rect.width}" height="${rect.height}" style="display:block;position:absolute;top:0;left:0;pointer-events:none">
             <line x1="${cx}" y1="${marginTop}" x2="${cx}" y2="${chartBottom}" stroke="var(--brand-cyan)" stroke-width="1" stroke-dasharray="4,4"/>
