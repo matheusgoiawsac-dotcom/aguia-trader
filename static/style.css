@@ -1463,12 +1463,6 @@ body {
         max-height: 340px;
     }
 
-    .quant-details-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
     .dashboard-wrapper {
         padding: 0.85rem 1rem;
     }

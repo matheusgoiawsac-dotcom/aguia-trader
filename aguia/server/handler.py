@@ -266,12 +266,19 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
         if path.startswith("/api/"):
             try:
                 if path == "/api/update-strategy":
-                    content_length = int(self.headers.get("Content-Length", "0"))
+                    try:
+                        content_length = int(self.headers.get("Content-Length", "0"))
+                    except (TypeError, ValueError):
+                        return self._send_error("Content-Length invalido", status_code=400)
+                    if content_length < 0 or content_length > 1000000:
+                        return self._send_error("Corpo da requisicao invalido", status_code=413)
                     raw = self.rfile.read(content_length) if content_length > 0 else b"{}"
                     try:
                         payload = json.loads(raw.decode("utf-8"))
                     except Exception:
-                        payload = {}
+                        return self._send_error("JSON invalido", status_code=400)
+                    if not isinstance(payload, dict):
+                        return self._send_error("JSON deve ser um objeto", status_code=400)
                     sid = payload.get("strategy_id", "media_tendencia_macro_jr")
                     params = payload.get("params", payload)
                     if sid not in STRATEGY_REGISTRY:
@@ -281,12 +288,19 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
                     ACTIVE_STRATEGY["params"] = params
                     return self._send_json({"status": "success"}, status_code=200)
                 if path == "/api/estrategia":
-                    content_length = int(self.headers.get("Content-Length", "0"))
+                    try:
+                        content_length = int(self.headers.get("Content-Length", "0"))
+                    except (TypeError, ValueError):
+                        return self._send_error("Content-Length invalido", status_code=400)
+                    if content_length < 0 or content_length > 1000000:
+                        return self._send_error("Corpo da requisicao invalido", status_code=413)
                     raw = self.rfile.read(content_length) if content_length > 0 else b"{}"
                     try:
                         payload = json.loads(raw.decode("utf-8"))
                     except Exception:
-                        payload = {}
+                        return self._send_error("JSON invalido", status_code=400)
+                    if not isinstance(payload, dict):
+                        return self._send_error("JSON deve ser um objeto", status_code=400)
                     data = handle_api_estrategia_macro_jr(payload)
                     status_code = 200 if data.get("sucesso", True) else 400
                     return self._send_json(data, status_code=status_code)

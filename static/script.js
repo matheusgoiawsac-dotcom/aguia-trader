@@ -1160,7 +1160,7 @@ function onChartPointerMove(event) {
         cursorX, cursorY,
         candles,
         slotWidth,
-        priceY: cy,
+        priceY: cursorY,
     });
 }
 
@@ -1317,7 +1317,10 @@ function aplicarTema(tema) {
 }
 (function initTheme() {
     let salvo = "dark";
-    try { salvo = "dark"; } catch (e) {}
+    try {
+        const stored = localStorage.getItem("aguia-tema");
+        if (stored === "dark" || stored === "light") salvo = stored;
+    } catch (e) {}
     aplicarTema(salvo);
     const btn = document.getElementById("themeToggle");
     if (btn) btn.addEventListener("click", () => {
