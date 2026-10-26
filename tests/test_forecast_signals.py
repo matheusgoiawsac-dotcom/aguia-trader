@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from aguia.forecast.signals import classify_setup
 from aguia.forecast.kronos_engine import FakePredictor, KronosEngine

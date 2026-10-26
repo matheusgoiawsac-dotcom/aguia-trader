@@ -4,26 +4,57 @@ import argparse
 from datetime import datetime, timezone
 import sys
 import time
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
-from aguia.config import load_universe
-from aguia.db import get_connection, init_db, set_meta, upsert_candles, upsert_setup
+from aguia.config import get_yfinance_period, load_universe
+from aguia.db import init_db, pooled_db, prune_history, set_meta, upsert_candles, upsert_setup
+from aguia.forecast.signals import build_setup
 from aguia.providers.yfinance_provider import obter_dados_mercado
-from integracao_ollama import gerar_racional_ia
+
+
+def _candle_rows(ticker: str, timeframe: str, df: pd.DataFrame) -> List[Dict[str, Any]]:
+    """Serialise a DataFrame into candle rows without row-by-row pandas access."""
+    dates = [
+        ts.strftime("%Y-%m-%d") if hasattr(ts, "strftime") else str(ts)[:10]
+        for ts in df.index
+    ]
+    columns = {
+        name: df[name].to_numpy(dtype=float)
+        for name in ("open", "high", "low", "close", "volume")
+    }
+
+    rows: List[Dict[str, Any]] = []
+    for i, ts in enumerate(dates):
+        rows.append({
+            "ticker": ticker,
+            "timeframe": timeframe,
+            "ts": ts,
+            "open": round(float(columns["open"][i]), 2),
+            "high": round(float(columns["high"][i]), 2),
+            "low": round(float(columns["low"][i]), 2),
+            "close": round(float(columns["close"][i]), 2),
+            "volume": round(float(columns["volume"][i]), 2),
+            "source": "yfinance",
+            "adjusted": 1
+        })
+    return rows
 
 
 def refresh_tickers(
     tickers: List[str],
     timeframe: str = "1d",
-    periodo: str = "2y",
+    periodo: Optional[str] = None,
     verbose: bool = True
 ) -> dict:
     """Refresh candles and setups for the specified tickers."""
     init_db()
-    results = {"success": [], "failed": []}
+    results: Dict[str, List[str]] = {"success": [], "failed": []}
     now_iso = datetime.now(timezone.utc).isoformat()
+
+    if periodo is None:
+        periodo = get_yfinance_period(timeframe)
 
     if verbose:
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Iniciando refresh ({timeframe}) para {len(tickers)} ativos...")
@@ -42,64 +73,34 @@ def refresh_tickers(
 
             last_row = df.iloc[-1]
             preco = round(float(last_row["close"]), 2)
-            sma200 = round(float(last_row["sma200"]), 2) if pd.notna(last_row["sma200"]) else None
-            wma30 = round(float(last_row["wma30"]), 2) if pd.notna(last_row["wma30"]) else None
-            atr14 = round(float(last_row["atr14"]), 2) if pd.notna(last_row["atr14"]) else round(preco * 0.025, 2)
 
-            is_alta = (wma30 is not None and preco > wma30) and (sma200 is None or preco > sma200)
-            is_baixa = (wma30 is not None and preco < wma30) and (sma200 is None or preco < sma200)
+            setup = build_setup(
+                preco=preco,
+                sma200=float(last_row["sma200"]) if pd.notna(last_row["sma200"]) else None,
+                wma30=float(last_row["wma30"]) if pd.notna(last_row["wma30"]) else None,
+                atr14=float(last_row["atr14"]) if pd.notna(last_row["atr14"]) else None,
+            )
+            tendencia = setup["tendencia"]
 
-            if is_alta:
-                tendencia = "ALTA"
-                alvo = round(preco + (1.6 * atr14), 2)
-                stop = round(preco - (1.4 * atr14), 2)
-            elif is_baixa:
-                tendencia = "BAIXA"
-                alvo = round(preco - (1.6 * atr14), 2)
-                stop = round(preco + (1.4 * atr14), 2)
-            else:
-                tendencia = "NEUTRO"
-                alvo = round(preco + (1.0 * atr14), 2)
-                stop = round(preco - (1.0 * atr14), 2)
+            candles_data = _candle_rows(ticker, timeframe, df)
 
-            gain = abs(alvo - preco)
-            risk = abs(preco - stop)
-            payoff_num = round(gain / risk, 2) if risk > 0 else 1.0
-            projecao_pct = round(((alvo - preco) / preco) * 100, 2)
-
-            candles_data = []
-            for idx, row in df.iterrows():
-                dt_str = idx.strftime("%Y-%m-%d") if isinstance(idx, (pd.Timestamp, datetime)) else str(idx)[:10]
-                candles_data.append({
-                    "ticker": ticker,
-                    "timeframe": timeframe,
-                    "ts": dt_str,
-                    "open": round(float(row["open"]), 2),
-                    "high": round(float(row["high"]), 2),
-                    "low": round(float(row["low"]), 2),
-                    "close": round(float(row["close"]), 2),
-                    "volume": round(float(row["volume"]), 2),
-                    "source": "yfinance",
-                    "adjusted": 1
-                })
-
-            with get_connection() as conn:
+            with pooled_db() as conn:
                 upsert_candles(conn, candles_data)
                 upsert_setup(conn, {
                     "ticker": ticker,
                     "timeframe": timeframe,
                     "asof": now_iso,
                     "signal": tendencia,
-                    "entry": preco,
-                    "target": alvo,
-                    "stop": stop,
-                    "payoff": payoff_num,
-                    "ret": projecao_pct / 100.0,
-                    "atr_pct": atr14 / preco if preco else 0.0,
+                    "entry": setup["preco"],
+                    "target": setup["alvo"],
+                    "stop": setup["stop"],
+                    "payoff": setup["payoff_num"],
+                    "ret": setup["projecao_pct"] / 100.0,
+                    "atr_pct": setup["indicadores"]["atr14"] / setup["preco"] if setup["preco"] else 0.0,
                     "p_up": 0.65 if tendencia == "ALTA" else (0.35 if tendencia == "BAIXA" else 0.50)
                 })
                 set_meta(conn, f"last_refresh_{ticker}_{timeframe}", now_iso)
-                conn.commit()
+                prune_history(conn, ticker, timeframe)
 
             results["success"].append(ticker)
             if verbose:
@@ -112,9 +113,8 @@ def refresh_tickers(
 
         time.sleep(0.3)  # Respect rate limit <= 2 req/s
 
-    with get_connection() as conn:
+    with pooled_db() as conn:
         set_meta(conn, f"last_refresh_{timeframe}", now_iso)
-        conn.commit()
 
     if verbose:
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Refresh concluído: {len(results['success'])} sucesso(s), {len(results['failed'])} falha(s).")
@@ -123,6 +123,13 @@ def refresh_tickers(
 
 
 def main() -> None:
+    if sys.platform == "win32":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+            sys.stderr.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
     parser = argparse.ArgumentParser(description="Águia Trader - Atualizador de dados B3")
     parser.add_argument("--tf", default="1d", choices=["1d", "15m", "5m"], help="Timeframe (padrão: 1d)")
     parser.add_argument("--tickers", default=None, help="Lista de tickers separados por vírgula (ex: PETR4,VALE3)")

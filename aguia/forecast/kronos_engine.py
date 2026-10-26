@@ -1,9 +1,8 @@
 """Kronos Neural Foundation Model manager with FakePredictor for verified CPU resilience."""
 
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import timedelta
 import sys
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 import numpy as np
 import pandas as pd
 
@@ -142,6 +141,9 @@ class KronosEngine:
                     pred_len=14
                 )
                 all_close_paths.append(fb_pred["close"].values)
+
+        if not all_close_paths:
+            raise RuntimeError("Nenhum caminho de previsao foi gerado")
 
         paths_matrix = np.array(all_close_paths)  # Shape: (n_samples, 14)
 

@@ -71,3 +71,25 @@ def load_holidays(reload: bool = False) -> List[str]:
         _HOLIDAYS_CACHE = json.load(f)
 
     return _HOLIDAYS_CACHE
+
+
+def get_timeframe_config(timeframe: str) -> Dict[str, Any]:
+    """Return the configuration block for a timeframe with safe defaults."""
+    timeframes = load_config().get("timeframes", {})
+    entry = timeframes.get(timeframe)
+    if not isinstance(entry, dict):
+        entry = {}
+
+    default_interval = "1d" if timeframe == "1d" else timeframe
+    return {
+        "timeframe": timeframe,
+        "name": entry.get("name", timeframe),
+        "interval": entry.get("interval", default_interval),
+        "horizon": int(entry.get("horizon", 14)),
+        "yfinance_period": entry.get("yfinance_period", "2y"),
+    }
+
+
+def get_yfinance_period(timeframe: str = "1d") -> str:
+    """Return the Yahoo Finance history window configured for a timeframe."""
+    return get_timeframe_config(timeframe)["yfinance_period"]

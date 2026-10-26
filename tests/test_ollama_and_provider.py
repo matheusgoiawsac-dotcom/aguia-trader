@@ -1,13 +1,11 @@
 """Tests for Ollama integration, deterministic fallback, and market data provider."""
 
-import pytest
-from integracao_ollama import (
+from aguia.explain.ollama import (
     verificar_status_ollama,
     gerar_racional_deterministico,
     gerar_racional_ia
 )
-from aguia.server.routes import handle_api_status_ollama, handle_api_analise
-
+from aguia.server.routes import handle_api_status_ollama
 
 def test_status_ollama_structure():
     status = verificar_status_ollama()
@@ -91,3 +89,81 @@ def test_api_status_ollama_endpoint():
     assert res["sucesso"] is True
     assert "online" in res["dados"]
     assert res["erro"] is None
+
+
+def _synthetic_market_frame(rows: int = 260):
+    """Deterministic OHLCV frame shaped like the provider output."""
+    import numpy as np
+    import pandas as pd
+
+    index = pd.date_range("2025-10-01", periods=rows, freq="B")
+    close = np.linspace(30.0, 40.0, rows)
+    frame = pd.DataFrame(
+        {
+            "open": close - 0.2,
+            "high": close + 0.5,
+            "low": close - 0.5,
+            "close": close,
+            "volume": np.full(rows, 1_000_000.0),
+        },
+        index=index,
+    )
+    from aguia.indicators import calc_atr, calc_sma, calc_wma
+
+    frame["sma200"] = calc_sma(frame["close"], window=200)
+    frame["wma30"] = calc_wma(frame["close"], window=30)
+    frame["atr14"] = calc_atr(frame["high"], frame["low"], frame["close"], window=14)
+    return frame
+
+
+def test_handle_api_analise_uses_cached_market_data(monkeypatch, tmp_path):
+    import aguia.db as db_module
+    import aguia.server.routes as routes
+    from contextlib import contextmanager
+
+    frame = _synthetic_market_frame()
+    monkeypatch.setattr(routes, "obter_dados_mercado", lambda *a, **k: frame)
+
+    # Isolate the persistence layer: synthetic prices must never reach the real DB
+    test_db = tmp_path / "analise.db"
+    db_module.init_db(test_db)
+
+    @contextmanager
+    def _isolated_pooled_db(db_path=None):
+        with db_module.pooled_db(test_db) as conn:
+            yield conn
+
+    monkeypatch.setattr(routes, "pooled_db", _isolated_pooled_db)
+    routes._analysis_cache.clear()
+
+    res = routes.handle_api_analise("petr4")
+    assert res["sucesso"] is True
+    dados = res["dados"]
+
+    assert dados["ticker"] == "PETR4"
+    assert dados["preco"] > 0
+    assert dados["alvo"] > 0
+    assert dados["stop"] > 0
+    assert dados["tendencia"] in ("ALTA", "BAIXA", "NEUTRO")
+    assert "R$" in dados["resumo"]
+    assert dados["disclaimer"]
+    assert len(dados["candles"]) == 65
+
+    # No NaN or Infinity may leak into the JSON payload
+    import json
+
+    payload = json.dumps(dados, ensure_ascii=False)
+    assert "NaN" not in payload
+    assert "Infinity" not in payload
+
+    # The isolated database received the setup, candles and explanation
+    with db_module.pooled_db(test_db) as conn:
+        assert conn.execute(
+            "SELECT COUNT(1) FROM setups WHERE ticker = 'PETR4'"
+        ).fetchone()[0] == 1
+        assert conn.execute(
+            "SELECT COUNT(1) FROM explanations WHERE ticker = 'PETR4'"
+        ).fetchone()[0] == 1
+
+    # A second call must be served from the in-process cache
+    routes._analysis_cache.clear()

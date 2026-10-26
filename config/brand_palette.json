@@ -1,0 +1,78 @@
+{
+  "_comment": "Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul eletrico + ciano + teal neon sobre preto). O :root do static/style.css espelha estes valores e os testes test_brand_palette.py garantem que as tres pontas (JSON, CSS, SVG/Python) nunca divirjam.",
+  "version": "1.0.0",
+  "surfaces": {
+    "bgMain": "#04070F",
+    "bgSurface": "#080D18",
+    "bgCard": "#0B1220",
+    "bgElevated": "#0F1A2E",
+    "bgInset": "#060A14",
+    "bgPanel": "#10182C",
+    "bgDeep": "#070B14",
+    "gridLine": "#101A2E"
+  },
+  "borders": {
+    "borderSubtle": "rgba(168, 248, 255, 0.09)",
+    "borderCard": "#101D33",
+    "borderStrong": "#1A2C47",
+    "borderMuted": "#1F2A3F",
+    "borderActive": "#02AAFF"
+  },
+  "brand": {
+    "blue": "#02AAFF",
+    "blueDeep": "#0590FF",
+    "cyan": "#09FFFF",
+    "cyanMid": "#0CCDFF",
+    "cyanSoft": "#A8F8FF",
+    "teal": "#00FFA6",
+    "tealDeep": "#00C98C",
+    "navy": "#0C2C48",
+    "bodyDeep": "#0C3A5E",
+    "ink": "#04121F"
+  },
+  "semantic": {
+    "green": "#00FFA6",
+    "greenLight": "#6FFFD1",
+    "greenBg": "rgba(0, 255, 166, 0.12)",
+    "greenBorder": "rgba(0, 255, 166, 0.45)",
+    "red": "#FF3B6B",
+    "redLight": "#FF85A6",
+    "redBg": "rgba(255, 59, 107, 0.12)",
+    "redBorder": "rgba(255, 59, 107, 0.45)",
+    "yellow": "#FFCC4D",
+    "blue": "#02AAFF",
+    "blueLight": "#6EC8FF",
+    "blueDeep": "#0277E8",
+    "cyan": "#09FFFF",
+    "white": "#FFFFFF"
+  },
+  "text": {
+    "primary": "#EEF6FF",
+    "secondary": "#9FB3C8",
+    "muted": "#6B8199",
+    "dim": "#4A5F75",
+    "bright": "#C7D9EC"
+  },
+  "chart": {
+    "up": "#00FFA6",
+    "down": "#FF3B6B",
+    "sma200": "#02AAFF",
+    "wma30": "#FFCC4D",
+    "grid": "#101A2E",
+    "axisText": "#6B8199",
+    "title": "#EEF6FF",
+    "watermark": "#1A2C47",
+    "facecolor": "#04070F",
+    "figcolor": "#080D18",
+    "edgecolor": "#101D33"
+  },
+  "icons": {
+    "cyan": "#00F0FF",
+    "green": "#22C55E",
+    "gold": "#FFB700",
+    "orange": "#F97316",
+    "purple": "#A855F7",
+    "silver": "#E2E8F0",
+    "fallbackBg": "#0B1220"
+  }
+}

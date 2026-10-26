@@ -1,0 +1,803 @@
+﻿............................................FFFFF.F..................... [ 29%]
+..............................................FFFFFFFFF.FFFFF.FFFFFFFFF. [ 58%]
+.......F...............F.......FFF.F.F..FF..........................F... [ 88%]
+...............F....F..F.....                                            [100%]
+================================== FAILURES ===================================
+________ test_css_tokens_match_the_palette[json_path42---text-bright] _________
+
+json_path = ('text', 'bright'), css_token = '--text-bright'
+palette = {'_comment': 'Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul el...', ...}, 'chart': {'axisText': '#6B8199', 'down': '#FF3B6B', 'edgecolor': '#101D33', 'facecolor': '#04070F', ...}, ...}
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    @pytest.mark.parametrize("json_path,css_token", sorted(CSS_TOKEN_MAP.items()))
+    def test_css_tokens_match_the_palette(json_path, css_token, palette, style_css):
+        group, key = json_path
+        expected = palette[group][key]
+        tokens = _css_token_map(_css_root_block(style_css))
+        actual = _css_token_value(tokens, css_token)
+>       assert actual.lower() == expected.lower(), f"{css_token}: css={actual} json={expected}"
+E       AssertionError: --text-bright: css=#ffffff json=#C7D9EC
+E       assert '#ffffff' == '#c7d9ec'
+E         
+E         - #c7d9ec
+E         + #ffffff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:140: AssertionError
+__________ test_css_tokens_match_the_palette[json_path43---text-dim] __________
+
+json_path = ('text', 'dim'), css_token = '--text-dim'
+palette = {'_comment': 'Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul el...', ...}, 'chart': {'axisText': '#6B8199', 'down': '#FF3B6B', 'edgecolor': '#101D33', 'facecolor': '#04070F', ...}, ...}
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    @pytest.mark.parametrize("json_path,css_token", sorted(CSS_TOKEN_MAP.items()))
+    def test_css_tokens_match_the_palette(json_path, css_token, palette, style_css):
+        group, key = json_path
+        expected = palette[group][key]
+        tokens = _css_token_map(_css_root_block(style_css))
+        actual = _css_token_value(tokens, css_token)
+>       assert actual.lower() == expected.lower(), f"{css_token}: css={actual} json={expected}"
+E       AssertionError: --text-dim: css=#ffffff json=#4A5F75
+E       assert '#ffffff' == '#4a5f75'
+E         
+E         - #4a5f75
+E         + #ffffff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:140: AssertionError
+_________ test_css_tokens_match_the_palette[json_path44---text-muted] _________
+
+json_path = ('text', 'muted'), css_token = '--text-muted'
+palette = {'_comment': 'Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul el...', ...}, 'chart': {'axisText': '#6B8199', 'down': '#FF3B6B', 'edgecolor': '#101D33', 'facecolor': '#04070F', ...}, ...}
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    @pytest.mark.parametrize("json_path,css_token", sorted(CSS_TOKEN_MAP.items()))
+    def test_css_tokens_match_the_palette(json_path, css_token, palette, style_css):
+        group, key = json_path
+        expected = palette[group][key]
+        tokens = _css_token_map(_css_root_block(style_css))
+        actual = _css_token_value(tokens, css_token)
+>       assert actual.lower() == expected.lower(), f"{css_token}: css={actual} json={expected}"
+E       AssertionError: --text-muted: css=#ffffff json=#6B8199
+E       assert '#ffffff' == '#6b8199'
+E         
+E         - #6b8199
+E         + #ffffff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:140: AssertionError
+________ test_css_tokens_match_the_palette[json_path45---text-primary] ________
+
+json_path = ('text', 'primary'), css_token = '--text-primary'
+palette = {'_comment': 'Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul el...', ...}, 'chart': {'axisText': '#6B8199', 'down': '#FF3B6B', 'edgecolor': '#101D33', 'facecolor': '#04070F', ...}, ...}
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    @pytest.mark.parametrize("json_path,css_token", sorted(CSS_TOKEN_MAP.items()))
+    def test_css_tokens_match_the_palette(json_path, css_token, palette, style_css):
+        group, key = json_path
+        expected = palette[group][key]
+        tokens = _css_token_map(_css_root_block(style_css))
+        actual = _css_token_value(tokens, css_token)
+>       assert actual.lower() == expected.lower(), f"{css_token}: css={actual} json={expected}"
+E       AssertionError: --text-primary: css=#ffffff json=#EEF6FF
+E       assert '#ffffff' == '#eef6ff'
+E         
+E         - #eef6ff
+E         + #ffffff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:140: AssertionError
+_______ test_css_tokens_match_the_palette[json_path46---text-secondary] _______
+
+json_path = ('text', 'secondary'), css_token = '--text-secondary'
+palette = {'_comment': 'Fonte unica de verdade da identidade visual da marca. Derivado do logo AGUIA TRADER Cibernetica (azul el...', ...}, 'chart': {'axisText': '#6B8199', 'down': '#FF3B6B', 'edgecolor': '#101D33', 'facecolor': '#04070F', ...}, ...}
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    @pytest.mark.parametrize("json_path,css_token", sorted(CSS_TOKEN_MAP.items()))
+    def test_css_tokens_match_the_palette(json_path, css_token, palette, style_css):
+        group, key = json_path
+        expected = palette[group][key]
+        tokens = _css_token_map(_css_root_block(style_css))
+        actual = _css_token_value(tokens, css_token)
+>       assert actual.lower() == expected.lower(), f"{css_token}: css={actual} json={expected}"
+E       AssertionError: --text-secondary: css=#ffffff json=#9FB3C8
+E       assert '#ffffff' == '#9fb3c8'
+E         
+E         - #9fb3c8
+E         + #ffffff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:140: AssertionError
+______________ test_no_hardcoded_colours_outside_the_token_block ______________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_no_hardcoded_colours_outside_the_token_block(style_css):
+        """Every colour in the stylesheet must come from a design token."""
+        root = _css_root_block(style_css)
+        body = style_css.replace(root, "")
+        leftovers = re.findall(r"#[0-9A-Fa-f]{3,8}\b", body)
+>       assert leftovers == [], f"hardcoded colours outside :root: {sorted(set(leftovers))}"
+E       AssertionError: hardcoded colours outside :root: ['#0b0f19', '#1e3a5f', '#ffffff']
+E       assert ['#ffffff', '...f', '#1e3a5f'] == []
+E         
+E         Left contains 5 more items, first extra item: '#ffffff'
+E         Use -v to get more diff
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_brand_palette.py:154: AssertionError
+______________________ test_frontend_crypto_map_matches _______________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_crypto_map_matches(script_js: str):
+>       assert _js_map(script_js, "ICON_CRYPTO_MAP") == CRIPTOMOEDAS
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+name = 'ICON_CRYPTO_MAP'
+
+    def _js_map(source: str, name: str) -> dict:
+        """Extract a flat ``const NAME = { "KEY": "value" }`` map from script.js."""
+        match = re.search(rf"const {name} = \{{(.*?)\n\}};", source, re.S)
+>       assert match is not None, f"{name} not found in script.js"
+E       AssertionError: ICON_CRYPTO_MAP not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:56: AssertionError
+_______________________ test_frontend_forex_map_matches _______________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_forex_map_matches(script_js: str):
+>       assert _js_map(script_js, "ICON_FOREX_MAP") == FOREX
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+name = 'ICON_FOREX_MAP'
+
+    def _js_map(source: str, name: str) -> dict:
+        """Extract a flat ``const NAME = { "KEY": "value" }`` map from script.js."""
+        match = re.search(rf"const {name} = \{{(.*?)\n\}};", source, re.S)
+>       assert match is not None, f"{name} not found in script.js"
+E       AssertionError: ICON_FOREX_MAP not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:56: AssertionError
+_____________________ test_frontend_commodity_map_matches _____________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_commodity_map_matches(script_js: str):
+>       assert _js_map(script_js, "ICON_COMMODITY_MAP") == COMMODITIES
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+name = 'ICON_COMMODITY_MAP'
+
+    def _js_map(source: str, name: str) -> dict:
+        """Extract a flat ``const NAME = { "KEY": "value" }`` map from script.js."""
+        match = re.search(rf"const {name} = \{{(.*?)\n\}};", source, re.S)
+>       assert match is not None, f"{name} not found in script.js"
+E       AssertionError: ICON_COMMODITY_MAP not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:56: AssertionError
+_______________________ test_frontend_index_map_matches _______________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_index_map_matches(script_js: str):
+>       assert _js_map(script_js, "ICON_INDEX_MAP") == INDICES
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+name = 'ICON_INDEX_MAP'
+
+    def _js_map(source: str, name: str) -> dict:
+        """Extract a flat ``const NAME = { "KEY": "value" }`` map from script.js."""
+        match = re.search(rf"const {name} = \{{(.*?)\n\}};", source, re.S)
+>       assert match is not None, f"{name} not found in script.js"
+E       AssertionError: ICON_INDEX_MAP not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:56: AssertionError
+_______________________ test_frontend_b3_sectors_match ________________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_b3_sectors_match(script_js: str):
+        """Every B3 ticker of the backend sectors must exist on the front-end."""
+>       frontend = _js_sector_map(script_js)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def _js_sector_map(source: str) -> dict:
+        """Extract the ``ICON_B3_SECTORS`` list of ``{ glyph, tickers }`` entries."""
+        match = re.search(r"const ICON_B3_SECTORS = \[(.*?)\n\];", source, re.S)
+>       assert match is not None, "ICON_B3_SECTORS not found in script.js"
+E       AssertionError: ICON_B3_SECTORS not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:66: AssertionError
+________________________ test_icon_factory_is_exported ________________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_icon_factory_is_exported(script_js: str):
+>       assert "function getAssetIconSVG(ticker, categoria)" in script_js
+E       assert 'function getAssetIconSVG(ticker, categoria)' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:185: AssertionError
+____________________ test_icon_svg_is_22px_and_decorative _____________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_icon_svg_is_22px_and_decorative(script_js: str):
+>       assert 'viewBox="0 0 22 22"' in script_js
+E       assert 'viewBox="0 0 22 22"' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:191: AssertionError
+_____________ test_every_mapped_glyph_exists_in_the_glyph_library _____________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_every_mapped_glyph_exists_in_the_glyph_library(script_js: str):
+        """A ticker must never point to a glyph that was not drawn."""
+        glyphs = set(re.findall(r"^    ([a-zA-Z][a-zA-Z0-9]*): \{$", script_js, re.M))
+        assert glyphs, "glifos nao encontrados"
+    
+        mapped = set()
+        for name in ("ICON_CRYPTO_MAP", "ICON_FOREX_MAP", "ICON_COMMODITY_MAP", "ICON_INDEX_MAP"):
+>           mapped |= set(_js_map(script_js, name).values())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+source = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+name = 'ICON_CRYPTO_MAP'
+
+    def _js_map(source: str, name: str) -> dict:
+        """Extract a flat ``const NAME = { "KEY": "value" }`` map from script.js."""
+        match = re.search(rf"const {name} = \{{(.*?)\n\}};", source, re.S)
+>       assert match is not None, f"{name} not found in script.js"
+E       AssertionError: ICON_CRYPTO_MAP not found in script.js
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:56: AssertionError
+_________________ test_every_glyph_colour_is_a_declared_token _________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_every_glyph_colour_is_a_declared_token(script_js: str, style_css: str):
+        """Glyph colours must resolve to a token that the stylesheet declares."""
+        declared = set(re.findall(r"(--icon-[a-z-]+)\s*:", style_css))
+        used = set(re.findall(r"var\((--icon-[a-z-]+)\)", script_js))
+>       assert used, "nenhum token de icone usado"
+E       AssertionError: nenhum token de icone usado
+E       assert set()
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:215: AssertionError
+___________________ test_fallback_uses_two_letters_in_mono ____________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_fallback_uses_two_letters_in_mono(script_js: str):
+        assert "JetBrains Mono" in script_js
+>       assert "var(--icon-fallback-bg)" in script_js
+E       assert 'var(--icon-fallback-bg)' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:229: AssertionError
+__________________ test_icons_use_tokens_not_literal_colours __________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_icons_use_tokens_not_literal_colours(script_js: str):
+        """The icon palette must come from the CSS tokens, never from literals."""
+        for token in (
+            "var(--icon-cyan)",
+            "var(--icon-green)",
+            "var(--icon-gold)",
+            "var(--icon-orange)",
+            "var(--icon-purple)",
+            "var(--icon-silver)",
+        ):
+>           assert token in script_js, token
+E           AssertionError: var(--icon-cyan)
+E           assert 'var(--icon-cyan)' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:243: AssertionError
+________________ test_icons_are_used_in_the_sidebar_and_title _________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_icons_are_used_in_the_sidebar_and_title(script_js: str):
+>       assert "getAssetIconSVG(asset.ticker, asset.categoria)" in script_js
+E       assert 'getAssetIconSVG(asset.ticker, asset.categoria)' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:247: AssertionError
+____________________________ test_neon_glow_token _____________________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_neon_glow_token(style_css: str):
+        assert "--icon-glow: 0 0 5px rgba(0, 240, 255, 0.4);" in style_css
+>       assert "filter: drop-shadow(var(--icon-glow));" in style_css
+E       AssertionError: assert 'filter: drop-shadow(var(--icon-glow));' in '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:254: AssertionError
+_________________ test_crosshair_and_tooltip_are_implemented __________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_crosshair_and_tooltip_are_implemented(script_js: str):
+>       assert "function drawCrosshair(g)" in script_js
+E       assert 'function drawCrosshair(g)' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:260: AssertionError
+________________________ test_tooltip_is_glassmorphism ________________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_tooltip_is_glassmorphism(style_css: str):
+>       assert ".chart-tooltip" in style_css
+E       AssertionError: assert '.chart-tooltip' in '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:283: AssertionError
+______________________ test_status_text_is_server_online ______________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_status_text_is_server_online(index_html: str, script_js: str):
+>       assert "Servidor Ativo e Online" in index_html
+E       assert 'Servidor Ativo e Online' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:291: AssertionError
+____________________ test_theme_toggle_keeps_moon_and_sun _____________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_theme_toggle_keeps_moon_and_sun(index_html: str):
+        assert "\U0001f319" in index_html
+>       assert "\u2600\ufe0f" in index_html
+E       assert '\u2600\ufe0f' in '<!DOCTYPE html>\\n<html lang="pt-BR" class="app-booting" data-theme="dark">\\n<head>\\n    <meta charset="UTF-8">\\n    <...  <!-- Script JavaScript com Motor Gr\xe1fico Canvas -->\\n    <script src="script.js?v=3.5"></script>\\n</body>\\n</html>\\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:297: AssertionError
+___________________ test_tips_card_has_no_disclaimer_inside ___________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_tips_card_has_no_disclaimer_inside(index_html: str):
+        """The tips card is clean: the disclaimer lives outside of it."""
+>       card = index_html[index_html.index('id="reasoningPanel"') :]
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:303: ValueError
+___________________ test_compliance_line_still_on_the_page ____________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_compliance_line_still_on_the_page(index_html: str):
+        """The pt-BR compliance notice remains visible, outside the tips card."""
+>       assert 'id="complianceDisclaimer"' in index_html
+E       assert 'id="complianceDisclaimer"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:311: AssertionError
+______________ test_fonts_are_imported_with_the_expected_weights ______________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_fonts_are_imported_with_the_expected_weights(index_html: str):
+        match = re.search(r"fonts\.googleapis\.com/css2\?([^'\"]+)", index_html)
+        assert match is not None
+        query = match.group(1)
+>       assert "Inter:wght@400;500;600;700" in query
+E       AssertionError: assert 'Inter:wght@400;500;600;700' in 'family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:321: AssertionError
+__________________________ test_global_font_is_inter __________________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_global_font_is_inter(style_css: str):
+>       assert "--font-sans: 'Inter'" in style_css
+E       assert "--font-sans: 'Inter'" in '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:326: AssertionError
+_________________________ test_numeric_data_uses_mono _________________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_numeric_data_uses_mono(style_css: str):
+        """Precos, variacoes e valores de card usam JetBrains Mono."""
+        selectors = set()
+        for match in re.finditer(r"([^{}]+)\{([^}]*)\}", style_css):
+            if "font-family: var(--font-mono);" not in match.group(2):
+                continue
+            for selector in match.group(1).split(","):
+                selector = " ".join(selector.split())
+                if selector and not selector.startswith("/*"):
+                    selectors.add(selector)
+    
+        for required in (
+            ".quant-card-val",
+            ".quant-card-sub",
+            ".stock-price",
+            ".stock-return",
+            ".target-floating-badge",
+            ".chart-tooltip__value",
+        ):
+>           assert required in selectors, required
+E           AssertionError: .target-floating-badge
+E           assert '.target-floating-badge' in {'.model-tag', '.quant-card-sub', '.quant-card-val', '.snapshot-date', '.stock-price', '.stock-return', ...}
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:351: AssertionError
+___________________ test_every_imported_weight_is_available ___________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_every_imported_weight_is_available(script_js: str):
+        """No CSS may request a weight that the Google Fonts import lacks."""
+        html = (STATIC_DIR / "index.html").read_text(encoding="utf-8")
+        css = (STATIC_DIR / "style.css").read_text(encoding="utf-8")
+    
+>       inter = set(re.search(r"Inter:wght@([0-9;]+)", html).group(1).split(";"))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'group'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_icons.py:359: AttributeError
+___________________ test_splash_embeds_the_canonical_markup ___________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+fragment_html = '<!--\n  ============================================================================\n  LOGO HERO � componente reutil...0"/>\n            <path class="logo-hero__spark" d="M44 78 L38 86 L42 91 L34 99"/>\n        </g>\n    </svg>\n</div>\n'
+
+    def test_splash_embeds_the_canonical_markup(index_html: str, fragment_html: str):
+        """The splash copy and the canonical fragment must be identical."""
+>       splash = _extract_element(index_html, "div", "logo-hero")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_logo_hero.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+tag = 'div', class_name = 'logo-hero'
+
+    def _extract_element(html: str, tag: str, class_name: str) -> str:
+        """Return the markup of ``<tag class="class_name">`` and its subtree."""
+        marker = f'<{tag} class="{class_name}"'
+>       start = html.index(marker)
+                ^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_logo_hero.py:81: ValueError
+__________________ test_splash_keeps_the_brand_logo_sources ___________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_splash_keeps_the_brand_logo_sources(index_html: str):
+        """The splash must still load the real logo assets."""
+        assert 'src="logo.png"' in index_html
+        assert 'srcset="logo.webp"' in index_html
+>       assert 'class="logo-hero__base splash-logo-img"' in index_html
+E       assert 'class="logo-hero__base splash-logo-img"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_logo_hero.py:313: AssertionError
+__________________ test_frontend_mirror_declares_every_mode ___________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_mirror_declares_every_mode(script_js: str):
+>       modos = _parse_js_modes(script_js)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:92: in _parse_js_modes
+    fields[key] = _parse_js_value(value)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:66: in _parse_js_value
+    return ast.literal_eval(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:110: in literal_eval
+    return _convert(node_or_string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:109: in _convert
+    return _convert_signed_num(node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:83: in _convert_signed_num
+    return _convert_num(node)
+           ^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:74: in _convert_num
+    _raise_malformed_node(node)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = <ast.Name object at 0x00000205A84F8C10>
+
+    def _raise_malformed_node(node):
+        msg = "malformed node or string"
+        if lno := getattr(node, 'lineno', None):
+            msg += f' on line {lno}'
+>       raise ValueError(msg + f': {node!r}')
+E       ValueError: malformed node or string on line 1: <ast.Name object at 0x00000205A84F8C10>
+
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:71: ValueError
+________________ test_frontend_mirror_matches_the_backend[day] ________________
+
+modo_id = 'day'
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    @pytest.mark.parametrize("modo_id", sorted(MODOS))
+    def test_frontend_mirror_matches_the_backend(modo_id, script_js: str):
+>       modos = _parse_js_modes(script_js)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:172: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:92: in _parse_js_modes
+    fields[key] = _parse_js_value(value)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:66: in _parse_js_value
+    return ast.literal_eval(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:110: in literal_eval
+    return _convert(node_or_string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:109: in _convert
+    return _convert_signed_num(node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:83: in _convert_signed_num
+    return _convert_num(node)
+           ^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:74: in _convert_num
+    _raise_malformed_node(node)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = <ast.Name object at 0x00000205A8265690>
+
+    def _raise_malformed_node(node):
+        msg = "malformed node or string"
+        if lno := getattr(node, 'lineno', None):
+            msg += f' on line {lno}'
+>       raise ValueError(msg + f': {node!r}')
+E       ValueError: malformed node or string on line 1: <ast.Name object at 0x00000205A8265690>
+
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:71: ValueError
+_______________ test_frontend_mirror_matches_the_backend[swing] _______________
+
+modo_id = 'swing'
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    @pytest.mark.parametrize("modo_id", sorted(MODOS))
+    def test_frontend_mirror_matches_the_backend(modo_id, script_js: str):
+>       modos = _parse_js_modes(script_js)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:172: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:92: in _parse_js_modes
+    fields[key] = _parse_js_value(value)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:66: in _parse_js_value
+    return ast.literal_eval(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:110: in literal_eval
+    return _convert(node_or_string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:109: in _convert
+    return _convert_signed_num(node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:83: in _convert_signed_num
+    return _convert_num(node)
+           ^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:74: in _convert_num
+    _raise_malformed_node(node)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = <ast.Name object at 0x00000205A8427DF0>
+
+    def _raise_malformed_node(node):
+        msg = "malformed node or string"
+        if lno := getattr(node, 'lineno', None):
+            msg += f' on line {lno}'
+>       raise ValueError(msg + f': {node!r}')
+E       ValueError: malformed node or string on line 1: <ast.Name object at 0x00000205A8427DF0>
+
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:71: ValueError
+_________________ test_frontend_requests_the_mode_to_the_api __________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_frontend_requests_the_mode_to_the_api(script_js: str):
+        """The dashboard must ask the backend for the active mode and interval."""
+        assert "/api/dados?" in script_js
+>       assert "modo: modoRequisicao" in script_js
+E       assert 'modo: modoRequisicao' in "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:196: AssertionError
+______________ test_fallback_universes_come_from_immutable_lists ______________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_fallback_universes_come_from_immutable_lists(script_js: str):
+        """The fallback of a mode must never be cloned from the current universe.
+    
+        Otherwise a switch back to Swing Trade would keep the intraday tickers.
+        """
+        assert "const ASSETS_FALLBACK_B3 = [" in script_js
+        assert "const ASSETS_FALLBACK_DAY = [" in script_js
+    
+        match = re.search(r"function fallbackUniverso\(modoId\)\s*\{(.*?)\n\}", script_js, re.S)
+        assert match is not None, "fallbackUniverso not found in script.js"
+        body = match.group(1)
+        assert "ASSETS_FALLBACK_B3" in body
+        assert "ASSETS_FALLBACK_DAY" in body
+        assert "ASSETS_UNIVERSE_DAY" not in script_js
+    
+        init = re.search(r"let ASSETS_UNIVERSE = (.+?);", script_js)
+>       assert init is not None
+E       assert None is not None
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:227: AssertionError
+______________________ test_metric_labels_are_mode_aware ______________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_metric_labels_are_mode_aware(index_html: str):
+        for element_id in ("metricTargetLabel", "metricStopLabel", "metricPayoffLabel"):
+>           assert f'id="{element_id}"' in index_html
+E           assert 'id="metricTargetLabel"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:247: AssertionError
+____________________ test_mode_context_labels_are_defined _____________________
+
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_mode_context_labels_are_defined(script_js: str):
+>       modos = _parse_js_modes(script_js)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:92: in _parse_js_modes
+    fields[key] = _parse_js_value(value)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_modes.py:66: in _parse_js_value
+    return ast.literal_eval(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:110: in literal_eval
+    return _convert(node_or_string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:109: in _convert
+    return _convert_signed_num(node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:83: in _convert_signed_num
+    return _convert_num(node)
+           ^^^^^^^^^^^^^^^^^^
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:74: in _convert_num
+    _raise_malformed_node(node)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = <ast.Name object at 0x00000205A8404760>
+
+    def _raise_malformed_node(node):
+        msg = "malformed node or string"
+        if lno := getattr(node, 'lineno', None):
+            msg += f' on line {lno}'
+>       raise ValueError(msg + f': {node!r}')
+E       ValueError: malformed node or string on line 1: <ast.Name object at 0x00000205A8404760>
+
+C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\ast.py:71: ValueError
+_____________________ test_splash_shows_the_primary_logo ______________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+    def test_splash_shows_the_primary_logo(index_html: str):
+        """The splash must display the real brand logo, not the eagle emblem."""
+        assert 'class="splash-logo"' in index_html
+        # The logo image is the base layer of the reusable logo-hero component.
+        assert "splash-logo-img" in index_html
+>       assert 'class="logo-hero__base splash-logo-img"' in index_html
+E       assert 'class="logo-hero__base splash-logo-img"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_splash_choreography.py:80: AssertionError
+_________________ test_sidebar_cards_have_smooth_transitions __________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_sidebar_cards_have_smooth_transitions(style_css: str):
+        block = _block(style_css, ".stock-card-item")
+>       assert "transition: all 0.25s ease-in-out;" in block
+E       AssertionError: assert 'transition: all 0.25s ease-in-out;' in '\n    background: var(--bg-inset);\n    border: 1px solid color-mix(in srgb, var(--color-white) 5%, transparent);\n  ...ace-between;\n    align-items: center;\n    cursor: pointer;\n    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:84: AssertionError
+____________________ test_swap_targets_exist_in_the_markup ____________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_swap_targets_exist_in_the_markup(index_html: str, script_js: str):
+        """Every id used by the swap selector must exist in the dashboard."""
+        match = re.search(r'SWAP_TARGET_SELECTOR\s*=\s*"([^"]+)"', script_js)
+        assert match is not None
+        selector = match.group(1)
+        ids = set(re.findall(r"#([A-Za-z0-9_-]+)", selector))
+        assert ids
+        for element_id in ids:
+>           assert f'id="{element_id}"' in index_html, element_id
+E           AssertionError: aiReasoningText
+E           assert 'id="aiReasoningText"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:130: AssertionError
+_____________________ test_offline_status_does_not_pulse ______________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    offline = _block(style_css, ".connection-indicator.offline .conn-dot")
+    assert "animation: pulse-red" in offline
+>   assert "var(--color-red)" in offline
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: assert 'animation' not in '\n    backg...ion: none;\n'
+E     
+E     'animation' is contained here:
+E       red);
+E           animation: none;
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:152: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_brand_palette.py::test_css_tokens_match_the_palette[json_path42---text-bright]
+FAILED tests/test_brand_palette.py::test_css_tokens_match_the_palette[json_path43---text-dim]
+FAILED tests/test_brand_palette.py::test_css_tokens_match_the_palette[json_path44---text-muted]
+FAILED tests/test_brand_palette.py::test_css_tokens_match_the_palette[json_path45---text-primary]
+FAILED tests/test_brand_palette.py::test_css_tokens_match_the_palette[json_path46---text-secondary]
+FAILED tests/test_brand_palette.py::test_no_hardcoded_colours_outside_the_token_block
+FAILED tests/test_icons.py::test_frontend_crypto_map_matches - AssertionError...
+FAILED tests/test_icons.py::test_frontend_forex_map_matches - AssertionError:...
+FAILED tests/test_icons.py::test_frontend_commodity_map_matches - AssertionEr...
+FAILED tests/test_icons.py::test_frontend_index_map_matches - AssertionError:...
+FAILED tests/test_icons.py::test_frontend_b3_sectors_match - AssertionError: ...
+FAILED tests/test_icons.py::test_icon_factory_is_exported - assert 'function ...
+FAILED tests/test_icons.py::test_icon_svg_is_22px_and_decorative - assert 'vi...
+FAILED tests/test_icons.py::test_every_mapped_glyph_exists_in_the_glyph_library
+FAILED tests/test_icons.py::test_every_glyph_colour_is_a_declared_token - Ass...
+FAILED tests/test_icons.py::test_fallback_uses_two_letters_in_mono - assert '...
+FAILED tests/test_icons.py::test_icons_use_tokens_not_literal_colours - Asser...
+FAILED tests/test_icons.py::test_icons_are_used_in_the_sidebar_and_title - as...
+FAILED tests/test_icons.py::test_neon_glow_token - AssertionError: assert 'fi...
+FAILED tests/test_icons.py::test_crosshair_and_tooltip_are_implemented - asse...
+FAILED tests/test_icons.py::test_tooltip_is_glassmorphism - AssertionError: a...
+FAILED tests/test_icons.py::test_status_text_is_server_online - assert 'Servi...
+FAILED tests/test_icons.py::test_theme_toggle_keeps_moon_and_sun - assert '\u2600\ufe0f'...
+FAILED tests/test_icons.py::test_tips_card_has_no_disclaimer_inside - ValueEr...
+FAILED tests/test_icons.py::test_compliance_line_still_on_the_page - assert '...
+FAILED tests/test_icons.py::test_fonts_are_imported_with_the_expected_weights
+FAILED tests/test_icons.py::test_global_font_is_inter - assert "--font-sans: ...
+FAILED tests/test_icons.py::test_numeric_data_uses_mono - AssertionError: .ta...
+FAILED tests/test_icons.py::test_every_imported_weight_is_available - Attribu...
+FAILED tests/test_logo_hero.py::test_splash_embeds_the_canonical_markup - Val...
+FAILED tests/test_logo_hero.py::test_splash_keeps_the_brand_logo_sources - as...
+FAILED tests/test_modes.py::test_frontend_mirror_declares_every_mode - ValueE...
+FAILED tests/test_modes.py::test_frontend_mirror_matches_the_backend[day] - V...
+FAILED tests/test_modes.py::test_frontend_mirror_matches_the_backend[swing]
+FAILED tests/test_modes.py::test_frontend_requests_the_mode_to_the_api - asse...
+FAILED tests/test_modes.py::test_fallback_universes_come_from_immutable_lists
+FAILED tests/test_modes.py::test_metric_labels_are_mode_aware - assert 'id="m...
+FAILED tests/test_modes.py::test_mode_context_labels_are_defined - ValueError...
+FAILED tests/test_splash_choreography.py::test_splash_shows_the_primary_logo
+FAILED tests/test_ui_polish.py::test_sidebar_cards_have_smooth_transitions - ...
+FAILED tests/test_ui_polish.py::test_swap_targets_exist_in_the_markup - Asser...
+FAILED tests/test_ui_polish.py::test_offline_status_does_not_pulse - Assertio...
+42 failed, 203 passed in 6.64s

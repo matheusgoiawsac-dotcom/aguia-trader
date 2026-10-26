@@ -5,21 +5,26 @@ import json
 import re
 from typing import Any, Dict, List
 
+_COMMA_DECIMAL_RE = re.compile(r"(\d+),(\d+)")
+_NUMBER_RE = re.compile(r"[-+]?\d*\.?\d+")
+
+# Period lengths and calendar constants that are never price claims.
+_IGNORED_CONSTANTS = frozenset({14.0, 30.0, 200.0, 2024.0, 2025.0, 2026.0, 1.0, 2.0})
+
 
 def extract_numbers(text: str) -> List[float]:
     """
     Extract numbers from text (supporting both 13.27 and 13,27 formats).
     Excludes known standard constants (14 periods, SMA 200, WMA 30, current years).
     """
-    cleaned = re.sub(r"(\d+),(\d+)", r"\1.\2", text)
-    tokens = re.findall(r"[-+]?\d*\.?\d+", cleaned)
+    cleaned = _COMMA_DECIMAL_RE.sub(r"\1.\2", text)
+    tokens = _NUMBER_RE.findall(cleaned)
     numbers = []
-    ignored_constants = {14.0, 30.0, 200.0, 2024.0, 2025.0, 2026.0, 1.0, 2.0}
 
     for t in tokens:
         try:
             val = float(t)
-            if val in ignored_constants:
+            if val in _IGNORED_CONSTANTS:
                 continue
             numbers.append(val)
         except ValueError:

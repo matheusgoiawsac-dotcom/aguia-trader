@@ -1,0 +1,50 @@
+﻿....F....F..F.....                                                       [100%]
+================================== FAILURES ===================================
+_________________ test_sidebar_cards_have_smooth_transitions __________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    def test_sidebar_cards_have_smooth_transitions(style_css: str):
+        block = _block(style_css, ".stock-card-item")
+>       assert "transition: all 0.25s ease-in-out;" in block
+E       AssertionError: assert 'transition: all 0.25s ease-in-out;' in '\n    background: var(--bg-inset);\n    border: 1px solid color-mix(in srgb, var(--color-white) 5%, transparent);\n  ...ace-between;\n    align-items: center;\n    cursor: pointer;\n    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:84: AssertionError
+____________________ test_swap_targets_exist_in_the_markup ____________________
+
+index_html = '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+script_js = "/**\n * �guia Trader - Dashboard Quantitativo & Motor Gr�fico B3\n * Integra��o com API Python 3.11, Yahoo Finance, I...-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}\n    close();\n  });\n})();\n"
+
+    def test_swap_targets_exist_in_the_markup(index_html: str, script_js: str):
+        """Every id used by the swap selector must exist in the dashboard."""
+        match = re.search(r'SWAP_TARGET_SELECTOR\s*=\s*"([^"]+)"', script_js)
+        assert match is not None
+        selector = match.group(1)
+        ids = set(re.findall(r"#([A-Za-z0-9_-]+)", selector))
+        assert ids
+        for element_id in ids:
+>           assert f'id="{element_id}"' in index_html, element_id
+E           AssertionError: aiReasoningText
+E           assert 'id="aiReasoningText"' in '<!DOCTYPE html>\n<html lang="pt-BR" class="app-booting" data-theme="dark">\n<head>\n    <meta charset="UTF-8">\n    <...  <!-- Script JavaScript com Motor Gr�fico Canvas -->\n    <script src="script.js?v=3.5"></script>\n</body>\n</html>\n'
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:130: AssertionError
+_____________________ test_offline_status_does_not_pulse ______________________
+
+style_css = '/* ============================================================\n   �guia Trader - Dashboard & Trade Ideas Theme\n   ...para Firefox */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: rgba(0, 240, 255, 0.25) rgba(11, 15, 25, 0.6);\n}\n'
+
+    offline = _block(style_css, ".connection-indicator.offline .conn-dot")
+    assert "animation: pulse-red" in offline
+>   assert "var(--color-red)" in offline
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: assert 'animation' not in '\n    backg...ion: none;\n'
+E     
+E     'animation' is contained here:
+E       red);
+E           animation: none;
+
+C:\Users\ADMIN\Desktop\�guia Trader\tests\test_ui_polish.py:152: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_ui_polish.py::test_sidebar_cards_have_smooth_transitions - ...
+FAILED tests/test_ui_polish.py::test_swap_targets_exist_in_the_markup - Asser...
+FAILED tests/test_ui_polish.py::test_offline_status_does_not_pulse - Assertio...
+3 failed, 15 passed in 0.23s

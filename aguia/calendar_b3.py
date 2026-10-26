@@ -1,7 +1,7 @@
 """B3 (Brazil) trading calendar, holidays, and schedule projection."""
 
 from datetime import date, datetime, timedelta, time
-from typing import List, Optional
+from typing import List, Optional, Set
 from zoneinfo import ZoneInfo
 
 from aguia.config import load_holidays
@@ -12,10 +12,15 @@ B3_TIMEZONE = ZoneInfo("America/Sao_Paulo")
 MARKET_OPEN_TIME = time(10, 0)
 MARKET_CLOSE_TIME = time(17, 0)
 
+_HOLIDAYS_SET: Optional[Set[str]] = None
 
-def get_b3_holidays() -> set[str]:
-    """Return set of B3 holiday date strings (YYYY-MM-DD)."""
-    return set(load_holidays())
+
+def get_b3_holidays() -> Set[str]:
+    """Return the set of B3 holiday dates (YYYY-MM-DD)."""
+    global _HOLIDAYS_SET
+    if _HOLIDAYS_SET is None:
+        _HOLIDAYS_SET = set(load_holidays())
+    return _HOLIDAYS_SET
 
 
 def is_b3_trading_day(d: date) -> bool:

@@ -2,26 +2,100 @@
 
 import io
 import threading
-from typing import Optional
+import time
+from typing import Any, Dict, Optional, Tuple
 
-import matplotlib
-matplotlib.use("Agg")  # Must be set before importing pyplot
-import matplotlib.pyplot as plt
-import mplfinance as mpf
 import pandas as pd
 
-from aguia.providers.yfinance_provider import obter_dados_mercado
+from aguia.brand import brand_group
+from aguia.config import get_yfinance_period
 
-_CHART_LOCK = threading.Lock()
+# Rendered charts are memoised: a PNG is deterministic for a given ticker and
+# timeframe, so re-rendering it on every request is pure waste.
+CACHE_TTL_SECONDS = 300
+_chart_cache: Dict[Tuple[str, str], Tuple[float, bytes]] = {}
+_chart_lock = threading.Lock()
+
+# Matplotlib is only imported on the first chart request, keeping the API
+# server start-up free of a heavy scientific stack.
+_mpl: Dict[str, Any] = {}
+
+
+def _load_matplotlib() -> None:
+    if _mpl:
+        return
+    import matplotlib
+
+    matplotlib.use("Agg")  # Must be set before importing pyplot
+    import matplotlib.pyplot as plt
+    import mplfinance as mpf
+
+    # Paleta da marca: a mesma do dashboard (config/brand_palette.json).
+    chart = brand_group("chart")
+    up = chart["up"]
+    down = chart["down"]
+
+    mc = mpf.make_marketcolors(
+        up=up,
+        down=down,
+        edge={"up": up, "down": down},
+        wick={"up": up, "down": down},
+        ohlc={"up": up, "down": down},
+        volume={"up": up, "down": down}
+    )
+    style = mpf.make_mpf_style(
+        base_mpf_style="nightclouds",
+        marketcolors=mc,
+        facecolor=chart["facecolor"],
+        edgecolor=chart["edgecolor"],
+        figcolor=chart["figcolor"],
+        gridcolor=chart["grid"],
+        gridstyle="--",
+        y_on_right=False
+    )
+    # Eixos e rótulos na mesma neutralidade da interface
+    style["xtick.color"] = chart["axisText"]
+    style["ytick.color"] = chart["axisText"]
+    style["axes.labelcolor"] = chart["axisText"]
+    style["axes.edgecolor"] = chart["edgecolor"]
+    # Borda das barras de volume também na cor da marca (tolerante a
+    # versões do mplfinance que não expõem a chave "vcedge").
+    try:
+        style["marketcolors"]["vcedge"]["up"] = chart["sma200"]
+        style["marketcolors"]["vcedge"]["down"] = chart["sma200"]
+    except (KeyError, TypeError):
+        pass
+    _mpl["plt"] = plt
+    _mpl["mpf"] = mpf
+    _mpl["style"] = style
+    _mpl["chart"] = chart
 
 
 def export_chart_png(
     ticker: str,
     timeframe: str = "1d",
-    periodo: str = "6m"
+    periodo: Optional[str] = None
 ) -> bytes:
     """Generate dark-themed candlestick chart PNG image as bytes."""
-    with _CHART_LOCK:
+    from aguia.providers.yfinance_provider import obter_dados_mercado
+
+    key = (ticker.upper(), timeframe.lower())
+    now = time.time()
+
+    with _chart_lock:
+        cached = _chart_cache.get(key)
+        if cached is not None and (now - cached[0]) < CACHE_TTL_SECONDS:
+            return cached[1]
+
+        _load_matplotlib()
+        plt = _mpl["plt"]
+        mpf = _mpl["mpf"]
+        style = _mpl["style"]
+        chart = _mpl["chart"]
+
+        if periodo is None:
+            periodo = get_yfinance_period(timeframe)
+
         df = obter_dados_mercado(ticker, periodo=periodo, intervalo=timeframe)
         if df.empty:
             raise ValueError(f"Dados não disponíveis para {ticker}")
@@ -34,41 +108,22 @@ def export_chart_png(
         # Slice last 65 candles for clear rendering
         chart_df = chart_df.tail(65)
 
-        # Define dark custom style
-        mc = mpf.make_marketcolors(
-            up="#22c55e",
-            down="#ef4444",
-            edge={"up": "#22c55e", "down": "#ef4444"},
-            wick={"up": "#22c55e", "down": "#ef4444"},
-            volume={"up": "#22c55e", "down": "#ef4444"}
-        )
-        s = mpf.make_mpf_style(
-            base_mpf_style="nightclouds",
-            marketcolors=mc,
-            facecolor="#060911",
-            edgecolor="#1e293b",
-            figcolor="#0a0e17",
-            gridcolor="#161f30",
-            gridstyle="--",
-            y_on_right=False
-        )
-
         # Additional plots (SMA200 and WMA30)
         addplots = []
         if "wma30" in chart_df.columns and chart_df["wma30"].notna().any():
             addplots.append(
-                mpf.make_addplot(chart_df["wma30"], color="#facc15", width=1.5, panel=0)
+                mpf.make_addplot(chart_df["wma30"], color=chart["wma30"], width=1.5, panel=0)
             )
         if "sma200" in chart_df.columns and chart_df["sma200"].notna().any():
             addplots.append(
-                mpf.make_addplot(chart_df["sma200"], color="#3b82f6", width=1.5, panel=0)
+                mpf.make_addplot(chart_df["sma200"], color=chart["sma200"], width=1.5, panel=0)
             )
 
         buf = io.BytesIO()
         fig, axes = mpf.plot(
             chart_df,
             type="candle",
-            style=s,
+            style=style,
             addplot=addplots if addplots else None,
             volume=True,
             returnfig=True,
@@ -79,7 +134,7 @@ def export_chart_png(
         # Add title and watermark
         axes[0].set_title(
             f"Águia Trader — {ticker} ({timeframe.upper()})",
-            color="#f1f5f9",
+            color=chart["title"],
             fontsize=12,
             fontweight="bold",
             loc="left",
@@ -90,7 +145,7 @@ def export_chart_png(
             "ÁGUIA TRADER",
             transform=axes[0].transAxes,
             fontsize=16,
-            color="#334155",
+            color=chart["watermark"],
             alpha=0.35,
             ha="right",
             va="bottom",
@@ -100,4 +155,8 @@ def export_chart_png(
         fig.savefig(buf, format="png", dpi=100, facecolor=fig.get_facecolor(), edgecolor="none")
         plt.close(fig)
         buf.seek(0)
-        return buf.getvalue()
+        payload = buf.getvalue()
+
+        _chart_cache[key] = (time.time(), payload)
+
+    return payload

@@ -1,0 +1,133 @@
+/* ============================================================
+   Estratégia MACRO JR - Botões e Modal
+   ============================================================ */
+.filter-pill-gear {
+    flex: 0 0 auto;
+    padding: 0.35rem 0.6rem;
+}
+
+.macro-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.macro-modal.active {
+    display: flex;
+}
+
+.macro-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 7, 15, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.macro-modal__content {
+    position: relative;
+    width: min(680px, 92vw);
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
+    border: 1px solid color-mix(in srgb, var(--brand-cyan) 40%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px color-mix(in srgb, var(--brand-cyan) 15%, transparent);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.macro-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border-card);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--brand-blue) 15%, transparent), transparent);
+}
+
+.macro-modal__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.macro-modal__close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.macro-modal__body {
+    padding: 1rem 1.2rem;
+}
+
+.macro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+}
+
+.macro-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.macro-field span {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.macro-field input {
+    background: var(--bg-deep);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    padding: 0.5rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.macro-hint {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.macro-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    border-top: 1px solid var(--border-card);
+    background: var(--bg-inset);
+}
+
+.macro-btn {
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.macro-btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border-strong);
+}
+
+.macro-btn-primary {
+    background: linear-gradient(90deg, var(--brand-blue-deep), var(--brand-cyan));
+    color: #001018;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--brand-cyan) 25%, transparent);
+}

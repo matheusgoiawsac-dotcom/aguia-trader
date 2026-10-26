@@ -52,7 +52,23 @@ def test_project_future_trading_days():
         assert d > date(2026, 10, 23)
 
 
-def test_refresh_tickers_job():
+@pytest.mark.network
+def test_is_b3_market_open_window():
+    # 2026-10-21 is a Wednesday: the regular session runs 10:00 -> 17:00 (SPT)
+    assert is_b3_market_open(datetime(2026, 10, 21, 11, 0))
+    assert is_b3_market_open(datetime(2026, 10, 21, 10, 0))
+    assert is_b3_market_open(datetime(2026, 10, 21, 17, 0))
+
+    # Before the open, after the close and on a weekend the market is closed
+    assert not is_b3_market_open(datetime(2026, 10, 21, 9, 59))
+    assert not is_b3_market_open(datetime(2026, 10, 21, 17, 1))
+    assert not is_b3_market_open(datetime(2026, 10, 24, 11, 0))
+    # Holiday (Confraternização Universal)
+    assert not is_b3_market_open(datetime(2026, 1, 1, 11, 0))
+
+
+@pytest.mark.network
+def test_refresh_tickers_job(require_network):
     res = refresh_tickers(["PETR4"], timeframe="1d", verbose=False)
     assert "PETR4" in res["success"]
     with get_connection() as conn:

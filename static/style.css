@@ -1,36 +1,95 @@
 /* ============================================================
    Águia Trader - Dashboard & Trade Ideas Theme
    Estética Dark Mode de Alta Fidelidade para Plataformas Financeiras
+   ------------------------------------------------------------
+   DESIGN SYSTEM
+   Todos os tokens abaixo espelham config/brand_palette.json, a
+   fonte unica de verdade da identidade da marca (extraida do logo
+   ÁGUIA TRADER Cibernética: azul elétrico + ciano + teal neon
+   sobre preto). tests/test_brand_palette.py garante que CSS, JSON,
+   SVG e Python nunca divirjam.
    ============================================================ */
 
 :root {
-    --bg-main: #060911;
-    --bg-surface: #0b101d;
-    --bg-card: #0f172a;
-    --bg-card-selected: rgba(37, 99, 235, 0.14);
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-card: #182236;
-    --border-active: #3b82f6;
+    /* ------------------------------------------------------------
+       Superfícies — família preto/azul-marinho do logo
+       ------------------------------------------------------------ */
+    --bg-main: #04070f;
+    --bg-surface: #080d18;
+    --bg-card: #0b1220;
+    --bg-elevated: #0f1a2e;
+    --bg-inset: #060a14;
+    --bg-panel: #10182c;
+    --bg-deep: #070b14;
+    --bg-card-selected: rgba(2, 170, 255, 0.13);
 
-    --color-green: #22c55e;
-    --color-green-light: #4ade80;
-    --color-green-bg: rgba(34, 197, 94, 0.14);
-    --color-green-border: rgba(34, 197, 94, 0.45);
+    /* ------------------------------------------------------------
+       Bordas
+       ------------------------------------------------------------ */
+    --border-subtle: rgba(168, 248, 255, 0.09);
+    --border-card: #101d33;
+    --border-strong: #1a2c47;
+    --border-muted: #1f2a3f;
+    --border-active: var(--brand-blue);
 
-    --color-red: #ef4444;
-    --color-red-light: #f87171;
-    --color-red-bg: rgba(239, 68, 68, 0.14);
-    --color-red-border: rgba(239, 68, 68, 0.45);
+    /* ------------------------------------------------------------
+       Paleta da Marca
+       ------------------------------------------------------------ */
+    --brand-blue: #02aaff;
+    --brand-blue-deep: #0590ff;
+    --brand-cyan: #09ffff;
+    --brand-cyan-soft: #a8f8ff;
+    --brand-teal: #00ffa6;
+    --brand-teal-deep: #00c98c;
+    --brand-navy: #0c2c48;
+    --brand-ink: #04121f;
 
-    --color-yellow: #facc15;
-    --color-blue: #3b82f6;
-    --color-cyan: #38bdf8;
+    /* ------------------------------------------------------------
+       Cores Semânticas — harmonizadas com o neon da marca
+       Alta = teal da marca · Baixa = coral neon
+       ------------------------------------------------------------ */
+    --color-green: var(--brand-teal);
+    --color-green-light: #6fffd1;
+    --color-green-bg: rgba(0, 255, 166, 0.12);
+    --color-green-border: rgba(0, 255, 166, 0.45);
+
+    --color-red: #ff3b6b;
+    --color-red-light: #ff85a6;
+    --color-red-bg: rgba(255, 59, 107, 0.12);
+    --color-red-border: rgba(255, 59, 107, 0.45);
+
+    --color-yellow: #ffcc4d;
+    --color-blue: var(--brand-blue);
+    --color-blue-light: #6ec8ff;
+    --color-blue-deep: #0277e8;
+    --color-cyan: var(--brand-cyan);
     --color-white: #ffffff;
 
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --text-dim: #475569;
+    /* ------------------------------------------------------------
+       Texto — neutro frio, legível sobre as superfícies escuras
+       ------------------------------------------------------------ */
+    --text-primary: #eef6ff;
+    --text-secondary: #9fb3c8;
+    --text-muted: #6b8199;
+    --text-dim: #4a5f75;
+    --text-bright: #c7d9ec;
+
+    /* ------------------------------------------------------------
+       Grade (eixos do gráfico)
+       ------------------------------------------------------------ */
+    --grid-line: #101a2e;
+
+    /* ------------------------------------------------------------
+       Gradientes da marca
+       ------------------------------------------------------------ */
+    --grad-brand: linear-gradient(135deg, var(--brand-blue-deep) 0%, var(--brand-blue) 48%, var(--brand-cyan) 100%);
+    --grad-progress: linear-gradient(90deg, var(--brand-blue-deep), var(--brand-blue), var(--brand-cyan), var(--brand-teal));
+    --grad-brand-soft: linear-gradient(135deg, color-mix(in srgb, var(--brand-blue) 16%, transparent), color-mix(in srgb, var(--brand-cyan) 5%, transparent));
+
+    /* ------------------------------------------------------------
+       Neutros técnicos (sombra e máscara)
+       ------------------------------------------------------------ */
+    --shadow-rgb: 0 0 0;
 
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -39,18 +98,105 @@
     --radius-md: 10px;
     --radius-lg: 14px;
     --radius-full: 9999px;
+
+    /* ------------------------------------------------------------
+       Coreografia Splash -> App
+       ------------------------------------------------------------
+       Fonte unica de verdade: o CSS usa estes tokens e o JS os le
+       via getComputedStyle, garantindo que a animacao e os timers
+       nunca saiam de sincronia.
+
+       --splash-hold     tempo com a splash fully visivel
+       --splash-exit     duracao do fade-out da splash
+       --reveal-delay    espera entre o inicio do fade-out e a revelacao
+       --reveal-duration duracao do scale-up do app
+       --reveal-fade     duracao do fade-in do app (mais rapido que o scale)
+       --reveal-scale    escala inicial do app (0.955 = quase imperceptivel)
+       ------------------------------------------------------------ */
+    --splash-hold: 5000ms;
+    --splash-exit: 450ms;
+    --reveal-delay: 70ms;
+    --reveal-duration: 620ms;
+    --reveal-fade: 260ms;
+    --reveal-scale: 0.955;
+
+    /* Curvas de easing: expo-out e o padrao de "premium fluidity" */
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Icon palette (mirrors aguia/icons.py) */
+    --icon-cyan: #00F0FF;
+    --icon-green: #22C55E;
+    --icon-gold: #FFB700;
+    --icon-orange: #F97316;
+    --icon-purple: #A855F7;
+    --icon-silver: #E2E8F0;
+    --icon-fallback-bg: #0B1220;
+    /* Glassmorphism border gradient */
+    --glass-border: linear-gradient(135deg, rgba(2,170,255,0.25), rgba(0,255,166,0.12));
+    /* Hover glow derived from brand cyan */
+    --glow-cyan-hover: color-mix(in srgb, var(--brand-cyan) 15%, transparent);
+    /* Neon icon glow */
+    --icon-glow: 0 0 5px rgba(0, 240, 255, 0.4);
+    /* Light theme hairline and surface text */
+    --hairline: rgba(255, 255, 255, 0.06);
+    --text-on-surface: #C7D9EC;
+    /* Scrollbar tokens */
+    --scrollbar-size: 6px;
+    --scrollbar-track: var(--bg-deep);
+    --scrollbar-thumb: color-mix(in srgb, var(--brand-blue) 30%, var(--bg-elevated));
+
+    /* Light-theme base values (declared here so :root[data-theme="light"]
+       can swap them without introducing new literal colours). */
+    --lt-bg-main: #eef4ff;
+    --lt-bg-surface: #ffffff;
+    --lt-bg-card: #ffffff;
+    --lt-bg-elevated: #f4f8ff;
+    --lt-bg-inset: #e8eff9;
+    --lt-border-card: #d3e0f0;
+    --lt-border-strong: #b3c8e0;
+    --lt-border-muted: #9fb3d0;
+    --lt-text-primary: #0a1a33;
+    --lt-text-secondary: #3a4f6b;
+    --lt-text-muted: #5a6f89;
+    --lt-text-dim: #7a8ba5;
+    --lt-hairline: rgba(10, 26, 51, 0.08);
+    --lt-text-on-surface: #1a2e4a;
+    --lt-icon-cyan: #0086a8;
+    --lt-icon-green: #1d8a4d;
+    --lt-icon-gold: #b8770e;
+    --lt-icon-purple: #7a3fa0;
+}
+
+/* Light theme tokens */
+:root[data-theme="light"] {
+    --bg-main: var(--lt-bg-main); --bg-surface: var(--lt-bg-surface); --bg-card: var(--lt-bg-card); --bg-elevated: var(--lt-bg-elevated); --bg-inset: var(--lt-bg-inset); --border-card: var(--lt-border-card); --border-strong: var(--lt-border-strong); --border-muted: var(--lt-border-muted); --text-primary: var(--lt-text-primary); --text-secondary: var(--lt-text-secondary); --text-muted: var(--lt-text-muted); --text-dim: var(--lt-text-dim); --hairline: var(--lt-hairline); --text-on-surface: var(--lt-text-on-surface); --icon-cyan: var(--lt-icon-cyan); --icon-green: var(--lt-icon-green); --icon-gold: var(--lt-icon-gold); --icon-purple: var(--lt-icon-purple);
+    --icon-cyan: var(--lt-icon-cyan);
+    --icon-green: var(--lt-icon-green);
+    --icon-gold: var(--lt-icon-gold);
+    --icon-purple: var(--lt-icon-purple);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
     line-height: 1.45;
     min-height: 100vh;
     overflow-x: hidden;
@@ -99,16 +245,16 @@ body {
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
-    border: 1.5px solid rgba(56, 189, 248, 0.4);
-    box-shadow: 0 0 16px rgba(14, 165, 233, 0.2), 0 4px 10px rgba(0, 0, 0, 0.4);
-    background: #090e18;
+    border: 1.5px solid color-mix(in srgb, var(--brand-blue) 45%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--brand-blue) 24%, transparent), 0 4px 10px rgb(var(--shadow-rgb) / 0.4);
+    background: var(--bg-inset);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .brand-logo-img:hover {
     transform: scale(1.05);
-    border-color: rgba(56, 189, 248, 0.8);
-    box-shadow: 0 0 24px rgba(14, 165, 233, 0.4), 0 6px 14px rgba(0, 0, 0, 0.5);
+    border-color: color-mix(in srgb, var(--brand-cyan) 85%, transparent);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--brand-cyan) 42%, transparent), 0 6px 14px rgb(var(--shadow-rgb) / 0.5);
 }
 
 .brand-text-container {
@@ -124,19 +270,19 @@ body {
 
 .brand-title {
     font-size: 1.65rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.5px;
     color: var(--text-primary);
 }
 
 .brand-title .brand-highlight {
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 .badge-phase {
-    background: rgba(37, 99, 235, 0.18);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    color: #60a5fa;
+    background: var(--grad-brand-soft);
+    border: 1px solid color-mix(in srgb, var(--brand-blue) 40%, transparent);
+    color: var(--color-blue-light);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.2rem 0.65rem;
@@ -157,7 +303,7 @@ body {
 }
 
 .snapshot-card {
-    background: #0c1220;
+    background: var(--bg-card);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
     padding: 0.45rem 0.85rem;
@@ -165,7 +311,7 @@ body {
     align-items: center;
     gap: 0.45rem;
     font-size: 0.8rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgb(var(--shadow-rgb) / 0.3);
 }
 
 .snapshot-label {
@@ -182,19 +328,19 @@ body {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    background: #0c1220;
+    background: var(--bg-card);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
     padding: 0.45rem 0.85rem;
     font-size: 0.78rem;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgb(var(--shadow-rgb) / 0.3);
     cursor: pointer;
     transition: border-color 0.2s ease;
 }
 
 .connection-indicator:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: color-mix(in srgb, var(--color-white) 20%, transparent);
 }
 
 .conn-dot {
@@ -210,24 +356,62 @@ body {
     box-shadow: 0 0 8px var(--color-red);
 }
 
+/* Theme toggle pill */
+.theme-toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-full);
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.theme-toggle-pill:hover {
+    border-color: color-mix(in srgb, var(--brand-cyan) 60%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--brand-cyan) 20%, transparent);
+}
+.theme-toggle-pill:active { transform: scale(0.95); }
+.theme-icon { font-size: 0.95rem; line-height: 1; }
+.theme-icon.sun { display: none; }
+.theme-icon.moon { display: inline; }
+:root[data-theme="light"] .theme-icon.sun { display: inline; }
+:root[data-theme="light"] .theme-icon.moon { display: none; }
+
 /* ============================================================
    Componente de Marca: Águia (Estilo Emoji 🦅) Sobrevoando Candles
    Integrado Estaticamente no Cabeçalho (Sem sobreposição fixed)
+   ------------------------------------------------------------
+   Toda a geometria é derivada de --eagle-scale, de modo que o
+   mesmo componente e as mesmas animações sirvam tanto o badge
+   compacto do cabeçalho (escala 1) quanto qualquer versão
+   ampliada, sem duplicar keyframes.
+
+   Paleta idêntica à do logo ÁGUIA TRADER Cibernética:
+   azul elétrico + ciano + teal neon sobre azul-marinho.
    ============================================================ */
 .eagle-soar-badge {
+    --eagle-scale: 1;
+
     position: static !important; /* Estritamente no fluxo estático do header */
-    width: 88px;
-    height: 48px;
-    background: rgba(12, 18, 32, 0.9);
-    border: 1px solid rgba(34, 197, 94, 0.35);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    width: calc(88px * var(--eagle-scale));
+    height: calc(48px * var(--eagle-scale));
+    background: color-mix(in srgb, var(--brand-navy) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-blue) 42%, transparent);
+    border-width: max(1px, calc(0.5px * var(--eagle-scale)));
+    border-radius: calc(8px * var(--eagle-scale));
+    box-shadow:
+        0 2px 8px rgb(var(--shadow-rgb) / 0.35),
+        0 0 calc(14px * var(--eagle-scale)) color-mix(in srgb, var(--brand-blue) 18%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 3px 5px 4px 5px;
+    padding: calc(3px * var(--eagle-scale)) calc(5px * var(--eagle-scale)) calc(4px * var(--eagle-scale));
     overflow: hidden !important; /* Corta rigorosamente animações dentro do card */
     user-select: none;
     flex-shrink: 0;
@@ -236,25 +420,27 @@ body {
 
 .eagle-soar-badge:hover {
     transform: translateY(-1px);
-    border-color: #22c55e;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 14px rgba(34, 197, 94, 0.25);
+    border-color: var(--brand-cyan);
+    box-shadow:
+        0 4px 14px rgb(var(--shadow-rgb) / 0.5),
+        0 0 calc(16px * var(--eagle-scale)) color-mix(in srgb, var(--brand-cyan) 35%, transparent);
 }
 
 /* Pista de Voo Horizontal Contida */
 .eagle-flight-track {
     position: relative;
     width: 100%;
-    height: 24px;
+    height: calc(24px * var(--eagle-scale));
     overflow: hidden !important; /* Contenção absoluta sem vazamento */
 }
 
 /* Elemento da Águia com Orientação para a Direita */
 .eagle-flyer {
     position: absolute;
-    top: 1px;
+    top: calc(1px * var(--eagle-scale));
     left: 0;
-    width: 26px;
-    height: 20px;
+    width: calc(26px * var(--eagle-scale));
+    height: calc(20px * var(--eagle-scale));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -266,34 +452,34 @@ body {
     width: 100%;
     height: 100%;
     display: block;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(0 calc(2px * var(--eagle-scale)) calc(3px * var(--eagle-scale)) rgb(var(--shadow-rgb) / 0.6));
 }
 
-/* Animação Contínua Restrita aos Limites do Card (88px) */
+/* Animação Contínua Restrita aos Limites do Card */
 @keyframes eagleFlyHorizontal {
     0% {
-        transform: translate(-30px, 3px) rotate(-1deg);
+        transform: translate(calc(-30px * var(--eagle-scale)), calc(3px * var(--eagle-scale))) rotate(-1deg);
         opacity: 0;
     }
     10% {
         opacity: 1;
-        transform: translate(-10px, 0px) rotate(2deg);
+        transform: translate(calc(-10px * var(--eagle-scale)), 0px) rotate(2deg);
     }
     30% {
-        transform: translate(14px, -2.5px) rotate(-1.5deg);
+        transform: translate(calc(14px * var(--eagle-scale)), calc(-2.5px * var(--eagle-scale))) rotate(-1.5deg);
     }
     55% {
-        transform: translate(38px, 1.5px) rotate(1.5deg);
+        transform: translate(calc(38px * var(--eagle-scale)), calc(1.5px * var(--eagle-scale))) rotate(1.5deg);
     }
     75% {
-        transform: translate(58px, -2px) rotate(-1deg);
+        transform: translate(calc(58px * var(--eagle-scale)), calc(-2px * var(--eagle-scale))) rotate(-1deg);
     }
     90% {
         opacity: 1;
-        transform: translate(74px, 1px) rotate(0.5deg);
+        transform: translate(calc(74px * var(--eagle-scale)), calc(1px * var(--eagle-scale))) rotate(0.5deg);
     }
     100% {
-        transform: translate(92px, 2px) rotate(0deg);
+        transform: translate(calc(92px * var(--eagle-scale)), calc(2px * var(--eagle-scale))) rotate(0deg);
         opacity: 0;
     }
 }
@@ -304,12 +490,12 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    gap: 8px;
-    height: 16px;
+    gap: calc(8px * var(--eagle-scale));
+    height: calc(16px * var(--eagle-scale));
     position: relative;
     z-index: 1;
-    border-top: 1px dashed rgba(34, 197, 94, 0.2);
-    padding-top: 1px;
+    border-top: 1px dashed color-mix(in srgb, var(--brand-blue) 26%, transparent);
+    padding-top: calc(1px * var(--eagle-scale));
 }
 
 .bull-candle {
@@ -321,31 +507,31 @@ body {
 }
 
 .bull-candle .bull-wick {
-    width: 1.5px;
-    background: #4ade80;
+    width: calc(1.5px * var(--eagle-scale));
+    background: var(--brand-teal);
     border-radius: 1px;
 }
 
 .bull-candle .bull-body {
-    width: 5px;
-    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    width: calc(5px * var(--eagle-scale));
+    background: linear-gradient(180deg, var(--brand-teal) 0%, var(--brand-teal-deep) 100%);
     border-radius: 1px;
-    box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 calc(5px * var(--eagle-scale)) color-mix(in srgb, var(--brand-teal) 50%, transparent);
 }
 
 /* Degrau 1 */
-.candle-step-1 .bull-wick { height: 2px; }
-.candle-step-1 .bull-body { height: 5px; }
+.candle-step-1 .bull-wick { height: calc(2px * var(--eagle-scale)); }
+.candle-step-1 .bull-body { height: calc(5px * var(--eagle-scale)); }
 .candle-step-1 { animation: candleStepPulse 2.2s ease-in-out infinite 0s; }
 
 /* Degrau 2 */
-.candle-step-2 .bull-wick { height: 2.5px; }
-.candle-step-2 .bull-body { height: 8px; }
+.candle-step-2 .bull-wick { height: calc(2.5px * var(--eagle-scale)); }
+.candle-step-2 .bull-body { height: calc(8px * var(--eagle-scale)); }
 .candle-step-2 { animation: candleStepPulse 2.2s ease-in-out infinite 0.35s; }
 
 /* Degrau 3 */
-.candle-step-3 .bull-wick { height: 3px; }
-.candle-step-3 .bull-body { height: 11px; }
+.candle-step-3 .bull-wick { height: calc(3px * var(--eagle-scale)); }
+.candle-step-3 .bull-body { height: calc(11px * var(--eagle-scale)); }
 .candle-step-3 { animation: candleStepPulse 2.2s ease-in-out infinite 0.7s; }
 
 @keyframes candleStepPulse {
@@ -355,7 +541,7 @@ body {
     }
     50% {
         transform: scaleY(1.18);
-        filter: brightness(1.25) drop-shadow(0 0 5px #22c55e);
+        filter: brightness(1.25) drop-shadow(0 0 5px var(--brand-teal));
     }
 }
 
@@ -382,7 +568,7 @@ body {
     flex-direction: column;
     gap: 0.85rem;
     box-sizing: border-box;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 25px rgb(var(--shadow-rgb) / 0.4);
     height: 924px; /* Altura exata nivelada ao final do card de Resumo */
     max-height: 924px; /* Trava absoluta de altura */
     overflow: hidden; /* Não permite estouro */
@@ -408,10 +594,10 @@ body {
     font-weight: 700;
     font-family: var(--font-mono);
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--color-white) 5%, transparent);
     padding: 0.15rem 0.5rem;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid color-mix(in srgb, var(--color-white) 5%, transparent);
 }
 
 /* Campo de Busca */
@@ -432,8 +618,8 @@ body {
 
 .search-box input {
     width: 100%;
-    background: #070b14;
-    border: 1px solid #1a2438;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
     padding: 0.55rem 0.85rem 0.55rem 2.3rem;
     color: var(--text-primary);
@@ -444,7 +630,7 @@ body {
 
 .search-box input:focus {
     border-color: var(--color-blue);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-blue) 20%, transparent);
 }
 
 .search-box input::placeholder {
@@ -459,27 +645,27 @@ body {
 
 .filter-pill {
     flex: 1;
-    background: #070b14;
-    border: 1px solid #1a2438;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
     padding: 0.35rem 0;
     font-size: 0.76rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s ease-in-out;
 }
 
 .filter-pill:hover {
     color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: color-mix(in srgb, var(--color-white) 20%, transparent);
 }
 
 .filter-pill.active {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.35);
+    background: var(--color-blue-deep);
+    border-color: var(--color-blue-deep);
+    color: var(--color-white);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--color-blue-deep) 35%, transparent);
 }
 
 /* Lista Rolável de Ações com Rolagem Interna Obrigatória */
@@ -500,39 +686,39 @@ body {
     width: 5px;
 }
 .stock-list-container::-webkit-scrollbar-track {
-    background: #070b14;
+    background: var(--bg-deep);
 }
 .stock-list-container::-webkit-scrollbar-thumb {
-    background: #1f2a3f;
-    border-radius: 4px;
+    background: var(--border-muted);
+    border-radius: 999px;
 }
 .stock-list-container::-webkit-scrollbar-thumb:hover {
-    background: #2d3d5b;
+    background: var(--border-strong);
 }
 
 /* Card Individual de Ação */
 .stock-card-item {
-    background: #090e1a;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-inset);
+    border: 1px solid color-mix(in srgb, var(--color-white) 5%, transparent);
     border-radius: var(--radius-md);
     padding: 0.7rem 0.9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    transition: all 0.25s ease-in-out;
 }
 
 .stock-card-item:hover {
-    background: #10182c;
-    border-color: rgba(59, 130, 246, 0.35);
+    background: var(--bg-elevated);
+    border-color: color-mix(in srgb, var(--color-blue) 35%, transparent);
     transform: translateX(2px);
 }
 
 .stock-card-item.selected {
-    border: 1.5px solid var(--border-active);
+    border-color: var(--border-active);
     background: var(--bg-card-selected);
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.18), inset 0 0 10px rgba(59, 130, 246, 0.06);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--color-blue) 18%, transparent), inset 0 0 10px color-mix(in srgb, var(--color-blue) 6%, transparent);
 }
 
 .stock-card-left {
@@ -544,7 +730,7 @@ body {
 .stock-ticker {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--color-white);
     letter-spacing: 0.3px;
 }
 
@@ -583,8 +769,8 @@ body {
 }
 
 .trend-badge.NEUTRO {
-    background: rgba(148, 163, 184, 0.12);
-    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-secondary) 35%, transparent);
     color: var(--text-secondary);
 }
 
@@ -631,14 +817,14 @@ body {
     border-radius: 50%;
 }
 
-.dot-green { background: var(--color-green); box-shadow: 0 0 6px rgba(34, 197, 94, 0.4); }
-.dot-yellow { background: var(--color-yellow); box-shadow: 0 0 6px rgba(250, 204, 21, 0.4); }
-.dot-blue { background: var(--color-blue); box-shadow: 0 0 6px rgba(59, 130, 246, 0.4); }
-.dot-white { background: var(--color-white); box-shadow: 0 0 6px rgba(255, 255, 255, 0.4); }
+.dot-green { background: var(--color-green); box-shadow: 0 0 6px color-mix(in srgb, var(--color-green) 40%, transparent); }
+.dot-yellow { background: var(--color-yellow); box-shadow: 0 0 6px color-mix(in srgb, var(--color-yellow) 40%, transparent); }
+.dot-blue { background: var(--color-blue); box-shadow: 0 0 6px color-mix(in srgb, var(--color-blue) 40%, transparent); }
+.dot-white { background: var(--color-white); box-shadow: 0 0 6px color-mix(in srgb, var(--color-white) 40%, transparent); }
 
 /* Card Principal do Gráfico */
 .chart-main-card {
-    background: #090e1a;
+    background: var(--bg-inset);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-lg);
     padding: 1.25rem 1.4rem;
@@ -646,7 +832,7 @@ body {
     flex-direction: column;
     gap: 0.85rem;
     position: relative;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 25px rgb(var(--shadow-rgb) / 0.4);
 }
 
 .chart-header {
@@ -657,9 +843,9 @@ body {
 
 .asset-headline {
     font-size: 1.35rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.3px;
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 /* Área de Plotagem / Stage do Canvas */
@@ -667,8 +853,8 @@ body {
     position: relative;
     width: 100%;
     height: 500px;
-    background: #060911;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: var(--bg-main);
+    border: 1px solid color-mix(in srgb, var(--color-white) 4%, transparent);
     border-radius: var(--radius-md);
     overflow: hidden;
 }
@@ -695,24 +881,24 @@ body {
 }
 
 .target-floating-badge.badge-bullish {
-    background: rgba(6, 78, 59, 0.85);
-    border: 1.5px solid #22c55e;
-    color: #4ade80;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+    background: color-mix(in srgb, var(--color-green) 16%, var(--brand-ink));
+    border: 1.5px solid var(--color-green);
+    color: var(--color-green-light);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--color-green) 20%, transparent);
 }
 
 .target-floating-badge.badge-bearish {
-    background: rgba(127, 29, 29, 0.85);
-    border: 1.5px solid #ef4444;
-    color: #f87171;
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    background: color-mix(in srgb, var(--color-red) 16%, var(--brand-ink));
+    border: 1.5px solid var(--color-red);
+    color: var(--color-red-light);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--color-red) 20%, transparent);
 }
 
 .target-floating-badge.badge-neutral {
-    background: rgba(30, 58, 138, 0.85);
-    border: 1.5px solid #3b82f6;
-    color: #60a5fa;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+    background: color-mix(in srgb, var(--color-blue-deep) 22%, var(--brand-ink));
+    border: 1.5px solid var(--color-blue);
+    color: var(--color-blue-light);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--color-blue) 20%, transparent);
 }
 
 /* Marca d'Água Oficial no Gráfico */
@@ -732,13 +918,13 @@ body {
 .watermark-logo-icon {
     width: 34px;
     height: 34px;
-    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    background: var(--grad-brand);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
-    box-shadow: 0 0 12px rgba(14, 165, 233, 0.35);
+    color: var(--color-white);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--brand-blue-deep) 35%, transparent);
 }
 
 .watermark-logo-icon svg {
@@ -753,17 +939,17 @@ body {
 
 .watermark-title {
     font-size: 1.15rem;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -0.5px;
     line-height: 1.1;
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 .watermark-sub {
     font-size: 0.62rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 2px;
-    color: #94a3b8;
+    color: var(--text-secondary);
 }
 
 /* ============================================================
@@ -776,39 +962,62 @@ body {
 }
 
 .quant-card {
-    background: linear-gradient(135deg, rgba(13, 19, 33, 0.85) 0%, rgba(9, 14, 25, 0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-inset) 100%);
+    border: 1px solid color-mix(in srgb, var(--color-white) 7%, transparent);
     border-radius: var(--radius-md);
     padding: 1.1rem 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     position: relative;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    box-shadow: 0 4px 18px rgb(var(--shadow-rgb) / 0.25), inset 0 1px 0 color-mix(in srgb, var(--color-white) 4%, transparent);
+    background-clip: padding-box;
+    border-image: var(--glass-border) border-box;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .quant-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(56, 189, 248, 0.08);
+    border-color: color-mix(in srgb, var(--color-white) 18%, transparent);
+    box-shadow: 0 0 24px var(--glow-cyan-hover);
+}
+.quant-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brand-cyan), transparent);
+    opacity: 0;
+    z-index: -1;
+}
+.reasoning-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brand-cyan), transparent);
+    opacity: 0;
+    z-index: -1;
+}
+.quant-card:hover::before, .reasoning-card:hover::before {
+    opacity: 0.9;
 }
 
 .card-metric-target:hover {
-    border-color: rgba(34, 197, 94, 0.45);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(34, 197, 94, 0.12);
+    border-color: var(--color-green-border);
+    box-shadow: 0 8px 24px rgb(var(--shadow-rgb) / 0.35), 0 0 18px var(--color-green-bg);
 }
 
 .card-metric-stop:hover {
-    border-color: rgba(239, 68, 68, 0.45);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(239, 68, 68, 0.12);
+    border-color: var(--color-red-border);
+    box-shadow: 0 8px 24px rgb(var(--shadow-rgb) / 0.35), 0 0 18px var(--color-red-bg);
 }
 
 .card-metric-payoff:hover {
-    border-color: rgba(56, 189, 248, 0.45);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(56, 189, 248, 0.12);
+    border-color: color-mix(in srgb, var(--color-cyan) 45%, transparent);
+    box-shadow: 0 8px 24px rgb(var(--shadow-rgb) / 0.35), 0 0 18px color-mix(in srgb, var(--color-cyan) 12%, transparent);
 }
 
 .quant-card-label {
@@ -821,7 +1030,7 @@ body {
 
 .quant-card-val {
     font-size: 1.55rem;
-    font-weight: 800;
+    font-weight: 700;
     font-family: var(--font-mono);
     color: var(--text-primary);
     letter-spacing: -0.5px;
@@ -855,7 +1064,7 @@ body {
    Resumo da IA (Card Inferior Perfeitamente Alinhado)
    ============================================================ */
 .reasoning-card {
-    background: linear-gradient(135deg, rgba(13, 19, 33, 0.85) 0%, rgba(9, 14, 25, 0.95) 100%);
+    background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-inset) 100%);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
     padding: 1.25rem 1.4rem;
@@ -864,7 +1073,9 @@ body {
     gap: 0.75rem;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background-clip: padding-box;
+    border-image: var(--glass-border) border-box;
+    box-shadow: 0 6px 20px rgb(var(--shadow-rgb) / 0.3);
 }
 
 .reasoning-header {
@@ -884,8 +1095,8 @@ body {
 .model-tag {
     font-size: 0.75rem;
     font-family: var(--font-mono);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--color-white) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-white) 5%, transparent);
     padding: 0.2rem 0.6rem;
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
@@ -893,14 +1104,352 @@ body {
 
 .reasoning-content {
     font-size: 0.92rem;
-    color: #cbd5e1;
+    color: var(--text-bright);
     line-height: 1.6;
+}
+
+/* Aviso de conformidade (exibido em toda análise) */
+.compliance-disclaimer {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.6rem;
+}
+
+/* Selo de dado simulado (sem mercado real) */
+.data-source-badge {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--color-yellow);
+    background: color-mix(in srgb, var(--color-yellow) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-yellow) 40%, transparent);
+    border-radius: var(--radius-sm);
+    padding: 0.18rem 0.5rem;
+}
+
+.stock-simulated {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.05rem 0.3rem;
+    align-self: flex-start;
+}
+
+/* ============================================================
+   Sprite SVG (marcas reutilizaveis via <use>)
+   ============================================================ */
+.svg-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* ============================================================
+   Tela de Splash (HTML + CSS puros, sem imagem/gif/vídeo)
+   ------------------------------------------------------------
+   - Fica sobreposta ao dashboard (position: fixed), que carrega
+     em segundo plano durante a exibição.
+   - A animação da Águia é a mesma do cabeçalho, ampliada via
+     --eagle-scale (nenhum keyframe duplicado).
+   - Encerramento 100% CSS: opacidade -> visibility hidden em 5s.
+   ============================================================ */
+.splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background:
+        radial-gradient(120% 75% at 50% 16%, color-mix(in srgb, var(--brand-blue) 12%, transparent) 0%, transparent 62%),
+        radial-gradient(95% 60% at 50% 104%, color-mix(in srgb, var(--brand-cyan) 8%, transparent) 0%, transparent 66%),
+        var(--bg-main);
+    /* Impede que a rolagem atravesse a splash para o dashboard */
+    touch-action: none;
+    overscroll-behavior: contain;
+    animation: splashExit var(--splash-exit) var(--ease-exit) var(--splash-hold) forwards;
+}
+
+/* Malha técnica sutil (gradientes puros, sem imagem) */
+.splash-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-white) 2.2%, transparent) 0 1px, transparent 1px 44px),
+        repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-white) 2.2%, transparent) 0 1px, transparent 1px 44px);
+    mask-image: radial-gradient(75% 60% at 50% 45%, rgb(var(--shadow-rgb)) 0%, transparent 100%);
+    -webkit-mask-image: radial-gradient(75% 60% at 50% 45%, rgb(var(--shadow-rgb)) 0%, transparent 100%);
+}
+
+.splash-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.1rem, 3.2vh, 1.9rem);
+    width: 100%;
+    max-width: 560px;
+    text-align: center;
+    /* Entrada: a splash se assenta no centro com um leve "pull-back" */
+    animation: splashEnter 700ms var(--ease-premium) both;
+}
+
+@keyframes splashEnter {
+    from { opacity: 0; transform: scale(1.04); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   Logo da Marca na Splash (centro da tela, com pulso)
+   ------------------------------------------------------------
+   - Exibe o logo real (logo.webp / logo.png): a identidade vista
+     durante o carregamento e a mesma do cabecalho.
+   - O pulso anima SOMENTE opacity -> roda no compositor, sem
+     repaint nem layout.
+   - O halo e um gradiente radial em pseudo-elemento: custo minimo.
+   ============================================================ */
+.splash-logo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    /* Limite duplo: vmin para telas largas, vh para telas baixas */
+    width: min(clamp(116px, 24vmin, 208px), 34vh);
+    aspect-ratio: 1 / 1;
+    animation: splashRise 0.9s var(--ease-premium) both;
+}
+
+/* Halo: respira em sincronia com o pulso do logo */
+.splash-logo-halo {
+    position: absolute;
+    inset: -26%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%,
+        color-mix(in srgb, var(--brand-cyan) 20%, transparent) 0%,
+        color-mix(in srgb, var(--brand-blue) 12%, transparent) 38%,
+        transparent 68%);
+    animation: splashHaloPulse 1.9s ease-in-out infinite;
+    will-change: opacity, transform;
+}
+
+/* Moldura: assina o logo como um chip da marca */
+.splash-logo-frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: clamp(8px, 1.6vmin, 14px);
+    border-radius: 26%;
+    background: radial-gradient(120% 120% at 50% 0%,
+        color-mix(in srgb, var(--brand-blue) 16%, transparent) 0%,
+        transparent 72%);
+    border: 1px solid color-mix(in srgb, var(--brand-cyan) 26%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--brand-blue) 10%, transparent),
+        0 18px 54px rgb(var(--shadow-rgb) / 0.6),
+        inset 0 0 34px color-mix(in srgb, var(--brand-cyan) 7%, transparent);
+}
+
+.splash-logo-frame picture {
+    display: block;
+    width: 100%;
+}
+
+.splash-logo-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 20%;
+    animation: splashLogoPulse 1.9s ease-in-out infinite;
+    will-change: opacity;
+}
+
+/* Pulso: oscilacao ritmica de opacidade (fading in / out) */
+@keyframes splashLogoPulse {
+    0%, 100% { opacity: 0.42; }
+    50% { opacity: 1; }
+}
+
+@keyframes splashHaloPulse {
+    0%, 100% { opacity: 0.32; transform: scale(0.94); }
+    50% { opacity: 0.9; transform: scale(1.06); }
+}
+
+/* Linha de status: Águia Trader System Loading + pontos animados */
+.splash-status {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: clamp(0.86rem, 2.6vw, 1.05rem);
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--text-primary);
+    text-shadow: 0 0 18px color-mix(in srgb, var(--color-cyan) 25%, transparent);
+    animation: splashRise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s both;
+}
+
+/* Os tres pontos ocupam a MESMA posicao (slot unico de 1ch) e sao
+   revelados em sequencia pela opacidade, produzindo o efeito "..." */
+.splash-dots {
+    position: relative;
+    display: inline-block;
+    width: 1ch;
+    height: 1em;
+    overflow: hidden;
+    vertical-align: baseline;
+}
+
+.splash-dot {
+    position: absolute;
+    left: 0;
+    bottom: 0.18em;
+    width: 0.26em;
+    height: 0.26em;
+    border-radius: 50%;
+    background: var(--brand-cyan);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--brand-cyan) 55%, transparent);
+    opacity: 0;
+    animation: splashDot1 1.8s ease-in-out infinite;
+}
+
+.splash-dot:nth-child(1) { animation-name: splashDot1; }
+.splash-dot:nth-child(2) { animation-name: splashDot2; }
+.splash-dot:nth-child(3) { animation-name: splashDot3; }
+
+/* Ciclo dos pontos: um por vez; ao completar o terceiro, tudo apaga
+   e o primeiro recomeça. */
+@keyframes splashDot1 {
+    0% { opacity: 0; transform: scale(0.6); }
+    4% { opacity: 1; transform: scale(1); }
+    27% { opacity: 1; transform: scale(1); }
+    33% { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes splashDot2 {
+    0% { opacity: 0; transform: scale(0.6); }
+    33% { opacity: 0; transform: scale(0.6); }
+    37% { opacity: 1; transform: scale(1); }
+    60% { opacity: 1; transform: scale(1); }
+    66% { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes splashDot3 {
+    0% { opacity: 0; transform: scale(0.6); }
+    66% { opacity: 0; transform: scale(0.6); }
+    70% { opacity: 1; transform: scale(1); }
+    93% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.6); }
+}
+
+/* Barra de progresso: 0% -> 100% em 5s */
+.splash-progress {
+    width: min(420px, 76vw);
+    animation: splashRise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.2s both;
+}
+
+.splash-progress-track {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-white) 6%, transparent);
+    overflow: hidden;
+}
+
+.splash-progress-fill {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: splashProgress 5s cubic-bezier(0.33, 0.9, 0.35, 1) forwards;
+    will-change: transform;
+}
+
+/* Gradiente em largura real: o scaleX apenas revela a faixa */
+.splash-progress-glow {
+    position: absolute;
+    inset: 0;
+    background: var(--grad-progress);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--brand-blue) 55%, transparent);
+}
+
+@keyframes splashProgress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+/* Assinatura técnica discreta */
+.splash-tagline {
+    font-family: var(--font-sans);
+    font-size: clamp(0.62rem, 1.6vw, 0.72rem);
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    animation: splashRise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s both;
+}
+
+@keyframes splashRise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Encerramento: a splash dissolve em direcao a camera (scale 1 -> 1.045)
+   enquanto o app surge por baixo, emergindo do centro do viewport. */
+@keyframes splashExit {
+    from { opacity: 1; visibility: visible; transform: scale(1); }
+    to { opacity: 0; visibility: hidden; transform: scale(1.045); }
+}
+
+/* ============================================================
+   Revelacao do App (Splash -> Dashboard)
+   ------------------------------------------------------------
+   O dashboard comeca em escala reduzida (--reveal-scale) e expande
+   ate preencher a viewport, com origem no centro EXACTO da viewport
+   (calculado em JS via transform-origin, ja que o wrapper pode ser
+   mais alto que a tela do usuario).
+
+   Estados aplicados no <html>:
+     .app-booting    estado inicial (app invisivel, aguardando a splash)
+     .app-revealing  transicao em curso (transform + opacity)
+
+   Apenas transform e opacity sao animados: nao ha layout nem paint,
+   e a transicao roda no compositor.
+   ============================================================ */
+.app-booting .dashboard-wrapper {
+    opacity: 0;
+    transform: scale(var(--reveal-scale));
+    transform-origin: 50% 50%;
+}
+
+.app-revealing .dashboard-wrapper {
+    opacity: 1;
+    transform: none;
+    will-change: transform, opacity;
+    transition:
+        transform var(--reveal-duration) var(--ease-premium) var(--reveal-delay),
+        opacity var(--reveal-fade) cubic-bezier(0.33, 0, 0.2, 1) var(--reveal-delay);
 }
 
 /* ============================================================
    Responsividade
    ============================================================ */
-@media (max-width: 1100px) {
+@media (max-width: 768px) {
     .main-layout {
         grid-template-columns: 1fr;
     }
@@ -938,3 +1487,207 @@ body {
         height: 380px;
     }
 }
+
+/* ============================================================
+   Preferencias de movimento reduzido
+   ------------------------------------------------------------
+   A splash continua aparecendo (é um estado de carregamento,
+   não decoração), mas sem voo, pulsos ou varredura de progresso.
+   A revelacao do app vira um simples fade, sem escala.
+   ============================================================ */
+
+/* ============================================================
+   Data swap fade entre ativos
+   ============================================================ */
+.data-swap-out {
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+}
+
+.data-swap-in {
+    animation: dataSwapFade 0.35s ease-out forwards;
+}
+
+@keyframes dataSwapFade {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Status pulse (conexao online)
+   ============================================================ */
+.connection-indicator.online .conn-dot::after {
+    animation: connPing 1.8s ease-out infinite;
+}
+
+@keyframes connPing {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(2.4); }
+}
+
+/* ============================================================
+   Icone de ativo (glow derivado do token)
+   ============================================================ */
+.asset-icon {
+    filter: drop-shadow(var(--icon-glow));
+}
+
+/* ============================================================
+   Tooltip do gráfico (glassmorphism)
+   ============================================================ */
+.chart-tooltip {
+    position: absolute;
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Valores numéricos: fonte mono e algarismos tabulares */
+.quant-card-val, .quant-card-sub, .stock-price, .stock-return, .snapshot-date, .asset-headline, .target-floating-badge, .chart-tooltip__value {
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --splash-hold: 1200ms;
+        --splash-exit: 300ms;
+        --reveal-delay: 0ms;
+        --reveal-duration: 1ms;
+        --reveal-fade: 200ms;
+        --reveal-scale: 1;
+    }
+
+    .splash-screen {
+        animation-duration: 300ms;
+        animation-delay: 1200ms;
+    }
+
+    .splash-inner {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .splash-logo {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Sem pulso: o logo fica estatico e legivel */
+    .splash-logo-img {
+        animation: none;
+        opacity: 0.94;
+    }
+
+    .splash-logo-halo {
+        animation: none;
+        opacity: 0.5;
+        transform: none;
+    }
+
+    .splash-status,
+    .splash-progress,
+    .splash-tagline {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .splash-progress-fill {
+        animation-duration: 1.2s;
+        transition: none;
+    }
+
+    .splash-dot {
+        animation: none;
+        opacity: 1;
+    }
+
+    .eagle-flyer,
+    .bull-candle {
+        animation: none;
+    }
+
+    .eagle-flyer {
+        opacity: 1;
+        transform: translateX(calc(28px * var(--eagle-scale)));
+    }
+
+    .app-booting .dashboard-wrapper {
+        transform: none;
+    }
+
+    .connection-indicator.online .conn-dot::after {
+        animation: none;
+    }
+
+    .data-swap-out {
+        opacity: 0;
+        transform: none;
+    }
+
+    .data-swap-in {
+        animation: none;
+        transform: none;
+    }
+}
+
+/* Modal overlay hidden by default */
+.modal-overlay { display: none; }
+.modal-overlay.open { display: flex; }
+
+/* Mode bar */
+.mode-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.75rem 1rem; border: 1px solid var(--border-card); border-radius: var(--radius-lg); background: var(--bg-surface); }
+.mode-segment { display: inline-flex; align-items: center; gap: 0.5rem; }
+.mode-btn { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-card); border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; }
+.mode-btn.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+.mode-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+.mode-context { font-size: 0.85rem; color: var(--text-secondary); text-align: center; flex: 1; }
+.mode-intervals { display: inline-flex; align-items: center; gap: 0.35rem; }
+.mode-interval-label { font-size: 0.75rem; color: var(--text-muted); margin-right: 0.25rem; }
+.mode-interval { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-muted); }
+.mode-interval.active { background: var(--brand-blue); color: #fff; }
+
+/* Operational tips card */
+.operational-tips { background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+
+/* Force splash centering */
+.splash-inner { margin: 0 auto; }
+.splash-logo { margin: 0 auto; }
+.splash-progress, .splash-progressbar { margin: 0 auto; }
+
+/* ===== Splash Cyberpunk Elite Override ===== */
+.splash-screen { background: #070a13 !important; background-image: radial-gradient(circle at 50% 40%, rgba(4,157,250,0.12), transparent 60%), linear-gradient(rgba(14,218,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,218,255,0.04) 1px, transparent 1px) !important; background-size: auto, 40px 40px, 40px 40px !important; }
+.splash-inner { background: rgba(15,23,42,0.65) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: 1px solid rgba(0,240,255,0.3) !important; box-shadow: 0 0 35px rgba(0,240,255,0.15) !important; border-radius: 16px !important; padding: 2.5rem 3rem !important; }
+.splash-logo { animation: splashFloat 3s ease-in-out infinite !important; filter: drop-shadow(0 0 18px rgba(14,218,255,0.6)) !important; }
+@keyframes splashFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.splash-status-text { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+.splash-tagline { font-family: 'JetBrains Mono', monospace !important; letter-spacing: 0.12em !important; color: #94a3b8 !important; }
+.splash-progress-track { background: rgba(15,23,42,0.6) !important; border: 1px solid rgba(0,240,255,0.3) !important; border-radius: 999px !important; overflow: hidden !important; }
+.splash-progress-fill { background: linear-gradient(90deg, #049DFA, #0EDAFF) !important; box-shadow: 0 0 15px rgba(14,218,255,0.6) !important; }
+
+/* Glassmorphism cards & tips */
+.metric-card, .quant-card, .operational-tips { background: rgba(15,23,42,0.65) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(0,240,255,0.2) !important; border-radius: 16px !important; box-shadow: 0 0 25px rgba(0,240,255,0.08) !important; }
+.metric-value, .quant-value { font-family: 'JetBrains Mono', monospace !important; }
+
+/* Splash centering fix */
+.splash-inner, .splash-container { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
+.splash-logo, .splash-logo img, .splash-logo-img { margin: 0 auto !important; display: block !important; }
+.splash-progress, .splash-progress-track, .progress-bar { width: 300px !important; margin: 15px auto 0 auto !important; }
+.splash-status, .splash-status-text, .splash-tagline { text-align: center !important; width: 100% !important; }
+
+/* Splash organic cyberpunk refinement */
+.splash-inner, .splash-container { border-radius: 36px !important; box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(0,240,255,0.12), inset 0 0 20px rgba(0,240,255,0.05) !important; border: 1px solid rgba(0,240,255,0.25) !important; }
+.splash-logo { background: rgba(4,157,250,0.08) !important; border-radius: 24px !important; padding: 16px !important; animation: splashFloat 3s ease-in-out infinite !important; filter: drop-shadow(0 0 20px rgba(0,240,255,0.6)) !important; }
+.splash-status-text { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: 1px !important; }
+.splash-tagline { font-family: 'JetBrains Mono', monospace !important; }
+.splash-progress-track { border-radius: 12px !important; background: rgba(15,23,42,0.6) !important; }
+.splash-progress-fill { background: linear-gradient(90deg, #00F0FF, #7000FF, #00F0FF) !important; box-shadow: 0 0 20px rgba(0,240,255,0.6) !important; border-radius: 12px !important; }
+@keyframes progressShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }

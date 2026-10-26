@@ -1,6 +1,5 @@
 """Tests for anti-hallucination number validator and facts hashing."""
 
-import pytest
 from aguia.explain.validator import (
     extract_numbers,
     validate_numbers,

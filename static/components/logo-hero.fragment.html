@@ -1,0 +1,111 @@
+<!--
+  ============================================================================
+  LOGO HERO — componente reutilizável (Águia Trader)
+  ============================================================================
+  MARKUP CANÔNICO. Este arquivo é a fonte única de verdade do componente:
+  a splash (static/index.html) e a preview (static/components/logo-hero.html)
+  usam exatamente este markup. tests/test_logo_hero.py garante que as cópias
+  nunca divirjam.
+
+  Estrutura em camadas (o PNG é a base; os efeitos são overlays):
+
+    z0  .logo-hero          container (contain: layout style + isolation)
+    z1  .logo-hero__base    logo PNG/WebP
+    z2  .logo-hero__aura    halo radial externo
+    z3  .logo-hero__fx      overlay SVG (anel, circuitos, olho, candles, faíscas)
+
+  Geometria medida sobre o artwork real (viewBox 0 0 256 256):
+    anel sensor  -> centro (126, 117), raio 91
+    olho         -> (150, 62)
+    circuitos    -> três strands na garganta (x 148..199, y 84..124)
+    candles      -> seis corpos ascendentes (x 161..214, y 58..139)
+
+  Os caminhos dos circuitos ficam em <defs> e são instanciados com <use>,
+  de modo que o traço largo (glow) e o núcleo fino compartilhem exatamente
+  a mesma geometria.
+
+  Estilos: static/components/logo-hero.css
+  ============================================================================
+-->
+<div class="logo-hero">
+    <!-- Camada 1: logo base -->
+    <picture>
+        <source srcset="logo.webp" type="image/webp">
+        <img class="logo-hero__base" src="logo.png" alt="Águia Trader"
+             width="256" height="256" decoding="async" fetchpriority="high">
+    </picture>
+
+    <!-- Camada 2: aura externa -->
+    <span class="logo-hero__aura" aria-hidden="true"></span>
+
+    <!-- Camada 3: efeitos em SVG -->
+    <svg class="logo-hero__fx" viewBox="0 0 256 256" aria-hidden="true"
+         focusable="false" preserveAspectRatio="xMidYMid meet">
+        <defs>
+            <!-- Luminescência do olho -->
+            <radialGradient id="aguia-hero-eye" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                <stop offset="26%" stop-color="#09FFFF" stop-opacity="0.85"/>
+                <stop offset="62%" stop-color="#09FFFF" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="#09FFFF" stop-opacity="0"/>
+            </radialGradient>
+
+            <!-- Gradiente das candles: azul elétrico -> teal da marca -->
+            <linearGradient id="aguia-hero-candle" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#02AAFF"/>
+                <stop offset="52%" stop-color="#09FFFF"/>
+                <stop offset="100%" stop-color="#00FFA6"/>
+            </linearGradient>
+
+            <!-- Geometria dos circuitos internos (garganha e penas) -->
+            <path id="aguia-hero-circuit-1" d="M150 86 C148 98 150 110 152 124"/>
+            <path id="aguia-hero-circuit-2" d="M196 84 C194 97 193 109 192 122"/>
+            <path id="aguia-hero-circuit-3" d="M174 102 C172 110 172 118 171 124"/>
+        </defs>
+
+        <!-- Anel sensor: trilho tracejado + arco viajante -->
+        <circle class="logo-hero__ring-track" cx="126" cy="117" r="91" pathLength="360"/>
+        <g class="logo-hero__ring-travel">
+            <circle class="logo-hero__ring-glow" cx="126" cy="117" r="91" pathLength="360"/>
+            <circle class="logo-hero__ring-arc" cx="126" cy="117" r="91" pathLength="360"/>
+        </g>
+        <!-- Circuitos internos (garganta e penas inferiores) -->
+        <g class="logo-hero__circuits">
+            <g class="logo-hero__circuit-track">
+                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-1"/>
+                <use class="logo-hero__circuit" href="#aguia-hero-circuit-1"/>
+            </g>
+            <g class="logo-hero__circuit-track">
+                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-2"/>
+                <use class="logo-hero__circuit" href="#aguia-hero-circuit-2"/>
+            </g>
+            <g class="logo-hero__circuit-track">
+                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-3"/>
+                <use class="logo-hero__circuit" href="#aguia-hero-circuit-3"/>
+            </g>
+        </g>
+
+        <!-- Olho com luminescência interna -->
+        <g class="logo-hero__eye">
+            <circle class="logo-hero__eye-halo" cx="150" cy="62" r="15"/>
+            <circle class="logo-hero__eye-core" cx="150" cy="62" r="2.6"/>
+        </g>
+
+        <!-- Candles ascendentes (pulso em cascata) -->
+        <g class="logo-hero__candles">
+            <rect class="logo-hero__candle" x="161" y="127" width="5" height="10" rx="2.5"/>
+            <rect class="logo-hero__candle" x="177" y="104" width="5" height="23" rx="2.5"/>
+            <rect class="logo-hero__candle" x="185" y="109" width="5" height="10" rx="2.5"/>
+            <rect class="logo-hero__candle" x="193" y="87" width="5" height="16" rx="2.5"/>
+            <rect class="logo-hero__candle" x="201" y="73" width="5" height="33" rx="2.5"/>
+            <rect class="logo-hero__candle" x="209" y="63" width="5" height="27" rx="2.5"/>
+        </g>
+
+        <!-- Faíscas elétricas sobre o anel -->
+        <g class="logo-hero__sparks">
+            <path class="logo-hero__spark" d="M167 46 L172 36 L174 42 L179 31"/>
+            <path class="logo-hero__spark" d="M199 158 L205 166 L203 172 L210 180"/>
+            <path class="logo-hero__spark" d="M44 78 L38 86 L42 91 L34 99"/>
+        </g>
+    </svg>
+</div>

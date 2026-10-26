@@ -1,13 +1,14 @@
 """Tests for configuration loader and SQLite WAL database layer."""
 
 from pathlib import Path
-import sqlite3
-import pytest
 
 from aguia.config import load_config, load_universe, load_holidays
 from aguia.db import (
     init_db,
     get_connection,
+    get_pooled_connection,
+    pooled_db,
+    prune_history,
     upsert_candles,
     upsert_setup,
     upsert_forecasts,
@@ -134,5 +135,128 @@ def test_db_meta_helpers(tmp_path: Path):
         set_meta(conn, "last_refresh_1d", "2026-10-21T19:00:00Z")
         conn.commit()
         assert get_meta(conn, "last_refresh_1d") == "2026-10-21T19:00:00Z"
+    finally:
+        conn.close()
+
+
+def test_db_upsert_setup_forecasts_and_explanations(tmp_path: Path):
+    db_file = tmp_path / "test.db"
+    init_db(db_file)
+
+    conn = get_connection(db_file)
+    try:
+        upsert_setup(conn, {
+            "ticker": "PETR4",
+            "timeframe": "1d",
+            "asof": "2026-10-21T18:00:00Z",
+            "signal": "ALTA",
+            "entry": 38.45,
+            "target": 40.10,
+            "stop": 37.18,
+            "payoff": 1.30,
+            "ret": 0.043,
+            "atr_pct": 0.022,
+            "p_up": 0.65,
+        })
+        upsert_forecasts(conn, [{
+            "ticker": "PETR4",
+            "timeframe": "1d",
+            "asof": "2026-10-21T18:00:00Z",
+            "step": 1,
+            "horizon": 14,
+            "ts_target": "2026-11-04",
+            "p10": 36.10,
+            "median": 38.90,
+            "p90": 41.80,
+            "p_up": 0.65,
+            "n_samples": 10,
+            "model": "FakePredictor",
+        }])
+        upsert_explanation(conn, {
+            "ticker": "PETR4",
+            "timeframe": "1d",
+            "asof": "2026-10-21T18:00:00Z",
+            "rationale": "Racional determinístico de teste.",
+            "source": "deterministico",
+            "model": "deterministico",
+            "facts_hash": "abc123",
+        })
+        conn.commit()
+
+        row = conn.execute("SELECT * FROM setups WHERE ticker = 'PETR4'").fetchone()
+        assert row["signal"] == "ALTA"
+        assert row["payoff"] == 1.30
+
+        fc = conn.execute("SELECT * FROM forecasts WHERE ticker = 'PETR4'").fetchone()
+        assert fc["median"] == 38.90
+        assert fc["n_samples"] == 10
+
+        ex = conn.execute("SELECT * FROM explanations WHERE ticker = 'PETR4'").fetchone()
+        assert ex["source"] == "deterministico"
+        assert ex["facts_hash"] == "abc123"
+
+        # Re-running the upserts must not duplicate rows
+        upsert_setup(conn, {
+            "ticker": "PETR4",
+            "timeframe": "1d",
+            "asof": "2026-10-21T18:00:00Z",
+            "signal": "NEUTRO",
+            "entry": 38.45,
+            "target": 40.10,
+            "stop": 37.18,
+            "payoff": 1.30,
+            "ret": 0.043,
+            "atr_pct": 0.022,
+            "p_up": 0.50,
+        })
+        conn.commit()
+        assert conn.execute("SELECT COUNT(1) FROM setups").fetchone()[0] == 1
+    finally:
+        conn.close()
+
+
+def test_db_pooled_connection_is_reused_per_thread(tmp_path: Path):
+    db_file = tmp_path / "test.db"
+    init_db(db_file)
+
+    with pooled_db(db_file) as conn:
+        conn.execute("SELECT 1").fetchone()
+
+    with pooled_db(db_file) as conn:
+        conn.execute("SELECT 1").fetchone()
+
+    assert get_pooled_connection(db_file) is get_pooled_connection(db_file)
+
+
+def test_db_prune_history_keeps_latest_rows(tmp_path: Path):
+    db_file = tmp_path / "test.db"
+    init_db(db_file)
+
+    conn = get_connection(db_file)
+    try:
+        for i in range(30):
+            asof = f"2026-10-{i + 1:02d}T00:00:00Z"
+            upsert_setup(conn, {
+                "ticker": "PETR4", "timeframe": "1d", "asof": asof,
+                "signal": "ALTA", "entry": 38.0, "target": 40.0, "stop": 37.0,
+                "payoff": 1.2, "ret": 0.05, "atr_pct": 0.02, "p_up": 0.65,
+            })
+            upsert_explanation(conn, {
+                "ticker": "PETR4", "timeframe": "1d", "asof": asof,
+                "rationale": "r", "source": "deterministico",
+                "model": "deterministico", "facts_hash": f"h{i}",
+            })
+        conn.commit()
+
+        prune_history(conn, "PETR4", "1d", keep=20)
+
+        assert conn.execute("SELECT COUNT(1) FROM setups").fetchone()[0] == 20
+        assert conn.execute("SELECT COUNT(1) FROM explanations").fetchone()[0] == 20
+
+        # The newest snapshot must survive the pruning
+        latest = conn.execute(
+            "SELECT asof FROM setups ORDER BY asof DESC LIMIT 1"
+        ).fetchone()[0]
+        assert latest == "2026-10-30T00:00:00Z"
     finally:
         conn.close()

@@ -29,3 +29,6 @@ htmlcov/
 *.zip
 RayCodes_Kronos-main/
 img/
+
+# Local archive of superseded artifacts
+_archive/

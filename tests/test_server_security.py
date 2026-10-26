@@ -91,7 +91,8 @@ def test_api_acoes_endpoint_http(running_server: str):
         assert "VALE3" in tickers
 
 
-def test_api_analise_endpoint_http(running_server: str):
+@pytest.mark.network
+def test_api_analise_endpoint_http(running_server: str, require_network):
     url = f"{running_server}/api/analise?ticker=PETR4"
     with urllib.request.urlopen(url) as resp:
         assert resp.status == 200
@@ -105,7 +106,8 @@ def test_api_analise_endpoint_http(running_server: str):
         assert len(data["dados"]["candles"]) > 0
 
 
-def test_api_chart_png_endpoint_http(running_server: str):
+@pytest.mark.network
+def test_api_chart_png_endpoint_http(running_server: str, require_network):
     url = f"{running_server}/api/chart.png?ticker=PETR4"
     with urllib.request.urlopen(url) as resp:
         assert resp.status == 200

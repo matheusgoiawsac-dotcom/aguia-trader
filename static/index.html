@@ -1,25 +1,194 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="app-booting" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Águia Trader</title>
-    <!-- Google Fonts Inter & JetBrains Mono -->
+    <!-- Google Fonts Plus Jakarta Sans & JetBrains Mono (carregamento nao bloqueante) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     <!-- Estilos CSS3 com cache buster -->
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="components/logo-hero.css">
+    <link rel="stylesheet" href="style.css?v=3.4">
+    <!-- Sem JS: revela o app imediatamente (a splash some sozinha via CSS) -->
+    <noscript><style>.app-booting .dashboard-wrapper{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
+    <!-- Sprite SVG: emblema da Aguia na paleta da marca (azul/ciano/teal) -->
+    <svg class="svg-sprite" width="0" height="0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="eagleBodyGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0C3A5E"/>
+                <stop offset="0.55" stop-color="#0590FF"/>
+                <stop offset="1" stop-color="#09FFFF"/>
+            </linearGradient>
+            <linearGradient id="eagleWingGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#02AAFF"/>
+                <stop offset="1" stop-color="#0CCDFF"/>
+            </linearGradient>
+            <linearGradient id="eagleCrestGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0590FF"/>
+                <stop offset="1" stop-color="#00FFA6"/>
+            </linearGradient>
+            <linearGradient id="eagleHeadGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#02AAFF"/>
+                <stop offset="1" stop-color="#A8F8FF"/>
+            </linearGradient>
+        </defs>
+        <symbol id="eagle-mark" viewBox="0 0 36 28" fill="none">
+            <!-- Cauda -->
+            <path d="M5 16L1 21L7 22L9 18Z" fill="#0C2C48" stroke="#02AAFF" stroke-width="0.6" stroke-linejoin="round"/>
+            <path d="M3 18L1 21L5 21.5L6 19Z" fill="#09FFFF" opacity="0.85"/>
+            <!-- Crista -->
+            <path d="M10 13L16 2L20 4L16 14Z" fill="url(#eagleCrestGrad)"/>
+            <path d="M12 10L17 3L19 4.5L14 12Z" fill="#09FFFF" opacity="0.9"/>
+            <!-- Garra -->
+            <path d="M14 19L13 22L16 22L16 19Z" fill="#00FFA6"/>
+            <!-- Corpo -->
+            <path d="M9 15C9 13 11 12 14 12L23 13C24 15 23 18 20 19C16 20 11 19 9 15Z" fill="url(#eagleBodyGrad)"/>
+            <!-- Asas -->
+            <path d="M14 13L24 1L28 4L20 16L15 15Z" fill="url(#eagleWingGrad)"/>
+            <path d="M16 11L25 2L27 4L19 14L16 12Z" fill="#02AAFF"/>
+            <path d="M18 9L26 3L27.5 4.5L20 13Z" fill="#09FFFF" opacity="0.92"/>
+            <!-- Peito -->
+            <path d="M13 13C16 13 20 14 22 15C19 17 15 17 13 15Z" fill="#04121F"/>
+            <!-- Cabeca -->
+            <path d="M22 13C21 11 22 9 24 8C26 7 29 8 31 10C31 12 30 14 28 15C25 15 23 14 22 13Z" fill="url(#eagleHeadGrad)"/>
+            <path d="M22 13C23 13.5 25 14.5 28 14.5C26 15 23.5 14.5 22 13Z" fill="#A8F8FF" opacity="0.85"/>
+            <!-- Olho -->
+            <circle cx="28" cy="10" r="1.1" fill="#04121F"/>
+            <circle cx="28.3" cy="9.8" r="0.4" fill="#FFFFFF"/>
+            <!-- Bico -->
+            <path d="M30 10.5C32 10.5 35 11 35.5 12.5C35 13.5 32.5 14 30.5 13.5L30 10.5Z" fill="#00FFA6"/>
+            <path d="M33 12C34.5 12.2 35.5 12.5 35 13.5C33.5 13.5 32 13 31 12.5L33 12Z" fill="#00C98C"/>
+        </symbol>
+    </svg>
+
+<!-- Tela de Splash: sobreposicao efemera, 100% HTML + CSS -->
+<div class="splash-screen" id="splashScreen" role="status" aria-live="polite" aria-label="Carregando o Aguia Trader">
+    <div class="splash-inner">
+        <div class="splash-logo">
+            <span class="splash-logo-halo" aria-hidden="true"></span>
+            <div class="splash-logo-frame">
+                <div class="logo-hero">
+                    <!-- Camada 1: logo base -->
+                    <picture>
+                        <source srcset="logo.webp" type="image/webp">
+                        <img class="logo-hero__base splash-logo-img" src="logo.png" alt="Águia Trader"
+                             width="256" height="256" decoding="async" fetchpriority="high">
+                    </picture>
+
+                    <!-- Camada 2: aura externa -->
+                    <span class="logo-hero__aura" aria-hidden="true"></span>
+
+                    <!-- Camada 3: efeitos em SVG -->
+                    <svg class="logo-hero__fx" viewBox="0 0 256 256" aria-hidden="true"
+                         focusable="false" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <!-- Luminescência do olho -->
+                            <radialGradient id="aguia-hero-eye" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                                <stop offset="26%" stop-color="#09FFFF" stop-opacity="0.85"/>
+                                <stop offset="62%" stop-color="#09FFFF" stop-opacity="0.28"/>
+                                <stop offset="100%" stop-color="#09FFFF" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <!-- Gradiente das candles: azul elétrico -> teal da marca -->
+                            <linearGradient id="aguia-hero-candle" x1="0" y1="1" x2="0" y2="0">
+                                <stop offset="0%" stop-color="#02AAFF"/>
+                                <stop offset="52%" stop-color="#09FFFF"/>
+                                <stop offset="100%" stop-color="#00FFA6"/>
+                            </linearGradient>
+
+                            <!-- Geometria dos circuitos internos (garganha e penas) -->
+                            <path id="aguia-hero-circuit-1" d="M150 86 C148 98 150 110 152 124"/>
+                            <path id="aguia-hero-circuit-2" d="M196 84 C194 97 193 109 192 122"/>
+                            <path id="aguia-hero-circuit-3" d="M174 102 C172 110 172 118 171 124"/>
+                        </defs>
+
+                        <!-- Anel sensor: trilho tracejado + arco viajante -->
+                        <circle class="logo-hero__ring-track" cx="126" cy="117" r="91" pathLength="360"/>
+                        <g class="logo-hero__ring-travel">
+                            <circle class="logo-hero__ring-glow" cx="126" cy="117" r="91" pathLength="360"/>
+                            <circle class="logo-hero__ring-arc" cx="126" cy="117" r="91" pathLength="360"/>
+                        </g>
+                        <!-- Circuitos internos (garganta e penas inferiores) -->
+                        <g class="logo-hero__circuits">
+                            <g class="logo-hero__circuit-track">
+                                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-1"/>
+                                <use class="logo-hero__circuit" href="#aguia-hero-circuit-1"/>
+                            </g>
+                            <g class="logo-hero__circuit-track">
+                                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-2"/>
+                                <use class="logo-hero__circuit" href="#aguia-hero-circuit-2"/>
+                            </g>
+                            <g class="logo-hero__circuit-track">
+                                <use class="logo-hero__circuit-glow" href="#aguia-hero-circuit-3"/>
+                                <use class="logo-hero__circuit" href="#aguia-hero-circuit-3"/>
+                            </g>
+                        </g>
+
+                        <!-- Olho com luminescência interna -->
+                        <g class="logo-hero__eye">
+                            <circle class="logo-hero__eye-halo" cx="150" cy="62" r="15"/>
+                            <circle class="logo-hero__eye-core" cx="150" cy="62" r="2.6"/>
+                        </g>
+
+                        <!-- Candles ascendentes (pulso em cascata) -->
+                        <g class="logo-hero__candles">
+                            <rect class="logo-hero__candle" x="161" y="127" width="5" height="10" rx="2.5"/>
+                            <rect class="logo-hero__candle" x="177" y="104" width="5" height="23" rx="2.5"/>
+                            <rect class="logo-hero__candle" x="185" y="109" width="5" height="10" rx="2.5"/>
+                            <rect class="logo-hero__candle" x="193" y="87" width="5" height="16" rx="2.5"/>
+                            <rect class="logo-hero__candle" x="201" y="73" width="5" height="33" rx="2.5"/>
+                            <rect class="logo-hero__candle" x="209" y="63" width="5" height="27" rx="2.5"/>
+                        </g>
+
+                        <!-- Faíscas elétricas sobre o anel -->
+                        <g class="logo-hero__sparks">
+                            <path class="logo-hero__spark" d="M167 46 L172 36 L174 42 L179 31"/>
+                            <path class="logo-hero__spark" d="M199 158 L205 166 L203 172 L210 180"/>
+                            <path class="logo-hero__spark" d="M44 78 L38 86 L42 91 L34 99"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <p class="splash-status">
+            <span class="splash-status-text">Águia Trader System Loading</span>
+            <span class="splash-dots" aria-hidden="true">
+                <span class="splash-dot"></span>
+                <span class="splash-dot"></span>
+                <span class="splash-dot"></span>
+            </span>
+        </p>
+
+        <div class="splash-progress" aria-hidden="true">
+            <div class="splash-progress-track">
+                <div class="splash-progress-fill">
+                    <span class="splash-progress-glow"></span>
+                </div>
+            </div>
+        </div>
+
+        <p class="splash-tagline">SMA 200 + WMA 30 + ATR 14 + IA Local</p>
+    </div>
+</div>
+
     <div class="dashboard-wrapper">
         <!-- Topo da Aplicação -->
         <header class="top-navbar">
             <div class="navbar-left">
                 <div class="brand-logo-container">
-                    <img src="logo.png" alt="Logo Águia Trader" class="brand-logo-img">
+                    <picture>
+                        <source srcset="logo.webp" type="image/webp">
+                        <img src="logo.png" alt="Logo Águia Trader" class="brand-logo-img" width="48" height="48" decoding="async">
+                    </picture>
                 </div>
                 <div class="brand-text-container">
                     <div class="brand-group">
@@ -37,31 +206,20 @@
                 </div>
                 <div id="connectionStatus" class="connection-indicator online" title="Status do Backend Python 3.11">
                     <span class="conn-dot"></span>
-                    <span class="conn-text" id="connText">Python 3.11</span>
+                    <span class="conn-text" id="connText">Servidor Ativo e Online</span>
                 </div>
 
-                <!-- Card de Animação da Águia (Inserido Diretamente no Header, Estático no Fluxo Normal) -->
+                <button class="theme-toggle-pill" id="themeToggle" type="button" aria-label="Alternar tema" title="Alternar tema">
+                    <span class="theme-icon sun">☀️</span>
+                    <span class="theme-icon moon">🌙</span>
+                </button>
+                <button class="auth-btn" id="btnEntrarCadastro" type="button">Entrar / Cadastrar</button>
                 <div class="eagle-soar-badge" id="eagleSoarBrand" aria-label="Águia Trader - Voo Bullish" title="Águia Trader - Momentum Bullish">
                     <div class="eagle-flight-track">
                         <div class="eagle-flyer">
-                            <!-- SVG no Estilo do Emoji 🦅 -->
-                            <svg class="eagle-emoji-svg" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5 16L1 21L7 22L9 18Z" fill="#F8FAFC"/>
-                                <path d="M3 18L1 21L5 21.5L6 19Z" fill="#E2E8F0"/>
-                                <path d="M10 13L16 2L20 4L16 14Z" fill="#5D4037"/>
-                                <path d="M12 10L17 3L19 4.5L14 12Z" fill="#6D4C41"/>
-                                <path d="M14 19L13 22L16 22L16 19Z" fill="#F59E0B"/>
-                                <path d="M9 15C9 13 11 12 14 12L23 13C24 15 23 18 20 19C16 20 11 19 9 15Z" fill="#795548"/>
-                                <path d="M14 13L24 1L28 4L20 16L15 15Z" fill="#8D6E63"/>
-                                <path d="M16 11L25 2L27 4L19 14L16 12Z" fill="#6D4C41"/>
-                                <path d="M18 9L26 3L27.5 4.5L20 13Z" fill="#5D4037"/>
-                                <path d="M13 13C16 13 20 14 22 15C19 17 15 17 13 15Z" fill="#4E342E"/>
-                                <path d="M22 13C21 11 22 9 24 8C26 7 29 8 31 10C31 12 30 14 28 15C25 15 23 14 22 13Z" fill="#F8FAFC"/>
-                                <path d="M22 13C23 13.5 25 14.5 28 14.5C26 15 23.5 14.5 22 13Z" fill="#E2E8F0"/>
-                                <circle cx="28" cy="10" r="1.1" fill="#0F172A"/>
-                                <circle cx="28.3" cy="9.8" r="0.4" fill="#FFFFFF"/>
-                                <path d="M30 10.5C32 10.5 35 11 35.5 12.5C35 13.5 32.5 14 30.5 13.5L30 10.5Z" fill="#F59E0B"/>
-                                <path d="M33 12C34.5 12.2 35.5 12.5 35 13.5C33.5 13.5 32 13 31 12.5L33 12Z" fill="#D97706"/>
+                            <!-- SVG no Estilo do Emoji 🦅 (sprite compartilhado) -->
+                            <svg class="eagle-emoji-svg" viewBox="0 0 36 28" aria-hidden="true" focusable="false">
+                                <use href="#eagle-mark"></use>
                             </svg>
                         </div>
                     </div>
@@ -84,6 +242,25 @@
                 </div>
             </div>
         </header>
+
+        <!-- Barra de Modos (Swing Trade / Day Trade) -->
+        <div class="mode-bar" id="modeSwitch">
+            <div class="mode-segment" data-mode="swing">
+                <button class="mode-btn active" data-mode="swing" type="button">Swing Trade</button>
+                <span class="mode-subtitle">VELAS DIÁRIAS - 14D</span>
+            </div>
+            <div class="mode-segment" data-mode="day">
+                <button class="mode-btn" data-mode="day" type="button">Day Trade</button>
+                <span class="mode-subtitle cyan-pill">INTRADAY - ROMPIMENTOS</span>
+            </div>
+            <div class="mode-context" id="modeContextLabel">• MODO SWING TRADE • GRÁFICO DIÁRIO 14D</div>
+            <div class="mode-intervals" id="modeIntervals">
+                <span class="mode-interval-label">VELA</span>
+                <span class="mode-interval active" data-interval="5m">5m</span>
+                <span class="mode-interval" data-interval="15m">15m</span>
+                <span class="mode-interval" data-interval="1h">1h</span>
+            </div>
+        </div>
 
         <!-- Corpo Principal em Duas Colunas -->
         <div class="main-layout">
@@ -144,18 +321,19 @@
                     <!-- Título do Ativo Selecionado -->
                     <div class="chart-header">
                         <h2 class="asset-headline" id="chartHeadline">
-                            <span id="headlineTicker">ASAI3</span> | Águia Trader 
-                            <span id="headlineReturn" class="text-green">(+5.17%)</span>: 
+                            <span id="headlineTicker">ASAI3</span> | Águia Trader
+                            <span id="headlineReturn" class="text-green">(+5.17%)</span>:
                             <span id="headlineTrend">ALTA (BULLISH)</span>
                         </h2>
+                        <span class="data-source-badge" id="dataSourceBadge" hidden>SIMULADO</span>
                     </div>
 
                     <!-- Área de Visualização do Gráfico Canvas -->
                     <div class="chart-stage-container">
                         <!-- Banner Flutuante de Alvo e Projeção -->
                         <div class="target-floating-badge badge-bullish" id="floatingTargetBadge">
-                            <span id="badgeTrendAction">ALTA (BULLISH)</span> | 
-                            Alvo: <span id="badgeTargetPrice">R$ 13.96</span> 
+                            <span id="badgeTrendAction">ALTA (BULLISH)</span> |
+                            Alvo: <span id="badgeTargetPrice">R$ 13.96</span>
                             (<span id="badgeTargetReturn">+5.17%</span>)
                         </div>
 
@@ -178,48 +356,108 @@
                     </div>
                 </section>
 
-                <!-- Métricas Quantitativas e Racional do Ativo -->
                 <section class="quant-details-grid">
-                    <div class="quant-card card-metric-price">
-                        <span class="quant-card-label">Preço Atual</span>
-                        <span class="quant-card-val" id="metricCurrentPrice">R$ 13.27</span>
-                        <span class="quant-card-sub" id="metricPriceDiff">+0.85% hoje</span>
+                    <div class="quant-card card-metric-price teal-glow">
+                        <span class="quant-card-label">PREÇO ATUAL</span>
+                        <span class="quant-card-val" id="metricCurrentPrice">US$ 645,10</span>
+                        <span class="quant-card-sub" id="metricPriceDiff">+0.21% hoje</span>
                     </div>
 
                     <div class="quant-card card-metric-target">
-                        <span class="quant-card-label">Alvo Projetado (14D)</span>
-                        <span class="quant-card-val text-green" id="metricTargetPrice">R$ 13.96</span>
-                        <span class="quant-card-sub text-green" id="metricTargetReturn">+5.17% de projeção</span>
+                        <span class="quant-card-label" id="metricTargetLabel">ALVO INTRADIA</span>
+                        <span class="quant-card-val text-green" id="metricTargetPrice">US$ 649,80</span>
+                        <span class="quant-card-sub text-green" id="metricTargetReturn">+0.42% de projeção intradiária</span>
                     </div>
 
                     <div class="quant-card card-metric-stop">
-                        <span class="quant-card-label">Stop Loss Sugerido</span>
-                        <span class="quant-card-val text-red" id="metricStopLoss">R$ 12.65</span>
-                        <span class="quant-card-sub text-red" id="metricStopDiff">-4.67% de risco</span>
+                        <span class="quant-card-label" id="metricStopLabel">STOP INTRADIA</span>
+                        <span class="quant-card-val text-red" id="metricStopLoss">US$ 637,20</span>
+                        <span class="quant-card-sub text-red" id="metricStopDiff">4,67% de risco na sessão</span>
                     </div>
 
                     <div class="quant-card card-metric-payoff">
-                        <span class="quant-card-label">Relação Risco x Retorno</span>
-                        <span class="quant-card-val text-cyan" id="metricPayoff">1.11 : 1</span>
+                        <span class="quant-card-label" id="metricPayoffLabel">RISCO X RETORNO DA SESSÃO</span>
+                        <span class="quant-card-val text-cyan" id="metricPayoff">1.02 : 1</span>
                         <span class="quant-card-sub">Setup Estatístico</span>
                     </div>
                 </section>
 
-                <!-- Resumo da IA & Indicadores Técnicos -->
-                <section class="reasoning-card">
-                    <div class="reasoning-header">
-                        <span class="reasoning-tag">🧠 Resumo</span>
-                        <span class="model-tag">Kronos Base + Águia Trader</span>
-                    </div>
-                    <p class="reasoning-content" id="aiReasoningText">
-                        O ativo <strong>ASAI3</strong> demonstrou rompimento sustentado acima da WMA 30 com confirmação de volume comprador superior à média de 20 períodos. O alinhamento com a SMA 200 sinaliza continuidade de tendência altista. Projeção estatística baseada em 14 períodos com expansão de volatilidade delimitada pelo ATR 14.
-                    </p>
-                </section>
-            </main>
+<!-- Dicas Operacionais -->
+<section class="operational-tips" id="reasoningPanel">
+    <div class="tips-header">
+        <span class="tips-icon">💡</span>
+        <span class="tips-title">Dicas Operacionais</span>
+        <span class="tips-badge">Motor Estatístico Águia Trader</span>
+    </div>
+    <p class="tips-text" id="aiReasoningText">Dicas operacionais do motor estatístico Águia Trader. Use como referência, não como recomendação.</p>
+</section>
+<p class="compliance-disclaimer" id="complianceDisclaimer" data-aguia-tema="dark">Análise experimental gerada por modelo estatístico. Não constitui recomendação de investimento. Sem backtest validado.</p>
+
+                
+            
+    <!-- Tooltip do Gráfico (Canvas) -->
+    <div id="chartTooltip" class="chart-tooltip" role="tooltip" aria-hidden="true">
+        <div class="chart-tooltip__date" id="chartTooltipDate"></div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Abertura</span>
+            <span class="chart-tooltip__value" id="chartTooltipOpen">—</span>
+        </div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Máxima</span>
+            <span class="chart-tooltip__value" id="chartTooltipHigh">—</span>
+        </div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Mínima</span>
+            <span class="chart-tooltip__value" id="chartTooltipLow">—</span>
+        </div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Fechamento</span>
+            <span class="chart-tooltip__value" id="chartTooltipClose">—</span>
+        </div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Variação</span>
+            <span class="chart-tooltip__value" id="chartTooltipChange">—</span>
+        </div>
+        <div class="chart-tooltip__row">
+            <span class="chart-tooltip__label">Volume</span>
+            <span class="chart-tooltip__value" id="chartTooltipVolume">—</span>
+        </div>
+    </div>
+
+</main>
+        </div>
+    </div>
+
+    <!-- Modal de Parâmetros da Estratégia -->
+    <div id="strategyModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true">
+            <h2>Parâmetros da Estratégia</h2>
+            <form id="strategyForm">
+                <label>Estratégia <select id="strategySelector"><option value="estatistico_padrao">Motor Estatístico Padrão (SMA 200 + WMA 30 + ATR 14)</option><option value="media_tendencia_macro_jr">Média Tendência Macro JR (MTM JR)</option></select></label>
+                <fieldset>
+                    <legend>Configuração do Fluxo</legend>
+                    <label>InpTrendPeriod <input type="number" name="InpTrendPeriod" value="20"></label>
+                    <label>InpFastEMAPeriod <input type="number" name="InpFastEMAPeriod" value="9"></label>
+                </fieldset>
+                <fieldset>
+                    <legend>Filtro Institucional de Tendência</legend>
+                    <label>InpSMAInstitution <input type="number" name="InpSMAInstitution" value="50"></label>
+                    <label>InpSMAMacro <input type="number" name="InpSMAMacro" value="200"></label>
+                </fieldset>
+                <fieldset>
+                    <legend>Filtros de Lateralização</legend>
+                    <label>InpADXPeriod <input type="number" name="InpADXPeriod" value="14"></label>
+                    <label>InpADXMinLevel <input type="number" step="0.1" name="InpADXMinLevel" value="22.0"></label>
+                    <label>InpBBPeriod <input type="number" name="InpBBPeriod" value="20"></label>
+                    <label>InpBBDeviation <input type="number" step="0.1" name="InpBBDeviation" value="2.0"></label>
+                    <label>InpKeltnerMult <input type="number" step="0.1" name="InpKeltnerMult" value="1.5"></label>
+                </fieldset>
+                <button type="submit" class="apply-btn">Aplicar</button>
+            </form>
         </div>
     </div>
 
     <!-- Script JavaScript com Motor Gráfico Canvas -->
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=3.5"></script>
 </body>
 </html>

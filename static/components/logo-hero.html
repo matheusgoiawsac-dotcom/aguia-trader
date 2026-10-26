@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Hero — Águia Trader</title>
+    <!-- Preview isolada do componente: não usa o style.css do dashboard -->
+    <link rel="stylesheet" href="logo-hero.css">
+    <style>
+        :root {
+            --bg-main: #04070f;
+            --bg-card: #0b1220;
+            --border-subtle: rgba(168, 248, 255, 0.09);
+            --brand-blue: #02aaff;
+            --brand-cyan: #09ffff;
+            --brand-teal: #00ffa6;
+            --text-primary: #eef6ff;
+            --text-secondary: #9fb3c8;
+            --text-muted: #6b8199;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.4rem;
+            padding: 3rem 1.5rem 4rem;
+            background:
+                radial-gradient(120% 75% at 50% 8%, rgba(2, 170, 255, 0.14) 0%, transparent 62%),
+                radial-gradient(95% 60% at 50% 104%, rgba(9, 255, 255, 0.09) 0%, transparent 66%),
+                var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--brand-blue), var(--brand-cyan), var(--brand-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        p.lead {
+            max-width: 62ch;
+            font-size: 0.86rem;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--brand-cyan);
+        }
+
+        .stage {
+            display: grid;
+            gap: 2.6rem;
+            justify-items: center;
+        }
+
+        .panel {
+            display: grid;
+            gap: 1.1rem;
+            justify-items: center;
+            padding: 1.6rem 1.8rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            background: rgba(11, 18, 32, 0.6);
+        }
+
+        .panel h2 {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .variants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .variant {
+            display: grid;
+            gap: 0.6rem;
+            justify-items: center;
+        }
+
+        .variant span {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        .status {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        footer {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Logo Hero</h1>
+    <p class="lead">
+        Componente reutilizável que sobrepõe camadas neon/elétricas ao logo da marca.
+        O markup vem de <code>logo-hero.fragment.html</code> e o estilo de
+        <code>logo-hero.css</code>. As animações tocam apenas
+        <code>opacity</code>, <code>transform</code> e <code>stroke-dashoffset</code>.
+    </p>
+
+    <div class="stage">
+        <section class="panel">
+            <h2>Instância canônica</h2>
+            <div id="hero-canonical"></div>
+            <span class="status">carregando componente…</span>
+        </section>
+
+        <section class="panel">
+            <h2>Variações de escala e intensidade</h2>
+            <div class="variants" id="hero-variants"></div>
+        </section>
+    </div>
+
+    <footer>
+        Página interna de desenvolvimento — não exibe dados de mercado.
+    </footer>
+
+    <script>
+    (function () {
+        "use strict";
+
+        var FRAGMENT_URL = "logo-hero.fragment.html";
+
+        // Tamanho do componente e intensidade do glow por variante.
+        var VARIANTS = [
+            { label: "160px", size: "160px", glow: "0.7" },
+            { label: "220px", size: "220px", glow: "1" },
+            { label: "300px", size: "300px", glow: "1.4" }
+        ];
+
+        var canonical = document.getElementById("hero-canonical");
+        var variants = document.getElementById("hero-variants");
+
+        // As cópias de variante não repetem <defs>: reutilizam os paint servers
+        // da instância canônica (evita IDs duplicados no documento).
+        function stripDefs(html) {
+            return html.replace(/<defs>[\s\S]*?<\/defs>/, "");
+        }
+
+        // A preview vive em /components/, o fragmento aponta para a raiz do app.
+        function fixPaths(root) {
+            var images = root.querySelectorAll("img.logo-hero__base");
+            for (var i = 0; i < images.length; i++) {
+                images[i].setAttribute("src", "../" + images[i].getAttribute("src"));
+            }
+            var sources = root.querySelectorAll("source");
+            for (var j = 0; j < sources.length; j++) {
+                sources[j].setAttribute("srcset", "../" + sources[j].getAttribute("srcset"));
+            }
+        }
+
+        function buildVariant(html, config) {
+            var holder = document.createElement("div");
+            holder.className = "variant";
+            holder.innerHTML = html;
+            fixPaths(holder);
+
+            var hero = holder.querySelector(".logo-hero");
+            hero.style.setProperty("--hero-size", config.size);
+            hero.style.setProperty("--hero-glow", config.glow);
+
+            var caption = document.createElement("span");
+            caption.textContent = config.label + " · glow " + config.glow;
+            holder.appendChild(caption);
+            return holder;
+        }
+
+        fetch(FRAGMENT_URL)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+                return response.text();
+            })
+            .then(function (html) {
+                canonical.innerHTML = html;
+                fixPaths(canonical);
+
+                var status = canonical.parentNode.querySelector(".status");
+                if (status) {
+                    status.parentNode.removeChild(status);
+                }
+
+                var variantMarkup = stripDefs(html);
+                for (var i = 0; i < VARIANTS.length; i++) {
+                    variants.appendChild(buildVariant(variantMarkup, VARIANTS[i]));
+                }
+            })
+            .catch(function (error) {
+                canonical.innerHTML =
+                    '<span class="status">Não foi possível carregar o fragmento: ' +
+                    error.message + "</span>";
+            });
+    })();
+    </script>
+</body>
+</html>
