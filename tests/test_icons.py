@@ -288,8 +288,8 @@ def test_tooltip_is_glassmorphism(style_css: str):
 
 # ------------------------------------------------------------ header and tips
 def test_status_text_is_server_online(index_html: str, script_js: str):
-    assert "Servidor Ativo e Online" in index_html
-    assert 'connText.textContent = "Servidor Ativo e Online";' in script_js
+    assert "Servidor Online" in index_html
+    assert 'connText.textContent = "Servidor Online";' in script_js
 
 
 def test_theme_toggle_keeps_moon_and_sun(index_html: str):

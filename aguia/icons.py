@@ -168,6 +168,21 @@ def glifo_do_ativo(ticker: str) -> Optional[str]:
     }.get(setor)
 
 
+def simbolo_ativo(ticker: str, categoria: Optional[str] = None) -> str:
+    """Retorna o simbolo miniatura do ativo para o emblema da UI.
+
+    Cripto/BTC exibe o glifo "₿"; acoes da B3 exibem as duas primeiras
+    letras do ticker; o restante exibe o simbolo monetario minimalista "$".
+    """
+    cat = categoria or categoria_do_ativo(ticker)
+    t = _normalizar(ticker)
+    if cat == CATEGORIA_CRIPTO or "BTC" in t:
+        return "\u20bf"
+    if cat == CATEGORIA_B3:
+        return t[:2]
+    return "$"
+
+
 def descricao_icone(ticker: str) -> Dict[str, Any]:
     """Return the icon metadata published with every asset payload."""
     t = _normalizar(ticker)

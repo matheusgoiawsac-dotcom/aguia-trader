@@ -275,34 +275,20 @@ function detectarCategoriaIcone(ticker) {
     return "b3";
 }
 
-// Retorna um SVG 22x22 decorativo para o ativo, ou null quando nao ha glifo.
+// Retorna o emblema de texto miniatura do ativo: simbolo ou iniciais.
 function getAssetIconSVG(ticker, categoria) {
     const cat = categoria || detectarCategoriaIcone(ticker);
-    let glyph = null;
+    const simbolo = simboloAtivo(ticker, cat);
+    return `<span class="ativo-symbol" aria-hidden="true">${simbolo}</span>`;
+}
 
-    if (cat === "cripto") glyph = ICON_CRYPTO_MAP[ticker];
-    else if (cat === "forex") glyph = ICON_FOREX_MAP[ticker] || "usd";
-    else if (cat === "commodity") glyph = ICON_COMMODITY_MAP[ticker];
-    else if (cat === "indice") glyph = ICON_INDEX_MAP[ticker] || "indexChart";
-    else {
-        // B3: mapeia por setor
-        const setorMap = {
-            banco: "bank", energia: "energy", mineracao: "mining",
-            varejo: "retail", saude: "health",
-        };
-        for (const entry of ICON_B3_SECTORS) {
-            if (entry.tickers.includes(ticker)) {
-                glyph = entry.glyph;
-                break;
-            }
-        }
-    }
-
-    const path = glyph ? GLYPH_LIBRARY[glyph]?.d : null;
-    if (!path) return fallbackIconSVG(ticker);
-
-    const color = `var(--icon-${glyph === 'bank' || glyph === 'energy' || glyph === 'mining' || glyph === 'retail' || glyph === 'health' ? 'cyan' : glyph === 'gold' || glyph === 'silver' || glyph === 'copper' || glyph === 'oil' || glyph === 'corn' || glyph === 'soy' ? 'gold' : glyph === 'indexChart' || glyph === 'indexBars' || glyph === 'indexArrow' || glyph === 'indexIbovespa' ? 'purple' : 'cyan'})`;
-    return `<svg width="22" height="22" viewBox="0 0 22 22" class="asset-icon" aria-hidden="true" style="color:${color}"><path d="${path}" fill="currentColor" stroke="currentColor" stroke-width="1"/></svg>`;
+// Mapeia o ativo para um simbolo miniatura: "₿" para cripto, iniciais para B3.
+function simboloAtivo(ticker, categoria) {
+    const cat = categoria || detectarCategoriaIcone(ticker);
+    const t = String(ticker || "").trim().toUpperCase();
+    if (cat === "cripto" || t.includes("BTC")) return "\u20BF";
+    if (cat === "b3") return t.slice(0, 2);
+    return "$";
 }
 
 // Fallback: duas letras em tipografia monoespaçada sobre token de fundo.
@@ -467,19 +453,24 @@ function createStockCard(asset) {
     left.className = "stock-card-left";
 
     const iconEl = document.createElement("span");
-    iconEl.className = "stock-card-icon";
+    iconEl.className = "ativo-icon";
     iconEl.innerHTML = getAssetIconSVG(asset.ticker, asset.categoria);
-    left.insertBefore(iconEl, null);
+
+    const head = document.createElement("div");
+    head.className = "stock-card-head";
+    head.append(iconEl);
 
     const tickerEl = document.createElement("span");
     tickerEl.className = "stock-ticker";
     tickerEl.textContent = asset.ticker;
+    head.append(tickerEl);
+
+    left.append(head);
 
     const priceEl = document.createElement("span");
     priceEl.className = "stock-price";
     priceEl.textContent = priceFormatted;
-
-    left.append(tickerEl, priceEl);
+    left.append(priceEl);
 
     if (asset.simulado) {
         const simEl = document.createElement("span");
@@ -594,7 +585,7 @@ async function selectStock(ticker) {
     if (!headlineIcon) {
         headlineIcon = document.createElement("span");
         headlineIcon.id = "chartHeadlineIcon";
-        headlineIcon.className = "asset-icon";
+        headlineIcon.className = "ativo-icon";
         headlineTicker.parentNode.insertBefore(headlineIcon, headlineTicker);
     }
     headlineIcon.innerHTML = getAssetIconSVG(ticker, detectarCategoriaIcone(ticker));
@@ -1196,7 +1187,7 @@ async function testPythonBackend() {
             const data = await res.json();
             isServerOnline = true;
             connIndicator.className = "connection-indicator online";
-            connText.textContent = "Servidor Ativo e Online";
+            connText.textContent = "Servidor Online";
             connIndicator.title = `Conectado ao Águia Trader (Python ${data.python_version}) - Ollama: ${data.ollama?.online ? "Ativo (" + data.ollama.modelo + ")" : "Offline (Modo Determinístico)"}`;
 
             if (data.server_time && snapshotTimestamp) {
@@ -1551,4 +1542,16 @@ document.addEventListener("DOMContentLoaded", () => {
     try{ await fetch('/api/update-strategy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); }catch(err){console.error(err);}
     close();
   });
+})();
+
+
+(function(){
+  const btn = document.getElementById('btnEntrarCadastro');
+  const menu = document.getElementById('userDropdown');
+  if (!btn || !menu) return;
+  const open = () => { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); };
+  const close = () => { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); };
+  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.contains('open') ? close() : open(); });
+  document.addEventListener('click', (e) => { if (!menu.contains(e.target) && e.target !== btn) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 })();
