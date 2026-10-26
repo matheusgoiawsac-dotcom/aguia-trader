@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Águia Trader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="conta.css">
+</head>
+<body>
+    <header class="top-navbar">
+        <div class="navbar-left">
+            <div class="brand-logo-container">
+                <img src="logo.png" alt="Logo Águia Trader" class="brand-logo-img" width="48" height="48">
+            </div>
+            <div class="brand-text-container">
+                <div class="brand-group">
+                    <h1 class="brand-title">Águia <span class="brand-highlight">Trader</span></h1>
+                    <span class="badge-phase">Minha Conta</span>
+                </div>
+                <p class="brand-subtitle">Gerenciamento de perfil</p>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <a href="index.html" class="auth-btn ghost" style="text-decoration:none;display:flex;align-items:center;">Voltar ao Dashboard</a>
+        </div>
+    </header>
+    <main class="conta-main">
+        <section class="conta-card">
+            <div class="conta-header">
+                <div class="conta-avatar" id="contaAvatar">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path></svg>
+                    <img id="contaAvatarImg" style="display:none" alt="Avatar">
+                </div>
+                <div>
+                    <div class="conta-name" id="contaNome">-</div>
+                    <div class="conta-email" id="contaEmail">-</div>
+                    <div class="conta-status">Conta ativa</div>
+                </div>
+            </div>
+            <div class="conta-section">
+                <h2>Perfil</h2>
+                <div class="conta-grid">
+                    <div class="auth-field"><label for="perfilNome">Nome de exibição</label><input id="perfilNome"></div>
+                    <div class="auth-field"><label for="perfilIdade">Idade</label><input id="perfilIdade" type="number" min="0" max="120"></div>
+                </div>
+                <div class="auth-field"><label for="perfilEmail">E-mail (somente leitura)</label><input id="perfilEmail" disabled></div>
+                <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                    <input type="file" id="perfilAvatarFile" accept="image/jpeg,image/png,image/webp" style="display:none">
+                    <button class="auth-btn" id="btnTrocarFoto" type="button">Alterar foto</button>
+                    <button class="auth-btn ghost" id="btnRemoverFoto" type="button">Remover foto</button>
+                </div>
+                <div class="auth-actions" style="margin-top:16px;">
+                    <button class="auth-btn" id="btnSalvarPerfil">Salvar alterações</button>
+                    <div class="auth-success" id="perfilSuccess"></div>
+                    <div class="auth-error" id="perfilError"></div>
+                </div>
+            </div>
+            <div class="conta-section">
+                <h2>Segurança</h2>
+                <div class="conta-grid">
+                    <div class="auth-field"><label for="senhaAtual">Senha atual</label><input id="senhaAtual" type="password" autocomplete="current-password"></div>
+                    <div class="auth-field"><label for="novaSenha">Nova senha</label><input id="novaSenha" type="password" autocomplete="new-password"></div>
+                </div>
+                <div class="auth-actions" style="margin-top:12px;">
+                    <button class="auth-btn" id="btnAlterarSenha">Alterar senha</button>
+                    <div class="auth-success" id="senhaSuccess"></div>
+                    <div class="auth-error" id="senhaError"></div>
+                </div>
+            </div>
+            <div class="conta-section">
+                <h2>Relatórios</h2>
+                <p style="color:#94a3b8;font-size:13px;margin:0;">Em desenvolvimento.</p>
+            </div>
+        </section>
+    </main>
+    <script src="conta.js"></script>
+</body>
+</html>

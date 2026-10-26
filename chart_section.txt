@@ -1,0 +1,418 @@
+function renderTradingChartReal(candles, asset) {
+    if (!canvas || !ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+        // Canvas ainda não tem dimensão (ex.: splash em andamento).
+        // Reagenda o desenho assim que o layout estiver pronto.
+        requestAnimationFrame(() => renderTradingChartReal(candles, asset));
+        return;
+    }
+
+    const lastCandle = candles[candles.length - 1];
+    const signature = `${asset.ticker}|${asset.alvo}|${Math.round(rect.width)}x${Math.round(rect.height)}|${dpr}|${candles.length}|${lastCandle.close}`;
+    if (signature === lastChartSignature) return;
+    lastChartSignature = signature;
+
+    const targetWidth = Math.round(rect.width * dpr);
+    const targetHeight = Math.round(rect.height * dpr);
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+    }
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    // Fundo escuro profissional
+    ctx.fillStyle = brand().bgMain;
+    ctx.fillRect(0, 0, width, height);
+
+    // Margens
+    const marginLeft = 68;
+    const marginRight = 30;
+    const marginTop = 45;
+    const volumeHeight = 75;
+    const chartBottom = height - volumeHeight - 35;
+    const chartHeight = chartBottom - marginTop;
+    const plotWidth = width - marginLeft - marginRight;
+
+    const futureSteps = 14;
+    const totalSlots = candles.length + futureSteps;
+    const slotWidth = plotWidth / totalSlots;
+    const candleBarWidth = Math.max(3, slotWidth * 0.65);
+
+    let minPrice = Infinity;
+    let maxPrice = -Infinity;
+
+    for (const c of candles) {
+        if (c.low < minPrice) minPrice = c.low;
+        if (c.high > maxPrice) maxPrice = c.high;
+        if (c.wma30 && c.wma30 < minPrice) minPrice = c.wma30;
+        if (c.wma30 && c.wma30 > maxPrice) maxPrice = c.wma30;
+        if (c.sma200 && c.sma200 < minPrice) minPrice = c.sma200;
+        if (c.sma200 && c.sma200 > maxPrice) maxPrice = c.sma200;
+    }
+
+    const targetPrice = asset.alvo || asset.target || lastCandle.close;
+    if (targetPrice > maxPrice) maxPrice = targetPrice;
+    if (targetPrice < minPrice) minPrice = targetPrice;
+
+    const priceMargin = (maxPrice - minPrice) * 0.10;
+    minPrice -= priceMargin;
+    maxPrice += priceMargin;
+
+    function priceToY(price) {
+        return chartBottom - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+    }
+
+    // 1. Grade horizontal e eixos de preço (Y-Axis) formatados com 2 decimais
+    ctx.strokeStyle = brand().grid;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = brand().textMuted;
+    ctx.font = "11px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+
+    const priceTicksCount = 6;
+    for (let i = 0; i <= priceTicksCount; i++) {
+        const p = minPrice + ((maxPrice - minPrice) / priceTicksCount) * i;
+        const y = priceToY(p);
+
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, y);
+        ctx.lineTo(width - marginRight, y);
+        ctx.stroke();
+
+        ctx.fillText(`R$ ${p.toFixed(2).replace(".", ",")}`, marginLeft - 10, y + 4);
+    }
+
+    // 2. Faixa sombreada de Projeção 14D
+    const projStartX = marginLeft + candles.length * slotWidth;
+    const projWidth = futureSteps * slotWidth;
+    const isBull = (asset.tendencia || asset.trend) === "ALTA";
+
+    const projGradient = ctx.createLinearGradient(projStartX, 0, projStartX + projWidth, 0);
+    if (isBull) {
+        projGradient.addColorStop(0, brand().upGhost);
+        projGradient.addColorStop(1, brand().upFaint);
+    } else {
+        projGradient.addColorStop(0, brand().downGhost);
+        projGradient.addColorStop(1, brand().downFaint);
+    }
+
+    ctx.fillStyle = projGradient;
+    ctx.fillRect(projStartX, marginTop, projWidth, chartHeight);
+
+    // Linha vertical divisória da projeção
+    ctx.strokeStyle = isBull ? brand().upSoft : brand().downSoft;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(projStartX, marginTop);
+    ctx.lineTo(projStartX, chartBottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 3. Desenho dos Candlesticks
+    ctx.textAlign = "center";
+    for (let idx = 0; idx < candles.length; idx++) {
+        const c = candles[idx];
+        const x = marginLeft + idx * slotWidth + slotWidth / 2;
+        const openY = priceToY(c.open);
+        const closeY = priceToY(c.close);
+        const highY = priceToY(c.high);
+        const lowY = priceToY(c.low);
+
+        const candleColor = c.close >= c.open ? brand().up : brand().down;
+
+        // Pavio
+        ctx.strokeStyle = candleColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(x, highY);
+        ctx.lineTo(x, lowY);
+        ctx.stroke();
+
+        // Corpo
+        ctx.fillStyle = candleColor;
+        const bodyTop = Math.min(openY, closeY);
+        const bodyHeight = Math.max(2, Math.abs(closeY - openY));
+        ctx.fillRect(x - candleBarWidth / 2, bodyTop, candleBarWidth, bodyHeight);
+
+        // Rótulos de datas no eixo X (a cada 12 candles)
+        if (idx % 12 === 0 && c.date) {
+            ctx.fillStyle = brand().textMuted;
+            ctx.font = "10px 'JetBrains Mono', monospace";
+            const dateShort = c.date.slice(5).replace("-", "/"); // MM/DD
+            ctx.fillText(dateShort, x, chartBottom + 16);
+        }
+    }
+
+    // 4. Curva SMA 200 (Azul)
+    drawOverlay(ctx, candles, slotWidth, marginLeft, priceToY, "sma200", brand().sma200);
+    // 5. Curva WMA 30 (Amarela)
+    drawOverlay(ctx, candles, slotWidth, marginLeft, priceToY, "wma30", brand().wma30);
+
+    // 6. Projeção Tracejada até o Alvo (14D)
+    const lastX = marginLeft + (candles.length - 1) * slotWidth + slotWidth / 2;
+    const lastPriceY = priceToY(lastCandle.close);
+    const targetX = marginLeft + (totalSlots - 1) * slotWidth;
+    const targetY = priceToY(targetPrice);
+
+    ctx.strokeStyle = isBull ? brand().upLight : brand().downLight;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastPriceY);
+    ctx.quadraticCurveTo((lastX + targetX) / 2, (lastPriceY + targetY) / 2 + (isBull ? -8 : 8), targetX, targetY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = isBull ? brand().up : brand().down;
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = isBull ? brand().upLight : brand().downLight;
+    ctx.font = "bold 11px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left";
+    ctx.fillText(`Alvo: R$ ${targetPrice.toFixed(2).replace(".", ",")}`, targetX - 95, targetY - 10);
+
+    // 7. Painel de Volume
+    const volumeTop = chartBottom + 26;
+    ctx.strokeStyle = brand().grid;
+    ctx.beginPath();
+    ctx.moveTo(marginLeft, volumeTop - 4);
+    ctx.lineTo(width - marginRight, volumeTop - 4);
+    ctx.stroke();
+
+    let maxVol = 0;
+    for (const c of candles) { if (c.volume > maxVol) maxVol = c.volume; }
+    if (maxVol === 0) maxVol = 1;
+
+    ctx.fillStyle = brand().textMuted;
+    ctx.font = "10px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+    const maxVolStr = (maxVol / 1000000).toFixed(0);
+    ctx.fillText(`${maxVolStr}M`, marginLeft - 10, volumeTop + 20);
+
+    for (let idx = 0; idx < candles.length; idx++) {
+        const c = candles[idx];
+        const x = marginLeft + idx * slotWidth + slotWidth / 2;
+        const vHeight = (c.volume / maxVol) * (volumeHeight - 16);
+        ctx.fillStyle = c.close >= c.open ? brand().upFill : brand().downFill;
+        ctx.fillRect(x - candleBarWidth / 2, volumeTop + volumeHeight - vHeight, candleBarWidth, vHeight);
+    }
+
+    ctx.restore();
+}
+
+/**
+ * Desenha uma curva de média móvel contínua (ignora valores ausentes)
+ */
+function drawOverlay(context, candles, slotWidth, marginLeft, priceToY, key, color) {
+    context.strokeStyle = color;
+    context.lineWidth = 2.2;
+    context.beginPath();
+    let started = false;
+    for (let idx = 0; idx < candles.length; idx++) {
+        const value = candles[idx][key];
+        if (!value) continue;
+        const x = marginLeft + idx * slotWidth + slotWidth / 2;
+        const y = priceToY(value);
+        if (!started) {
+            context.moveTo(x, y);
+            started = true;
+        } else {
+            context.lineTo(x, y);
+        }
+    }
+    if (started) context.stroke();
+}
+
+/* ============================================================
+   Interatividade do grafico: crosshair e tooltip
+   ============================================================
+   O crosshair acompanha o ponteiro sobre o canvas e o tooltip
+   exibe OHLCV da vela mais proxima. Usa as mesmas escalas e
+   margens de renderTradingChartReal para nao haver deslocamento.
+   ============================================================ */
+
+let crosshairLayer = null;
+
+function ensureCrosshairLayer() {
+    if (crosshairLayer) return crosshairLayer;
+    const layer = document.createElement("div");
+    layer.className = "chart-crosshair-layer";
+    layer.style.position = "absolute";
+    layer.style.top = canvas.offsetTop + "px";
+    layer.style.left = canvas.offsetLeft + "px";
+    layer.style.width = canvas.offsetWidth + "px";
+    layer.style.height = canvas.offsetHeight + "px";
+    layer.style.pointerEvents = "none";
+    layer.style.zIndex = "40";
+    const parent = canvas.parentElement;
+    if (parent) {
+        parent.style.position = "relative";
+        parent.appendChild(layer);
+    }
+    crosshairLayer = layer;
+    return layer;
+}
+
+function drawCrosshair(g) {
+    const layer = ensureCrosshairLayer();
+    if (!g || !canvas || !ctx) {
+        layer.innerHTML = "";
+        return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const marginLeft = 68;
+    const marginRight = 30;
+    const marginTop = 45;
+    const volumeHeight = 75;
+    const chartBottom = rect.height - volumeHeight - 35;
+    const chartHeight = chartBottom - marginTop;
+    const plotWidth = rect.width - marginLeft - marginRight;
+
+    const x = Math.max(marginLeft, Math.min(rect.width - marginRight, g.cursorX));
+    const idx = Math.floor((x - marginLeft - slotWidthOf(g)) / slotWidthOf(g));
+    const candles = g.candles;
+    if (!candles || candles.length === 0) {
+        layer.innerHTML = "";
+        return;
+    }
+    const clamped = Math.max(0, Math.min(idx, candles.length - 1));
+    const c = candles[clamped];
+
+    // Linha vertical do crosshair
+    const cx = Math.max(marginLeft, Math.min(rect.width - marginRight, g.cursorX));
+    layer.innerHTML = `
+        <svg width="${rect.width}" height="${rect.height}" style="display:block;position:absolute;top:0;left:0;pointer-events:none">
+            <line x1="${cx}" y1="${marginTop}" x2="${cx}" y2="${chartBottom}" stroke="var(--brand-cyan)" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="${marginLeft}" y1="${g.priceY}" x2="${rect.width - marginRight}" y2="${g.priceY}" stroke="var(--brand-cyan)" stroke-width="1" stroke-dasharray="4,4"/>
+            <circle cx="${cx}" cy="${g.priceY}" r="3.5" fill="var(--brand-cyan)"/>
+        </svg>
+    `;
+
+    // Atualiza tooltip com dados da vela
+    updateChartTooltip(clamped, g, x, g.priceY);
+}
+
+function slotWidthOf(g) {
+    return g.slotWidth || 1;
+}
+
+function updateChartTooltip(index, g, cursorX, cursorY) {
+    const tooltip = document.getElementById("chartTooltip");
+    if (!tooltip || !g || !g.candles || g.candles.length === 0) return;
+    const clamped = Math.max(0, Math.min(index, g.candles.length - 1));
+    const c = g.candles[clamped];
+
+    const dateEl = document.getElementById("chartTooltipDate");
+    const openEl = document.getElementById("chartTooltipOpen");
+    const highEl = document.getElementById("chartTooltipHigh");
+    const lowEl = document.getElementById("chartTooltipLow");
+    const closeEl = document.getElementById("chartTooltipClose");
+    const changeEl = document.getElementById("chartTooltipChange");
+    const volumeEl = document.getElementById("chartTooltipVolume");
+
+    if (dateEl) dateEl.textContent = c.date || "";
+    if (openEl) openEl.textContent = c.open !== undefined ? `R$ ${c.open.toFixed(2).replace(".", ",")}` : "—";
+    if (highEl) highEl.textContent = c.high !== undefined ? `R$ ${c.high.toFixed(2).replace(".", ",")}` : "—";
+    if (lowEl) lowEl.textContent = c.low !== undefined ? `R$ ${c.low.toFixed(2).replace(".", ",")}` : "—";
+    if (closeEl) closeEl.textContent = c.close !== undefined ? `R$ ${c.close.toFixed(2).replace(".", ",")}` : "—";
+    if (changeEl && c.open !== undefined) {
+        const ch = ((c.close - c.open) / c.open) * 100;
+        const sign = ch >= 0 ? "+" : "";
+        changeEl.textContent = `${sign}${ch.toFixed(2).replace(".", ",")}%`;
+        changeEl.className = ch >= 0 ? "text-green" : "text-red";
+    } else if (changeEl) {
+        changeEl.textContent = "—";
+    }
+    if (volumeEl) volumeEl.textContent = c.volume !== undefined ? c.volume.toLocaleString("pt-BR") : "—";
+
+    // Posiciona o tooltip perto do cursor, dentro da area visivel
+    const rect = canvas.getBoundingClientRect();
+    const tx = Math.min(Math.max(0, cursorX + 16), rect.width - 220);
+    const ty = Math.min(Math.max(0, cursorY - 80), rect.height - 180);
+    tooltip.style.left = `${tx}px`;
+    tooltip.style.top = `${ty}px`;
+    tooltip.style.display = "block";
+    tooltip.setAttribute("aria-hidden", "false");
+}
+
+function onChartPointerMove(event) {
+    if (!canvas || !ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const cursorX = event.clientX - rect.left;
+    const cursorY = event.clientY - rect.top;
+
+    const dpr = window.devicePixelRatio || 1;
+    const marginLeft = 68;
+    const marginRight = 30;
+    const marginTop = 45;
+    const volumeHeight = 75;
+    const chartBottom = rect.height - volumeHeight - 35;
+    const chartHeight = chartBottom - marginTop;
+    const plotWidth = rect.width - marginLeft - marginRight;
+
+    // Recalcula slotWidth com base no estado atual (usa ultimo signature se disponivel)
+    const cached = cacheGet(cacheKey(currentSelectedTicker));
+    if (!cached || !cached.candles) return;
+    const candles = cached.candles;
+    const lastCandle = candles[candles.length - 1];
+    const targetPrice = cached.alvo || cached.target || lastCandle.close;
+    const futureSteps = 14;
+    const totalSlots = candles.length + futureSteps;
+    const slotWidth = plotWidth / totalSlots;
+
+    let minPrice = Infinity, maxPrice = -Infinity;
+    for (const c of candles) {
+        if (c.low < minPrice) minPrice = c.low;
+        if (c.high > maxPrice) maxPrice = c.high;
+        if (c.wma30 && c.wma30 < minPrice) minPrice = c.wma30;
+        if (c.wma30 && c.wma30 > maxPrice) maxPrice = c.wma30;
+        if (c.sma200 && c.sma200 < minPrice) minPrice = c.sma200;
+        if (c.sma200 && c.sma200 > maxPrice) maxPrice = c.sma200;
+    }
+    if (targetPrice > maxPrice) maxPrice = targetPrice;
+    if (targetPrice < minPrice) minPrice = targetPrice;
+    const priceMargin = (maxPrice - minPrice) * 0.10;
+    minPrice -= priceMargin;
+    maxPrice += priceMargin;
+
+    const priceToY = (price) => chartBottom - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+
+    // Encontra a vela mais proxima do cursor X
+    const x = Math.max(marginLeft, Math.min(rect.width - marginRight, cursorX));
+    const clamped = Math.max(0, Math.min(Math.floor((x - marginLeft - slotWidth / 2) / slotWidth), candles.length - 1));
+    const c = candles[clamped];
+    const cx = marginLeft + clamped * slotWidth + slotWidth / 2;
+    const cy = c.close !== undefined ? priceToY(c.close) : chartBottom / 2;
+
+    drawCrosshair({
+        cursorX, cursorY,
+        candles,
+        slotWidth,
+        priceY: cursorY,
+    });
+}
+
+function onChartPointerLeave() {
+    const layer = document.querySelector(".chart-crosshair-layer");
+    if (layer) layer.innerHTML = "";
+    const tooltip = document.getElementById("chartTooltip");
+    if (tooltip) {
+        tooltip.style.display = "none";
+        tooltip.setAttribute("aria-hidden", "true");
+    }
+}
+
+/**
+ * Conexao e sincronizacao inicial com backend Python 3.11
+ */

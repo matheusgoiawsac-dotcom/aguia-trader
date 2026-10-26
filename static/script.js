@@ -36,7 +36,7 @@ const MODES = {
     swing: {
         id: "swing",
         label: "Swing Trade",
-        contexto: "Modo Swing Trade • Gráfico Diário 14D",
+        contexto: "MODO SWING TRADE · GRÁFICO DIÁRIO 14D",
         mercado: "b3",
         timeframe: "1d",
         intervalo: "1d",
@@ -58,7 +58,7 @@ const MODES = {
     day: {
         id: "day",
         label: "Day Trade",
-        contexto: "Modo Day Trade • Velas Intradiárias",
+        contexto: "MODO DAY TRADE · VELAS 5M",
         mercado: "global",
         timeframe: "5m",
         intervalo: "5m",
@@ -418,6 +418,17 @@ function formatarPorcentagem(valor) {
 }
 
 /**
+ * Converte um valor de candle para um numero finito, ou null quando ausente/invalido.
+ * Aceita numeros, strings numericas e rejeita null/undefined/vazio/NaN/Infinito.
+ * Zero e strings como "0" sao valores validos e sao preservados.
+ */
+function toFiniteNumber(value) {
+    if (value === null || value === undefined || value === "") return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+}
+
+/**
  * Cache LRU: leitura promove o item e descarta o mais antigo quando cheio
  */
 function cacheGet(ticker) {
@@ -661,6 +672,9 @@ async function selectStock(ticker) {
 function aplicarDadosAnalise(dados) {
     setLoadingState(false);
 
+    // Limpa qualquer tooltip de dados anteriores ao trocar de ativo/intervalo
+    hideChartTooltip();
+
     headlineReturn.textContent = `(${formatarPorcentagem(dados.projecao_pct)})`;
     headlineReturn.className = dados.projecao_pct >= 0 ? "text-green" : "text-red";
     headlineTrend.textContent = dados.tendencia_texto;
@@ -711,6 +725,9 @@ function aplicarDadosAnalise(dados) {
  */
 function aplicarDadosFallback(asset) {
     setLoadingState(false);
+
+    // Limpa qualquer tooltip de dados anteriores ao trocar de ativo/intervalo
+    hideChartTooltip();
 
     const sign = asset.returnPct >= 0 ? "+" : "";
     headlineReturn.textContent = `(${sign}${asset.returnPct.toFixed(2)}%)`;
@@ -1041,7 +1058,7 @@ function drawCrosshair(g) {
     const clamped = Math.max(0, Math.min(idx, candles.length - 1));
     const c = candles[clamped];
 
-    // Linha vertical do crosshair
+    // Linha vertical do crosshair acompanha o cursor X (mesmo comportamento do commit 75f7b61)
     const cx = Math.max(marginLeft, Math.min(rect.width - marginRight, g.cursorX));
     layer.innerHTML = `
         <svg width="${rect.width}" height="${rect.height}" style="display:block;position:absolute;top:0;left:0;pointer-events:none">
@@ -1064,6 +1081,13 @@ function updateChartTooltip(index, g, cursorX, cursorY) {
     if (!tooltip || !g || !g.candles || g.candles.length === 0) return;
     const clamped = Math.max(0, Math.min(index, g.candles.length - 1));
     const c = g.candles[clamped];
+    const moeda = g.moeda || "R$";
+
+    const o = toFiniteNumber(c.open);
+    const h = toFiniteNumber(c.high);
+    const l = toFiniteNumber(c.low);
+    const cl = toFiniteNumber(c.close);
+    const v = toFiniteNumber(c.volume);
 
     const dateEl = document.getElementById("chartTooltipDate");
     const openEl = document.getElementById("chartTooltipOpen");
@@ -1073,28 +1097,52 @@ function updateChartTooltip(index, g, cursorX, cursorY) {
     const changeEl = document.getElementById("chartTooltipChange");
     const volumeEl = document.getElementById("chartTooltipVolume");
 
-    if (dateEl) dateEl.textContent = c.date || "";
-    if (openEl) openEl.textContent = c.open !== undefined ? `R$ ${c.open.toFixed(2).replace(".", ",")}` : "—";
-    if (highEl) highEl.textContent = c.high !== undefined ? `R$ ${c.high.toFixed(2).replace(".", ",")}` : "—";
-    if (lowEl) lowEl.textContent = c.low !== undefined ? `R$ ${c.low.toFixed(2).replace(".", ",")}` : "—";
-    if (closeEl) closeEl.textContent = c.close !== undefined ? `R$ ${c.close.toFixed(2).replace(".", ",")}` : "—";
-    if (changeEl && c.open !== undefined) {
-        const ch = ((c.close - c.open) / c.open) * 100;
-        const sign = ch >= 0 ? "+" : "";
-        changeEl.textContent = `${sign}${ch.toFixed(2).replace(".", ",")}%`;
-        changeEl.className = ch >= 0 ? "text-green" : "text-red";
-    } else if (changeEl) {
-        changeEl.textContent = "—";
-    }
-    if (volumeEl) volumeEl.textContent = c.volume !== undefined ? c.volume.toLocaleString("pt-BR") : "—";
+    const fmtPrice = (n) => n === null ? "—" : `${moeda} ${n.toFixed(2).replace(".", ",")}`;
+    const fmtChange = (n) => n === null ? "—" : `${n >= 0 ? "+" : ""}${n.toFixed(2).replace(".", ",")}%`;
 
-    // Posiciona o tooltip perto do cursor, dentro da area visivel
-    const rect = canvas.getBoundingClientRect();
-    const tx = Math.min(Math.max(0, cursorX + 16), rect.width - 220);
-    const ty = Math.min(Math.max(0, cursorY - 80), rect.height - 180);
+    if (dateEl) dateEl.textContent = c.date || "";
+    if (openEl) openEl.textContent = fmtPrice(o);
+    if (highEl) highEl.textContent = fmtPrice(h);
+    if (lowEl) lowEl.textContent = fmtPrice(l);
+    if (closeEl) closeEl.textContent = fmtPrice(cl);
+    if (changeEl) {
+        if (o !== null && cl !== null && o !== 0) {
+            const ch = ((cl - o) / o) * 100;
+            changeEl.textContent = fmtChange(ch);
+            changeEl.className = ch >= 0 ? "text-green" : "text-red";
+        } else {
+            changeEl.textContent = "—";
+            changeEl.className = "";
+        }
+    }
+    if (volumeEl) volumeEl.textContent = v === null ? "—" : v.toLocaleString("pt-BR");
+
+    // Posiciona dentro do stage do grafico (mesmo sistema de coordenadas do
+    // canvas e do crosshair), medindo a caixa real apos atualizar o conteudo
+    // e mantendo-a dentro dos limites do contenedor.
+    tooltip.style.display = "block";
+    tooltip.style.visibility = "hidden";
+    const tw = tooltip.offsetWidth;
+    const th = tooltip.offsetHeight;
+
+    const rect = canvas ? canvas.getBoundingClientRect() : { width: 0, height: 0 };
+    const container = tooltip.parentElement;
+    const cw = container ? container.clientWidth : rect.width;
+    const ch = container ? container.clientHeight : rect.height;
+    const pad = 10;
+
+    let tx = cursorX + 14;
+    let ty = cursorY - th - 10; // acima do cursor
+    if (tx + tw > cw - pad) tx = cursorX - tw - 14; // esquerda do cursor
+    if (tx < pad) tx = pad;
+    if (tx + tw > cw - pad) tx = Math.max(pad, cw - tw - pad);
+    if (ty < pad) ty = cursorY + 14; // abaixo do cursor
+    if (ty + th > ch - pad) ty = ch - th - pad;
+    if (ty < pad) ty = pad;
+
     tooltip.style.left = `${tx}px`;
     tooltip.style.top = `${ty}px`;
-    tooltip.style.display = "block";
+    tooltip.style.visibility = "visible";
     tooltip.setAttribute("aria-hidden", "false");
 }
 
@@ -1140,13 +1188,8 @@ function onChartPointerMove(event) {
 
     const priceToY = (price) => chartBottom - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
 
-    // Encontra a vela mais proxima do cursor X
-    const x = Math.max(marginLeft, Math.min(rect.width - marginRight, cursorX));
-    const clamped = Math.max(0, Math.min(Math.floor((x - marginLeft - slotWidth / 2) / slotWidth), candles.length - 1));
-    const c = candles[clamped];
-    const cx = marginLeft + clamped * slotWidth + slotWidth / 2;
-    const cy = c.close !== undefined ? priceToY(c.close) : chartBottom / 2;
-
+    // O crosshair segue o cursor (mesmo comportamento do commit 75f7b61):
+    // linha X e linha Y posicionadas na coordenada bruta do ponteiro.
     drawCrosshair({
         cursorX, cursorY,
         candles,
@@ -1158,6 +1201,11 @@ function onChartPointerMove(event) {
 function onChartPointerLeave() {
     const layer = document.querySelector(".chart-crosshair-layer");
     if (layer) layer.innerHTML = "";
+    hideChartTooltip();
+}
+
+/** Oculta o tooltip e sincroniza o estado de acessibilidade. */
+function hideChartTooltip() {
     const tooltip = document.getElementById("chartTooltip");
     if (tooltip) {
         tooltip.style.display = "none";
@@ -1356,7 +1404,19 @@ function aplicarModo(modoId) {
         i.classList.toggle("active", i.dataset.interval === currentInterval);
     });
     const ctx = document.getElementById("modeContextLabel");
-    if (ctx) ctx.textContent = def.contexto;
+    if (ctx) {
+        const text = currentMode === "day"
+            ? `MODO DAY TRADE · VELAS ${currentInterval}`
+            : def.contexto;
+        ctx.textContent = "";
+        const dot = document.createElement("span");
+        dot.className = "mode-context-dot";
+        const span = document.createElement("span");
+        span.className = "mode-context-text";
+        span.textContent = text;
+        ctx.appendChild(dot);
+        ctx.appendChild(span);
+    }
     const search = document.getElementById("searchInput");
     if (search) search.placeholder = def.placeholder_busca || "Busque um ativo...";
     // Clear analysis cache so the next selection fetches the new mode.
@@ -1374,6 +1434,20 @@ function aplicarModo(modoId) {
             document.querySelectorAll(".mode-interval").forEach(i => {
                 i.classList.toggle("active", i.dataset.interval === currentInterval);
             });
+            const ctx = document.getElementById("modeContextLabel");
+            if (ctx) {
+                const text = currentMode === "day"
+                    ? `MODO DAY TRADE · VELAS ${currentInterval}`
+                    : MODES[currentMode].contexto;
+                ctx.textContent = "";
+                const dot = document.createElement("span");
+                dot.className = "mode-context-dot";
+                const span = document.createElement("span");
+                span.className = "mode-context-text";
+                span.textContent = text;
+                ctx.appendChild(dot);
+                ctx.appendChild(span);
+            }
             selectStock(currentSelectedTicker);
         });
     });
@@ -1499,7 +1573,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         document.documentElement.classList.remove("app-booting");
         console.warn("Falha na coreografia da splash:", error);
+        try { window.dispatchEvent(new CustomEvent('aguia:splash-done')); } catch(e){}
     }
+    // Dispatch splash done event after settle
+    setTimeout(function(){ try { window.dispatchEvent(new CustomEvent('aguia:splash-done')); } catch(e){} }, 6500);
 
     renderStockList();
     testPythonBackend();
@@ -1554,4 +1631,77 @@ document.addEventListener("DOMContentLoaded", () => {
   btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.contains('open') ? close() : open(); });
   document.addEventListener('click', (e) => { if (!menu.contains(e.target) && e.target !== btn) close(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+})();
+
+
+// Auth integration
+(function(){
+  const btn = document.getElementById('btnEntrarCadastro');
+  const menu = document.getElementById('userDropdown');
+  const nameEl = document.querySelector('#userDropdown .user-name');
+  const emailEl = document.querySelector('#userDropdown .user-email');
+  const avatarLg = document.querySelector('#userDropdown .user-avatar-lg');
+  const pills = Array.from(document.querySelectorAll('#userDropdown .user-pill'));
+  const manageBtn = pills.find(x=>/Gerenciar/i.test(x.textContent||''));
+  const relBtn = pills.find(x=>/Relat/i.test(x.textContent||''));
+  const secBtn = pills.find(x=>/Segur/i.test(x.textContent||''));
+  const sairBtn = pills.find(x=>/Sair/i.test(x.textContent||''));
+
+  function setGuest(){
+    if(nameEl) nameEl.textContent = 'Visitante';
+    if(emailEl) emailEl.textContent = 'sem conta';
+    if(avatarLg){ avatarLg.innerHTML=''; avatarLg.classList.remove('has-img'); }
+    if(manageBtn){ manageBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(secBtn){ secBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(relBtn){ relBtn.onclick = ()=>{ alert('Relatórios em desenvolvimento'); }; }
+    if(sairBtn){ sairBtn.textContent='Entrar / Criar conta'; sairBtn.classList.remove('danger'); sairBtn.onclick = ()=>{ if(typeof window.openAuthModal==='function') window.openAuthModal(); }; }
+    if(btn){ btn.setAttribute('aria-label','Entrar / Cadastrar'); }
+  }
+
+  async function loadAuth(){
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if(data.sucesso && data.dados && data.dados.autenticado && data.dados.user){
+        const u = data.dados.user;
+        if(nameEl) nameEl.textContent = u.display_name || u.email_original || 'Usuário';
+        if(emailEl) emailEl.textContent = u.email_original || u.email_normalized || '';
+        if(avatarLg){
+          avatarLg.innerHTML='';
+          const img = document.createElement('img');
+          img.src = '/api/auth/avatar/' + u.id + '?t=' + Date.now();
+          img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+          avatarLg.appendChild(img);
+          avatarLg.classList.add('has-img');
+        }
+        if(manageBtn){ manageBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
+        if(relBtn){ relBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
+        if(secBtn){ secBtn.onclick = ()=>{ window.location.href = 'conta.html'; }; }
+        if(sairBtn){ sairBtn.textContent='Sair'; sairBtn.classList.add('danger'); sairBtn.onclick = async ()=>{
+          try { await fetch('/api/auth/logout',{method:'POST'}); } catch(e){}
+          location.reload();
+        }; }
+        if(btn){ btn.title = u.display_name || ''; btn.onclick = ()=>{ /* keep menu behavior */ }; }
+        return;
+      }
+    } catch(e){}
+    setGuest();
+  }
+
+  window.aguiaAuthSuccess = function(u){ loadAuth(); };
+  window.aguiaAuthGuest = function(){ setGuest(); };
+
+  if(btn){ btn.onclick = (e)=>{ e.stopPropagation(); const m=document.getElementById('userDropdown'); if(m) m.classList.toggle('open'); }; }
+  loadAuth();
+  setTimeout(async ()=>{
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      const authed = data.sucesso && data.dados && data.dados.autenticado;
+      const guest = sessionStorage.getItem('aguia_guest') === '1';
+      if(!authed && !guest){
+        if(typeof window.openAuthModal==='function') window.openAuthModal();
+      }
+    } catch(e){}
+  }, 6200);
 })();

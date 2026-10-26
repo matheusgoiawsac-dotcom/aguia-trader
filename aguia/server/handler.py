@@ -23,6 +23,15 @@ from aguia.server.routes import (
     handle_api_modos,
     handle_api_estrategia_macro_jr,
 )
+from aguia.server.auth_api import (
+    handle_auth_register,
+    handle_auth_login,
+    handle_auth_me,
+    handle_auth_logout,
+    handle_auth_update_profile,
+    handle_auth_change_password,
+    handle_auth_avatar,
+)
 
 STATIC_DIR = (ROOT_DIR / "static").resolve()
 
@@ -207,6 +216,16 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path
 
+        # Auth routes
+        if path == "/api/auth/me":
+            return handle_auth_me(self)
+        if path.startswith("/api/auth/avatar/"):
+            # /api/auth/avatar/<user_id>
+            try:
+                uid = path.split("/api/auth/avatar/")[-1].strip("/")
+                return handle_auth_avatar(self, uid)
+            except Exception:
+                pass
         if path.startswith("/api/"):
             try:
                 if path == "/api/status":
@@ -262,6 +281,18 @@ class AguiaRequestHandler(http.server.BaseHTTPRequestHandler):
     def _route_post(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
+
+        # Auth POST routes
+        if path == "/api/auth/register":
+            return handle_auth_register(self)
+        if path == "/api/auth/login":
+            return handle_auth_login(self)
+        if path == "/api/auth/logout":
+            return handle_auth_logout(self)
+        if path == "/api/auth/update":
+            return handle_auth_update_profile(self)
+        if path == "/api/auth/change-password":
+            return handle_auth_change_password(self)
 
         if path.startswith("/api/"):
             try:

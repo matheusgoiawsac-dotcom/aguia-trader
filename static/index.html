@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style.css?v=3.4">
     <!-- Sem JS: revela o app imediatamente (a splash some sozinha via CSS) -->
     <noscript><style>.app-booting .dashboard-wrapper{opacity:1!important;transform:none!important}</style></noscript>
+    <link rel="stylesheet" href="auth.css">
 </head>
 <body>
     <!-- Sprite SVG: emblema da Aguia na paleta da marca (azul/ciano/teal) -->
@@ -245,15 +246,20 @@
 
         <!-- Barra de Modos (Swing Trade / Day Trade) -->
         <div class="mode-bar" id="modeSwitch">
-            <div class="mode-segment" data-mode="swing">
-                <button class="mode-btn active" data-mode="swing" type="button">Swing Trade</button>
-                <span class="mode-subtitle">VELAS DIÁRIAS - 14D</span>
+            <div class="mode-segment">
+                <button class="mode-btn active" data-mode="swing" type="button">
+                    <span class="mode-btn-title">Swing Trade</span>
+                    <span class="mode-btn-subtitle">VELAS DIÁRIAS · 14D</span>
+                </button>
+                <button class="mode-btn" data-mode="day" type="button">
+                    <span class="mode-btn-title">Day Trade</span>
+                    <span class="mode-btn-subtitle">INTRADAY · ROMPIMENTOS</span>
+                </button>
             </div>
-            <div class="mode-segment" data-mode="day">
-                <button class="mode-btn" data-mode="day" type="button">Day Trade</button>
-                <span class="mode-subtitle cyan-pill">INTRADAY - ROMPIMENTOS</span>
+            <div class="mode-context" id="modeContextLabel">
+                <span class="mode-context-dot"></span>
+                <span class="mode-context-text">MODO SWING TRADE · GRÁFICO DIÁRIO 14D</span>
             </div>
-            <div class="mode-context" id="modeContextLabel">• MODO SWING TRADE • GRÁFICO DIÁRIO 14D</div>
             <div class="mode-intervals" id="modeIntervals">
                 <span class="mode-interval-label">VELA</span>
                 <span class="mode-interval active" data-interval="5m">5m</span>
@@ -330,15 +336,51 @@
 
                     <!-- Área de Visualização do Gráfico Canvas -->
                     <div class="chart-stage-container">
-                        <!-- Banner Flutuante de Alvo e Projeção -->
-                        <div class="target-floating-badge badge-bullish" id="floatingTargetBadge">
-                            <span id="badgeTrendAction">ALTA (BULLISH)</span> |
-                            Alvo: <span id="badgeTargetPrice">R$ 13.96</span>
-                            (<span id="badgeTargetReturn">+5.17%</span>)
+                        <!-- Banner Flutuante de Status e Alvo -->
+                        <div class="target-floating-badge badge-bullish" id="floatingTargetBadge" role="status" aria-label="Resumo da análise">
+                            <div class="tf-status">
+                                <span class="tf-dot" aria-hidden="true"></span>
+                                <span id="badgeTrendAction" class="tf-status-text">ALTA (BULLISH)</span>
+                            </div>
+                            <div class="tf-divider" aria-hidden="true"></div>
+                            <div class="tf-target">
+                                <span class="tf-label">ALVO</span>
+                                <span id="badgeTargetPrice" class="tf-price">R$ 13.96</span>
+                            </div>
+                            <span id="badgeTargetReturn" class="tf-change">+5.17%</span>
                         </div>
 
                         <!-- Canvas do Gráfico (Preço + Médias + Projeção + Volume) -->
                         <canvas id="tradingChartCanvas"></canvas>
+
+                        <!-- Tooltip do Gráfico (Canvas) - posicao absoluta dentro do stage do canvas -->
+                        <div id="chartTooltip" class="chart-tooltip" role="tooltip" aria-hidden="true">
+                            <div class="chart-tooltip__date" id="chartTooltipDate"></div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Abertura</span>
+                                <span class="chart-tooltip__value" id="chartTooltipOpen">—</span>
+                            </div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Máxima</span>
+                                <span class="chart-tooltip__value" id="chartTooltipHigh">—</span>
+                            </div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Mínima</span>
+                                <span class="chart-tooltip__value" id="chartTooltipLow">—</span>
+                            </div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Fechamento</span>
+                                <span class="chart-tooltip__value" id="chartTooltipClose">—</span>
+                            </div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Variação</span>
+                                <span class="chart-tooltip__value" id="chartTooltipChange">—</span>
+                            </div>
+                            <div class="chart-tooltip__row">
+                                <span class="chart-tooltip__label">Volume</span>
+                                <span class="chart-tooltip__value" id="chartTooltipVolume">—</span>
+                            </div>
+                        </div>
 
                         <!-- Marca d'Água Oficial Águia Trader -->
                         <div class="chart-watermark">
@@ -395,35 +437,7 @@
 
                 
             
-    <!-- Tooltip do Gráfico (Canvas) -->
-    <div id="chartTooltip" class="chart-tooltip" role="tooltip" aria-hidden="true">
-        <div class="chart-tooltip__date" id="chartTooltipDate"></div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Abertura</span>
-            <span class="chart-tooltip__value" id="chartTooltipOpen">—</span>
-        </div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Máxima</span>
-            <span class="chart-tooltip__value" id="chartTooltipHigh">—</span>
-        </div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Mínima</span>
-            <span class="chart-tooltip__value" id="chartTooltipLow">—</span>
-        </div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Fechamento</span>
-            <span class="chart-tooltip__value" id="chartTooltipClose">—</span>
-        </div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Variação</span>
-            <span class="chart-tooltip__value" id="chartTooltipChange">—</span>
-        </div>
-        <div class="chart-tooltip__row">
-            <span class="chart-tooltip__label">Volume</span>
-            <span class="chart-tooltip__value" id="chartTooltipVolume">—</span>
-        </div>
-    </div>
-
+    <!-- Tooltip do Gráfico (Canvas) foi movido para dentro de .chart-stage-container -->
 </main>
         </div>
     </div>
@@ -459,5 +473,6 @@
 
     <!-- Script JavaScript com Motor Gráfico Canvas -->
     <script src="script.js?v=3.5"></script>
+    <script src="auth.js"></script>
 </body>
 </html>

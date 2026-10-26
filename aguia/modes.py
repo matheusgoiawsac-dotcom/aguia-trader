@@ -36,7 +36,7 @@ MODOS: Dict[str, Dict[str, Any]] = {
     "swing": {
         "id": "swing",
         "label": "Swing Trade",
-        "contexto": "Modo Swing Trade • Gráfico Diário 14D",
+        "contexto": "MODO SWING TRADE · GRÁFICO DIÁRIO 14D",
         "mercado": "b3",
         "timeframe": "1d",
         "intervalo": "1d",
@@ -55,7 +55,7 @@ MODOS: Dict[str, Dict[str, Any]] = {
     "day": {
         "id": "day",
         "label": "Day Trade",
-        "contexto": "Modo Day Trade • Velas Intradiárias",
+        "contexto": "MODO DAY TRADE · VELAS 5M",
         "mercado": "global",
         "timeframe": "5m",
         "intervalo": "5m",
