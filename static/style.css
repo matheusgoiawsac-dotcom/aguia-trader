@@ -1643,51 +1643,24 @@ body {
 .modal-overlay { display: none; }
 .modal-overlay.open { display: flex; }
 
+/* Modal overlay hidden by default */
+.modal-overlay { display: none; }
+.modal-overlay.open { display: flex; }
+
 /* Mode bar */
 .mode-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.75rem 1rem; border: 1px solid var(--border-card); border-radius: var(--radius-lg); background: var(--bg-surface); }
 .mode-segment { display: inline-flex; align-items: center; gap: 0.5rem; }
 .mode-btn { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-card); border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; }
-.mode-btn.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+.mode-btn.active { background: var(--brand-blue); color: var(--color-white); border-color: var(--brand-blue); }
 .mode-subtitle { font-size: 0.75rem; color: var(--text-muted); }
 .mode-context { font-size: 0.85rem; color: var(--text-secondary); text-align: center; flex: 1; }
 .mode-intervals { display: inline-flex; align-items: center; gap: 0.35rem; }
 .mode-interval-label { font-size: 0.75rem; color: var(--text-muted); margin-right: 0.25rem; }
 .mode-interval { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-muted); }
-.mode-interval.active { background: var(--brand-blue); color: #fff; }
+.mode-interval.active { background: var(--brand-blue); color: var(--color-white); }
 
-/* Operational tips card */
-.operational-tips { background: var(--bg-surface); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
-
-/* Force splash centering */
-.splash-inner { margin: 0 auto; }
-.splash-logo { margin: 0 auto; }
-.splash-progress, .splash-progressbar { margin: 0 auto; }
-
-/* ===== Splash Cyberpunk Elite Override ===== */
-.splash-screen { background: #070a13 !important; background-image: radial-gradient(circle at 50% 40%, rgba(4,157,250,0.12), transparent 60%), linear-gradient(rgba(14,218,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,218,255,0.04) 1px, transparent 1px) !important; background-size: auto, 40px 40px, 40px 40px !important; }
-.splash-inner { background: rgba(15,23,42,0.65) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: 1px solid rgba(0,240,255,0.3) !important; box-shadow: 0 0 35px rgba(0,240,255,0.15) !important; border-radius: 16px !important; padding: 2.5rem 3rem !important; }
-.splash-logo { animation: splashFloat 3s ease-in-out infinite !important; filter: drop-shadow(0 0 18px rgba(14,218,255,0.6)) !important; }
-@keyframes splashFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.splash-status-text { font-family: 'Plus Jakarta Sans', sans-serif !important; }
-.splash-tagline { font-family: 'JetBrains Mono', monospace !important; letter-spacing: 0.12em !important; color: #94a3b8 !important; }
-.splash-progress-track { background: rgba(15,23,42,0.6) !important; border: 1px solid rgba(0,240,255,0.3) !important; border-radius: 999px !important; overflow: hidden !important; }
-.splash-progress-fill { background: linear-gradient(90deg, #049DFA, #0EDAFF) !important; box-shadow: 0 0 15px rgba(14,218,255,0.6) !important; }
-
-/* Glassmorphism cards & tips */
-.metric-card, .quant-card, .operational-tips { background: rgba(15,23,42,0.65) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(0,240,255,0.2) !important; border-radius: 16px !important; box-shadow: 0 0 25px rgba(0,240,255,0.08) !important; }
-.metric-value, .quant-value { font-family: 'JetBrains Mono', monospace !important; }
-
-/* Splash centering fix */
-.splash-inner, .splash-container { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
+/* Splash centering */
+.splash-inner, .splash-container { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; width: 100% !important; height: 100vh !important; }
 .splash-logo, .splash-logo img, .splash-logo-img { margin: 0 auto !important; display: block !important; }
-.splash-progress, .splash-progress-track, .progress-bar { width: 300px !important; margin: 15px auto 0 auto !important; }
+.splash-progress, .splash-progress-track { width: 300px !important; margin: 15px auto 0 auto !important; }
 .splash-status, .splash-status-text, .splash-tagline { text-align: center !important; width: 100% !important; }
-
-/* Splash organic cyberpunk refinement */
-.splash-inner, .splash-container { border-radius: 36px !important; box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(0,240,255,0.12), inset 0 0 20px rgba(0,240,255,0.05) !important; border: 1px solid rgba(0,240,255,0.25) !important; }
-.splash-logo { background: rgba(4,157,250,0.08) !important; border-radius: 24px !important; padding: 16px !important; animation: splashFloat 3s ease-in-out infinite !important; filter: drop-shadow(0 0 20px rgba(0,240,255,0.6)) !important; }
-.splash-status-text { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: 1px !important; }
-.splash-tagline { font-family: 'JetBrains Mono', monospace !important; }
-.splash-progress-track { border-radius: 12px !important; background: rgba(15,23,42,0.6) !important; }
-.splash-progress-fill { background: linear-gradient(90deg, #00F0FF, #7000FF, #00F0FF) !important; box-shadow: 0 0 20px rgba(0,240,255,0.6) !important; border-radius: 12px !important; }
-@keyframes progressShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }

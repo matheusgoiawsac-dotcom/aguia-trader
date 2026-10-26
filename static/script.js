@@ -1009,16 +1009,16 @@ function ensureCrosshairLayer() {
     const layer = document.createElement("div");
     layer.className = "chart-crosshair-layer";
     layer.style.position = "absolute";
-    layer.style.top = "0";
-    layer.style.left = "0";
-    layer.style.width = "100%";
-    layer.style.height = "100%";
+    layer.style.top = canvas.offsetTop + "px";
+    layer.style.left = canvas.offsetLeft + "px";
+    layer.style.width = canvas.offsetWidth + "px";
+    layer.style.height = canvas.offsetHeight + "px";
     layer.style.pointerEvents = "none";
     layer.style.zIndex = "40";
-    const stage = document.querySelector(".chart-stage-container");
-    if (stage) {
-        stage.style.position = "relative";
-        stage.appendChild(layer);
+    const parent = canvas.parentElement;
+    if (parent) {
+        parent.style.position = "relative";
+        parent.appendChild(layer);
     }
     crosshairLayer = layer;
     return layer;
