@@ -1658,3 +1658,6 @@ body {
 .splash-logo, .splash-logo img, .splash-logo-img { margin: 0 auto !important; display: block !important; }
 .splash-progress, .splash-progress-track { width: 300px !important; margin: 15px auto 0 auto !important; }
 .splash-status, .splash-status-text, .splash-tagline { text-align: center !important; width: 100% !important; }
+
+.chart-content-area, .chart-stage-container { position: relative !important; }
+.chart-tooltip { background: var(--bg-surface) !important; color: var(--text-primary) !important; }
