@@ -75,19 +75,21 @@
     });
   });
 
-  function closeGuest(){
-    overlay.classList.remove('open');
+  function setGuestChoice(){
     try { sessionStorage.setItem('aguia_guest', '1'); } catch(e){}
     if(typeof window.aguiaAuthGuest === 'function') window.aguiaAuthGuest();
   }
-  closeBtn.addEventListener('click', closeGuest);
-  visitorBtn.addEventListener('click', closeGuest);
-  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeGuest(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && overlay.classList.contains('open')) closeGuest(); });
+  function closeModalOnly(){
+    overlay.classList.remove('open');
+  }
+  if(closeBtn) closeBtn.addEventListener('click', closeModalOnly);
+  if(visitorBtn) visitorBtn.addEventListener('click', function(){ overlay.classList.remove('open'); setGuestChoice(); });
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModalOnly(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && overlay.classList.contains('open')) closeModalOnly(); });
 
-  window.openAuthModal = function(){ 
-    overlay.classList.add('open'); 
-    setTimeout(()=>{ try { modal.focus(); } catch(e){} }, 50); 
+  window.openAuthModal = function(){
+    overlay.classList.add('open');
+    setTimeout(()=>{ try { modal.focus(); } catch(e){} }, 50);
   };
   window.closeAuthModal = function(){ overlay.classList.remove('open'); };
 
@@ -164,18 +166,31 @@
 
     // Auto-show after splash
   async function checkAndOpen(){
+    window._aguiaAuthCheckOpen = checkAndOpen;
     try {
-      if(overlay.classList.contains('open')) return;
-      const res = await fetch('/api/auth/me');
-      const data = await res.json();
-      const authed = data && data.sucesso && data.dados && data.dados.autenticado;
-      const guest = sessionStorage.getItem('aguia_guest') === '1';
-      if(!authed && !guest){
-        if(typeof window.openAuthModal === 'function') window.openAuthModal();
+      if(overlay && overlay.classList && overlay.classList.contains('open')) return;
+      var guest = sessionStorage.getItem('aguia_guest') === '1';
+      if(guest) return;
+      try {
+        var data = await (window._aguiaAuthFetch ? window._aguiaAuthFetch() : fetch('/api/auth/me').then(function(r){ if(!r.ok) throw new Error('http'); return r.json(); }));
+        var authed = data && data.sucesso && data.dados && data.dados.autenticado;
+        if(!authed){
+          if(typeof window.openAuthModal === 'function') {
+            if(!(overlay && overlay.classList && overlay.classList.contains('open'))) window.openAuthModal();
+          }
+        }
+        return;
+      } catch(e){
+        if(typeof window.openAuthModal === 'function') {
+          if(!(overlay && overlay.classList && overlay.classList.contains('open'))) window.openAuthModal();
+        }
+        return;
       }
     } catch(e){
-      const guest = sessionStorage.getItem('aguia_guest') === '1';
-      if(!guest && typeof window.openAuthModal === 'function') window.openAuthModal();
+      var guest2 = sessionStorage.getItem('aguia_guest') === '1';
+      if(!guest2 && typeof window.openAuthModal === 'function') {
+        try { if(!(overlay && overlay.classList && overlay.classList.contains('open'))) window.openAuthModal(); } catch(ex){}
+      }
     }
   }
   window.addEventListener('aguia:splash-done', checkAndOpen);
@@ -186,4 +201,19 @@
   } else {
     setTimeout(checkAndOpen, 7000);
   }
+})();
+// Abertura direta apos splash (garantia) - unico fluxo
+(function(){
+  var fired = false;
+  function tryOpen(){
+    if(fired) return;
+    fired = true;
+    try{
+      if(typeof window._aguiaAuthCheckOpen === 'function') window._aguiaAuthCheckOpen();
+      else if(typeof checkAndOpen === 'function') checkAndOpen();
+    }catch(e){}
+  }
+  window.addEventListener('aguia:splash-done', tryOpen, {once:true});
+  setTimeout(tryOpen, 6800);
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(tryOpen, 7400); }); } else { setTimeout(tryOpen, 7400); }
 })();

@@ -1630,19 +1630,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 (function(){
-  const btn = document.getElementById('btnEntrarCadastro');
-  const menu = document.getElementById('userDropdown');
-  if (!btn || !menu) return;
-  const open = () => { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); };
-  const close = () => { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); };
-  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.contains('open') ? close() : open(); });
-  document.addEventListener('click', (e) => { if (!menu.contains(e.target) && e.target !== btn) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  // Placeholder - handlers are managed by auth integration
 })();
 
 
 
 
+
+// Cache de autenticacao para evitar chamadas repetidas
+window._aguiaAuthCache = window._aguiaAuthCache || {ts:0, data:null};
+window._aguiaAuthFetchPromise = window._aguiaAuthFetchPromise || null;
+window._aguiaAuthFetch = window._aguiaAuthFetch || function(force){
+  var now = Date.now();
+  if(!force && window._aguiaAuthCache.data && now - window._aguiaAuthCache.ts < 60000){
+    return Promise.resolve(window._aguiaAuthCache.data);
+  }
+  if(!force && window._aguiaAuthFetchPromise){
+    return window._aguiaAuthFetchPromise;
+  }
+  var p = fetch('/api/auth/me').then(function(r){
+    if(!r.ok){
+      throw new Error('http_' + r.status);
+    }
+    return r.json();
+  }).then(function(data){
+    window._aguiaAuthCache = {ts: Date.now(), data: data};
+    window._aguiaAuthFetchPromise = null;
+    return data;
+  }).catch(function(err){
+    window._aguiaAuthFetchPromise = null;
+    throw err;
+  });
+  window._aguiaAuthFetchPromise = p;
+  return p;
+};
+window._aguiaAuthInvalidate = function(){
+  window._aguiaAuthCache = {ts:0, data:null};
+  window._aguiaAuthFetchPromise = null;
+};
 // Auth integration
 (function(){
   const btn = document.getElementById('btnEntrarCadastro');
@@ -1673,8 +1698,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadAuth(){
     try {
-      var res = await fetch('/api/auth/me');
-      var data = await res.json();
+      var data = await (window._aguiaAuthFetch ? window._aguiaAuthFetch() : fetch('/api/auth/me').then(function(r){return r.json();}));
       if(data && data.sucesso && data.dados && data.dados.autenticado && data.dados.user){
         var u = data.dados.user;
         if(nameEl) nameEl.textContent = u.display_name || u.email_original || 'Usuário';
@@ -1705,7 +1729,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.aguiaAuthSuccess = function(u){ loadAuth(); };
   window.aguiaAuthGuest = function(){ setGuest(); };
 
-  if(btn){ btn.onclick = toggleMenu; }
+  if(btn){ btn.onclick = toggleMenu; try{btn._aguiaAuthBound=true;}catch(e){} }
   document.addEventListener('click', function(e){
     if(!menu) return;
     if(menu.contains(e.target)) return;
@@ -1717,8 +1741,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAuth();
   setTimeout(async function(){
     try {
-      var res = await fetch('/api/auth/me');
-      var data = await res.json();
+      var data = await (window._aguiaAuthFetch ? window._aguiaAuthFetch() : fetch('/api/auth/me').then(function(r){return r.json();}));
       var authed = data && data.sucesso && data.dados && data.dados.autenticado;
       var guest = sessionStorage.getItem('aguia_guest') === '1';
       if(!authed && !guest){
