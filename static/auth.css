@@ -3,12 +3,12 @@
 .auth-overlay.open{opacity:1;pointer-events:auto;}
 .auth-modal{position:relative;width:min(460px,94vw);max-height:92vh;overflow:auto;background:linear-gradient(180deg,rgba(6,12,24,0.98) 0%,rgba(3,7,18,0.98) 100%);border:1px solid rgba(34,211,238,0.38);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 60px rgba(14,165,233,0.14);display:flex;flex-direction:column;animation:authIn .25s ease;outline:none;padding-top:0;}
 @keyframes authIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.auth-close{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:8px;background:rgba(15,23,42,0.72);border:1px solid rgba(148,163,184,0.3);color:#e2e8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:6;box-sizing:border-box;padding:0;line-height:1;font-size:13px;}
+.auth-close{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:8px;background:rgba(15,23,42,0.75);border:1px solid rgba(148,163,184,0.32);color:#e2e8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-sizing:border-box;padding:0;line-height:1;font-size:13px;}
 .auth-close svg,.auth-close{font-size:14px;}
 .auth-close:hover{background:rgba(30,41,59,0.9);border-color:rgba(34,211,238,0.6);}
 .auth-identity{display:none !important;}
-.auth-panel{padding:30px 24px 20px 24px;display:flex;flex-direction:column;gap:16px;width:100%;box-sizing:border-box;}
-.auth-tabs{display:flex;gap:6px;background:rgba(15,23,42,0.62);padding:3px;border-radius:12px;border:1px solid rgba(148,163,184,0.2);margin-top:2px;}
+.auth-panel{padding:36px 24px 18px 24px;display:flex;flex-direction:column;gap:14px;width:100%;box-sizing:border-box;}
+.auth-tabs{display:flex;gap:6px;background:rgba(15,23,42,0.62);padding:3px;border-radius:12px;border:1px solid rgba(148,163,184,0.2);margin-top:0;}
 .auth-tab{flex:1;padding:8px 10px;border-radius:10px;background:transparent;border:none;color:#94a3b8;cursor:pointer;font-weight:600;font-size:13px;}
 .auth-tab.active{background:linear-gradient(90deg,rgba(14,165,233,0.32),rgba(34,211,238,0.26));color:#e6f7ff;border:1px solid rgba(34,211,238,0.6);}
 .auth-form{display:flex;flex-direction:column;gap:12px;}
