@@ -27,7 +27,6 @@
               <button type="button" class="auth-camera" id="regCamera" aria-label="Selecionar foto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></button>
             </div>
             <input type="file" id="regAvatarFile" accept="image/jpeg,image/png,image/webp" style="display:none">
-            <div style="font-size:12px;color:#94a3b8">Foto opcional</div>
           </div>
           <div class="auth-field"><label for="regNome">Nome completo</label><input id="regNome" autocomplete="name" placeholder="Digite seu nome" required></div>
           <div class="auth-field"><label for="regEmail">E-mail</label><input id="regEmail" type="email" autocomplete="email" placeholder="Digite seu e-mail" required></div>
@@ -35,7 +34,7 @@
             <div class="auth-field"><label for="regSenha">Crie sua senha</label><div class="auth-password-wrap"><input id="regSenha" type="password" autocomplete="new-password" placeholder="Crie uma senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
             <div class="auth-field"><label for="regSenha2">Confirme a senha</label><div class="auth-password-wrap"><input id="regSenha2" type="password" autocomplete="new-password" placeholder="Confirme sua senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha2" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
           </div>
-          <div class="auth-field"><label for="regIdade">Idade</label><input id="regIdade" type="number" min="0" max="120" required></div>
+          <div class="auth-field"><label for="regIdade">Data de nascimento</label><input id="regIdade" type="date" required></div>
           <div class="auth-actions">
             <button class="auth-btn" type="submit">Criar minha conta</button>
             <div class="auth-error" id="regError"></div>
@@ -155,13 +154,19 @@
     const email = document.getElementById('regEmail').value;
     const senha = document.getElementById('regSenha').value;
     const senha2 = document.getElementById('regSenha2').value;
-    const idade = document.getElementById('regIdade').value;
+    const dataNasc = document.getElementById('regIdade').value;
     const err = document.getElementById('regError');
     const ok = document.getElementById('regSuccess');
     if(err) err.textContent=''; if(ok) ok.textContent='';
     if(senha !== senha2){ if(err) err.textContent='As senhas não coincidem'; return; }
+    if(dataNasc){
+      const nasc = new Date(dataNasc + 'T00:00:00');
+      const hoje = new Date();
+      hoje.setHours(0,0,0,0);
+      if(nasc > hoje){ if(err) err.textContent='Data de nascimento inválida'; return; }
+    }
     try {
-      const body = {nome, email, senha, senha2, idade};
+      const body = {nome, email, senha, senha2, idade: dataNasc};
       if(avatarDataUrl) body.avatar = avatarDataUrl;
       const res = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
       const data = await res.json();
