@@ -34,7 +34,7 @@
             <div class="auth-field"><label for="regSenha">Crie sua senha</label><div class="auth-password-wrap"><input id="regSenha" type="password" autocomplete="new-password" placeholder="Crie uma senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
             <div class="auth-field"><label for="regSenha2">Confirme a senha</label><div class="auth-password-wrap"><input id="regSenha2" type="password" autocomplete="new-password" placeholder="Confirme sua senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha2" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
           </div>
-          <div class="auth-field"><label for="regIdade">Data de nascimento</label><input id="regIdade" type="date" required></div>
+          <div class="auth-field"><label for="regIdade">Data de nascimento</label><div class="auth-date-wrap"><input id="regIdade" class="auth-date-input" type="text" inputmode="numeric" placeholder="DD/MM/AAAA" autocomplete="bday" readonly required><button type="button" class="auth-date-toggle" id="regIdadeToggle" aria-label="Abrir calendário"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button><div class="auth-calendar" id="regCalendar" role="dialog" aria-modal="false"></div></div></div>
           <div class="auth-actions">
             <button class="auth-btn" type="submit">Criar minha conta</button>
             <div class="auth-error" id="regError"></div>
@@ -102,6 +102,109 @@
     reader.readAsDataURL(f);
   });
 
+  // custom calendar for birth date
+  (function(){
+    const input = document.getElementById('regIdade');
+    const toggle = document.getElementById('regIdadeToggle');
+    const cal = document.getElementById('regCalendar');
+    if(!input || !toggle || !cal) return;
+    let viewDate = new Date();
+    viewDate.setHours(0,0,0,0);
+    let selected = null;
+    const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const days = ['D','S','T','Q','Q','S','S'];
+    function fmt(d){
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yy = d.getFullYear();
+      return dd+'/'+mm+'/'+yy;
+    }
+    function iso(d){
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yy = d.getFullYear();
+      return yy+'-'+mm+'-'+dd;
+    }
+    function render(){
+      cal.innerHTML = '';
+      const header = document.createElement('div');
+      header.className = 'auth-cal-header';
+      const prev = document.createElement('button');
+      prev.type='button'; prev.className='auth-cal-nav'; prev.innerHTML='‹';
+      prev.onclick = ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1, 1); render(); };
+      const title = document.createElement('div');
+      title.className='auth-cal-title';
+      title.textContent = months[viewDate.getMonth()] + ' ' + viewDate.getFullYear();
+      const next = document.createElement('button');
+      next.type='button'; next.className='auth-cal-nav'; next.innerHTML='›';
+      next.onclick = ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 1); render(); };
+      header.appendChild(prev); header.appendChild(title); header.appendChild(next);
+      cal.appendChild(header);
+      const dow = document.createElement('div');
+      dow.className='auth-cal-dow';
+      days.forEach(d=>{ const el=document.createElement('div'); el.textContent=d; dow.appendChild(el); });
+      cal.appendChild(dow);
+      const grid = document.createElement('div');
+      grid.className='auth-cal-grid';
+      const first = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+      const last = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 0);
+      const startDay = first.getDay();
+      for(let i=0;i<startDay;i++){ const e=document.createElement('div'); e.className='auth-cal-day empty'; grid.appendChild(e); }
+      const today = new Date(); today.setHours(0,0,0,0);
+      for(let d=1;d<=last.getDate();d++){
+        const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+        date.setHours(0,0,0,0);
+        const el = document.createElement('button');
+        el.type='button'; el.className='auth-cal-day';
+        if(date.getTime() === today.getTime()) el.classList.add('today');
+        if(selected && date.getTime() === selected.getTime()) el.classList.add('selected');
+        if(date > today){ el.disabled = true; el.classList.add('disabled'); }
+        el.textContent = d;
+        el.onclick = ()=>{
+          if(date > today) return;
+          selected = date;
+          input.value = fmt(date);
+          input.dataset.iso = iso(date);
+          cal.classList.remove('open');
+        };
+        grid.appendChild(el);
+      }
+      cal.appendChild(grid);
+      const footer = document.createElement('div');
+      footer.className='auth-cal-footer';
+      const todayBtn = document.createElement('button');
+      todayBtn.type='button'; todayBtn.className='auth-cal-today';
+      todayBtn.textContent='Hoje';
+      todayBtn.onclick = ()=>{
+        if(today > today) return;
+        selected = today;
+        viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        input.value = fmt(today);
+        input.dataset.iso = iso(today);
+        cal.classList.remove('open');
+        render();
+      };
+      footer.appendChild(todayBtn);
+      cal.appendChild(footer);
+    }
+    function open(){
+      const rect = input.getBoundingClientRect();
+      cal.style.left = rect.left + 'px';
+      cal.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+      cal.classList.add('open');
+      render();
+    }
+    toggle.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); if(cal.classList.contains('open')) cal.classList.remove('open'); else open(); });
+    input.addEventListener('click', (e)=>{ e.preventDefault(); if(cal.classList.contains('open')) cal.classList.remove('open'); else open(); });
+    document.addEventListener('click', (e)=>{
+      if(!cal.contains(e.target) && e.target !== input && e.target !== toggle) cal.classList.remove('open');
+    });
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') cal.classList.remove('open');
+    });
+    render();
+  })();
+
   // password visibility toggles
   overlay.querySelectorAll('.auth-pass-toggle').forEach(btn=>{
     btn.addEventListener('click', (e)=>{
@@ -154,7 +257,7 @@
     const email = document.getElementById('regEmail').value;
     const senha = document.getElementById('regSenha').value;
     const senha2 = document.getElementById('regSenha2').value;
-    const dataNasc = document.getElementById('regIdade').value;
+    const dataNasc = document.getElementById('regIdade').dataset.iso || document.getElementById('regIdade').value;
     const err = document.getElementById('regError');
     const ok = document.getElementById('regSuccess');
     if(err) err.textContent=''; if(ok) ok.textContent='';
@@ -163,7 +266,7 @@
       const nasc = new Date(dataNasc + 'T00:00:00');
       const hoje = new Date();
       hoje.setHours(0,0,0,0);
-      if(nasc > hoje){ if(err) err.textContent='Data de nascimento inválida'; return; }
+      if(isNaN(nasc.getTime()) || nasc > hoje){ if(err) err.textContent='Data de nascimento inválida'; return; }
     }
     try {
       const body = {nome, email, senha, senha2, data_nascimento: dataNasc};
