@@ -5,25 +5,14 @@
   overlay.innerHTML = `
     <div class="auth-modal" role="dialog" aria-modal="true" tabindex="-1">
       <button class="auth-close" id="authClose" aria-label="Fechar e continuar como visitante">✕</button>
-      <div class="auth-identity">
-        <div class="auth-brand">
-          <img src="logo.png" alt="Águia Trader">
-          <div>
-            <div class="auth-brand-title">Águia Trader</div>
-            <div class="auth-brand-sub">Motor estatístico para B3</div>
-          </div>
-        </div>
-        <div class="auth-identity-text">Acesse sua conta para gerenciar perfil e preferências. Você também pode continuar como visitante.</div>
-        <div class="auth-canvas-mini"></div>
-      </div>
       <div class="auth-panel">
         <div class="auth-tabs">
           <button class="auth-tab active" data-tab="login">Entrar</button>
           <button class="auth-tab" data-tab="register">Criar conta</button>
         </div>
         <form class="auth-form" id="authLoginForm">
-          <div class="auth-field"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" required></div>
-          <div class="auth-field"><label for="loginPass">Senha</label><input id="loginPass" type="password" autocomplete="current-password" required></div>
+          <div class="auth-field"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Digite seu e-mail" required></div>
+          <div class="auth-field"><label for="loginPass">Senha</label><div class="auth-password-wrap"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Digite sua senha" required><button type="button" class="auth-pass-toggle" data-target="loginPass" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
           <div class="auth-actions">
             <button class="auth-btn" type="submit">Entrar</button>
             <div class="auth-error" id="loginError"></div>
@@ -40,11 +29,11 @@
             <input type="file" id="regAvatarFile" accept="image/jpeg,image/png,image/webp" style="display:none">
             <div style="font-size:12px;color:#94a3b8">Foto opcional</div>
           </div>
-          <div class="auth-field"><label for="regNome">Nome completo</label><input id="regNome" autocomplete="name" required></div>
-          <div class="auth-field"><label for="regEmail">E-mail</label><input id="regEmail" type="email" autocomplete="email" required></div>
+          <div class="auth-field"><label for="regNome">Nome completo</label><input id="regNome" autocomplete="name" placeholder="Digite seu nome" required></div>
+          <div class="auth-field"><label for="regEmail">E-mail</label><input id="regEmail" type="email" autocomplete="email" placeholder="Digite seu e-mail" required></div>
           <div class="auth-row">
-            <div class="auth-field"><label for="regSenha">Crie sua senha</label><input id="regSenha" type="password" autocomplete="new-password" required></div>
-            <div class="auth-field"><label for="regSenha2">Confirme a senha</label><input id="regSenha2" type="password" autocomplete="new-password" required></div>
+            <div class="auth-field"><label for="regSenha">Crie sua senha</label><div class="auth-password-wrap"><input id="regSenha" type="password" autocomplete="new-password" placeholder="Crie uma senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
+            <div class="auth-field"><label for="regSenha2">Confirme a senha</label><div class="auth-password-wrap"><input id="regSenha2" type="password" autocomplete="new-password" placeholder="Confirme sua senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha2" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
           </div>
           <div class="auth-field"><label for="regIdade">Idade</label><input id="regIdade" type="number" min="0" max="120" required></div>
           <div class="auth-actions">
@@ -112,6 +101,30 @@
       if(avEmpty) avEmpty.style.display='none';
     };
     reader.readAsDataURL(f);
+  });
+
+  // password visibility toggles
+  overlay.querySelectorAll('.auth-pass-toggle').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const targetId = btn.getAttribute('data-target');
+      const input = targetId ? document.getElementById(targetId) : null;
+      if(!input) return;
+      if(input.type === 'password'){
+        input.type = 'text';
+        const eyeOpen = btn.querySelector('.eye-open');
+        const eyeClosed = btn.querySelector('.eye-closed');
+        if(eyeOpen) eyeOpen.style.display = 'none';
+        if(eyeClosed) eyeClosed.style.display = 'block';
+      }else{
+        input.type = 'password';
+        const eyeOpen = btn.querySelector('.eye-open');
+        const eyeClosed = btn.querySelector('.eye-closed');
+        if(eyeOpen) eyeOpen.style.display = 'block';
+        if(eyeClosed) eyeClosed.style.display = 'none';
+      }
+    });
   });
 
   if(loginForm) loginForm.addEventListener('submit', async (e)=>{
