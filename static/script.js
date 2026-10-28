@@ -1538,7 +1538,11 @@ function setupSplash() {
         // Remove a classe de transicao: o app volta ao estado estatico
         // e a camada de composicao dedicada e liberada.
         root.classList.remove("app-revealing");
-        if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+        if (splash && splash.parentNode) {
+            try { console.log('[SPLASH_REMOVED]', performance.now()); } catch(e){}
+            splash.parentNode.removeChild(splash);
+        }
+        try { console.log('[SPLASH_EVENT]', performance.now()); window.dispatchEvent(new CustomEvent('aguia:splash-done')); } catch(e){}
     };
 
     const revealTimer = setTimeout(reveal, timing.hold);
@@ -1573,7 +1577,7 @@ function setupSplash() {
     }, { once: true });
 }
 
-// Inicialização
+// InicializaÃ§Ã£o
 document.addEventListener("DOMContentLoaded", () => {
     try {
         setupSplash();
@@ -1582,8 +1586,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("Falha na coreografia da splash:", error);
         try { window.dispatchEvent(new CustomEvent('aguia:splash-done')); } catch(e){}
     }
-    // Dispatch splash done event after settle
-    setTimeout(function(){ try { window.dispatchEvent(new CustomEvent('aguia:splash-done')); } catch(e){} }, 6500);
 
     renderStockList();
     testPythonBackend();
@@ -1664,6 +1666,7 @@ window._aguiaAuthFetch = window._aguiaAuthFetch || function(force){
   window._aguiaAuthFetchPromise = p;
   return p;
 };
+try { if(!window._aguiaAuthFetchPromise && (!window._aguiaAuthCache || !window._aguiaAuthCache.data || Date.now() - window._aguiaAuthCache.ts >= 60000)) { try { window._aguiaAuthFetch(); } catch(e){} } } catch(e){}
 window._aguiaAuthInvalidate = function(){
   window._aguiaAuthCache = {ts:0, data:null};
   window._aguiaAuthFetchPromise = null;
@@ -1739,30 +1742,4 @@ window._aguiaAuthInvalidate = function(){
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
 
   loadAuth();
-  setTimeout(async function(){
-    try {
-      var data = await (window._aguiaAuthFetch ? window._aguiaAuthFetch() : fetch('/api/auth/me').then(function(r){return r.json();}));
-      var authed = data && data.sucesso && data.dados && data.dados.autenticado;
-      var guest = sessionStorage.getItem('aguia_guest') === '1';
-      if(!authed && !guest){
-        if(typeof window.openAuthModal==='function') window.openAuthModal();
-      }
-    } catch(e){}
-  }, 6200);
-})();
-
-
-// Forçar abertura do modal de autenticação após splash (garantia)
-setTimeout(function(){
-  try {
-    if(sessionStorage.getItem('aguia_guest') === '1') return;
-    fetch('/api/auth/me').then(function(r){return r.json();}).then(function(data){
-      var authed = data && data.sucesso && data.dados && data.dados.autenticado;
-      if(!authed && typeof window.openAuthModal === 'function'){
-        window.openAuthModal();
-      }
-    }).catch(function(){
-      if(typeof window.openAuthModal === 'function') window.openAuthModal();
-    });
-  } catch(e){}
-}, 6600);
+  })();
