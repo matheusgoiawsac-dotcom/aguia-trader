@@ -20,13 +20,51 @@ class AuthService:
         self.sessions = SessionRepository(db_path)
         self.hasher = PasswordHasher()
 
-    def register(self, display_name: str, email: str, age: int, password: str, 
-                 avatar_blob: Optional[bytes] = None, avatar_mime: Optional[str] = None) -> Dict[str, Any]:
+    def register(self, display_name: str, email: str, age: int = None, password: str = "", 
+                 avatar_blob: Optional[bytes] = None, avatar_mime: Optional[str] = None,
+                 birth_date: str = None) -> Dict[str, Any]:
         if not display_name or not display_name.strip():
             raise ValueError("Nome inválido")
         if not validate_email(email):
             raise ValueError("E-mail inválido")
-        if age is None or int(age) < 0 or int(age) > 120:
+        calculated_age = None
+        if birth_date:
+            try:
+                from datetime import date
+                bd = birth_date.strip()
+                if len(bd) == 10 and bd[4] == '-' and bd[7] == '-':
+                    y, m, d = bd.split('-')
+                    nasc = date(int(y), int(m), int(d))
+                elif '/' in bd:
+                    parts = bd.split('/')
+                    if len(parts) == 3:
+                        d, m, y = parts[0], parts[1], parts[2]
+                        nasc = date(int(y), int(m), int(d))
+                    else:
+                        raise ValueError("Data inválida")
+                else:
+                    raise ValueError("Data inválida")
+                hoje = date.today()
+                if nasc > hoje:
+                    raise ValueError("Data inválida")
+                calculated_age = hoje.year - nasc.year - ((hoje.month, hoje.day) < (nasc.month, nasc.day))
+            except ValueError:
+                raise ValueError("Data inválida")
+            except Exception:
+                raise ValueError("Data inválida")
+        if age is not None and birth_date is None:
+            try:
+                calculated_age = int(age)
+            except Exception:
+                raise ValueError("Idade inválida")
+        if calculated_age is None and age is not None:
+            try:
+                calculated_age = int(age)
+            except Exception:
+                raise ValueError("Idade inválida")
+        if calculated_age is None:
+            raise ValueError("Idade inválida")
+        if calculated_age < 0 or calculated_age > 120:
             raise ValueError("Idade inválida")
         if not password or len(password) < 8:
             raise ValueError("Senha deve ter pelo menos 8 caracteres")
@@ -46,7 +84,7 @@ class AuthService:
             display_name=display_name,
             email_original=email.strip(),
             email_normalized=email_norm,
-            age=int(age),
+            age=int(calculated_age),
             password_hash=pwd_hash,
             password_algo=pwd_algo,
             password_params=pwd_params,

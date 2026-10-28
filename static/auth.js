@@ -166,7 +166,7 @@
       if(nasc > hoje){ if(err) err.textContent='Data de nascimento inválida'; return; }
     }
     try {
-      const body = {nome, email, senha, senha2, idade: dataNasc};
+      const body = {nome, email, senha, senha2, data_nascimento: dataNasc};
       if(avatarDataUrl) body.avatar = avatarDataUrl;
       const res = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
       const data = await res.json();

@@ -36,6 +36,7 @@ def handle_auth_register(handler):
         display_name = data.get("nome") or data.get("display_name") or data.get("name") or ""
         email = data.get("email") or ""
         age = data.get("idade") or data.get("age")
+        birth_date = data.get("data_nascimento") or data.get("birth_date") or data.get("nascimento")
         password = data.get("senha") or data.get("password") or ""
         password2 = data.get("senha2") or data.get("password2") or ""
         if password2 and password != password2:
@@ -64,7 +65,7 @@ def handle_auth_register(handler):
             except Exception as e:
                 handler._send_json({"sucesso": False, "erro": "Imagem inválida"}, status_code=400)
                 return
-        res = auth_service.register(display_name, email, age, password, avatar_blob=avatar_blob, avatar_mime=avatar_mime)
+        res = auth_service.register(display_name, email, age, password, avatar_blob=avatar_blob, avatar_mime=avatar_mime, birth_date=birth_date)
         # set cookie
         token = res.get("token")
         if token:
