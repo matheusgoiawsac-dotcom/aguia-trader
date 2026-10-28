@@ -10,7 +10,7 @@
           <button class="auth-tab active" data-tab="login">Entrar</button>
           <button class="auth-tab" data-tab="register">Criar conta</button>
         </div>
-        <form class="auth-form" id="authLoginForm">
+        <form class="auth-form" id="authLoginForm" novalidate>
           <div class="auth-field"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Digite seu e-mail" required></div>
           <div class="auth-field"><label for="loginPass">Senha</label><div class="auth-password-wrap"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Digite sua senha" required><button type="button" class="auth-pass-toggle" data-target="loginPass" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
           <div class="auth-actions">
@@ -19,7 +19,7 @@
             <div class="auth-success" id="loginSuccess"></div>
           </div>
         </form>
-        <form class="auth-form" id="authRegisterForm" style="display:none">
+        <form class="auth-form" id="authRegisterForm" novalidate style="display:none">
           <div class="auth-avatar-area">
             <div class="auth-avatar" id="regAvatar">
               <svg class="auth-avatar-empty" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path></svg>
