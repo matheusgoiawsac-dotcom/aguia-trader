@@ -17,8 +17,31 @@
             <button class="auth-btn" type="submit">Entrar</button>
             <div class="auth-error" id="loginError"></div>
             <div class="auth-success" id="loginSuccess"></div>
-            <div class="auth-visitor" id="authVisitor">Continuar como visitante</div>
           </div>
+        </form>
+        <form class="auth-form" id="authRegisterForm" novalidate style="display:none">
+          <div class="auth-avatar-area">
+            <div class="auth-avatar" id="regAvatar">
+              <svg class="auth-avatar-empty" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path></svg>
+              <img id="regAvatarImg" style="display:none" alt="Avatar">
+              <button type="button" class="auth-camera" id="regCamera" aria-label="Selecionar foto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></button>
+            </div>
+            <input type="file" id="regAvatarFile" accept="image/jpeg,image/png,image/webp" style="display:none">
+          </div>
+          <div class="auth-field"><label for="regNome">Nome completo</label><input id="regNome" autocomplete="name" placeholder="Digite seu nome" required></div>
+          <div class="auth-field"><label for="regEmail">E-mail</label><input id="regEmail" type="email" autocomplete="email" placeholder="Digite seu e-mail" required></div>
+          <div class="auth-row">
+            <div class="auth-field"><label for="regSenha">Crie sua senha</label><div class="auth-password-wrap"><input id="regSenha" type="password" autocomplete="new-password" placeholder="Crie uma senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
+            <div class="auth-field"><label for="regSenha2">Confirme a senha</label><div class="auth-password-wrap"><input id="regSenha2" type="password" autocomplete="new-password" placeholder="Confirme sua senha" required><button type="button" class="auth-pass-toggle" data-target="regSenha2" aria-label="Mostrar/ocultar senha"><svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div></div>
+          </div>
+          <div class="auth-field"><label for="regIdade">Data de nascimento</label><div class="auth-date-wrap"><input id="regIdade" class="auth-date-input" type="text" inputmode="numeric" placeholder="DD/MM/AAAA" autocomplete="bday" readonly required><button type="button" class="auth-date-toggle" id="regIdadeToggle" aria-label="Abrir calendário"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button><div class="auth-calendar" id="regCalendar" role="dialog" aria-modal="false"></div></div></div>
+          <div class="auth-actions">
+            <button class="auth-btn" type="submit">Criar minha conta</button>
+            <div class="auth-error" id="regError"></div>
+            <div class="auth-success" id="regSuccess"></div>
+          </div>
+        </form>
+        <div class="auth-visitor" id="authVisitor">Continuar como visitante</div>
       </div>
     </div>
   `;
